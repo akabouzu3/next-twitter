@@ -2,8 +2,6 @@ name: CI
 on:
   pull_request:
     branches: [develop, main]  # PRの向き先が develop/main の時だけ
-  push:
-    branches: [develop, main]  # 直push（基本ないけど保険）/ マージ後の確認用
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
