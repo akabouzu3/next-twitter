@@ -40,7 +40,15 @@ jobs:
 
       # lock固定（超重要）
       - run: pnpm install --frozen-lockfile
-      - run: pnpm prisma generate
+      # Prisma Client を生成
+      # buildやtypecheckで enum(UserRole) を使うため必須
+      # generateはDB接続しないが、
+      # prisma.config.ts の envチェックを通すために
+      # ダミー DATABASE_URL を渡している
+      - name: Prisma generate
+        run: pnpm prisma generate
+        env:
+            DATABASE_URL: postgresql://user:pass@localhost:5432/dbname?schema=public
       - run: pnpm run lint
       - run: pnpm run typecheck
       - run: pnpm run build
