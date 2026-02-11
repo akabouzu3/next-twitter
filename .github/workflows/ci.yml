@@ -40,6 +40,7 @@ jobs:
 
       # lock固定（超重要）
       - run: pnpm install --frozen-lockfile
+      - run: pnpm prisma generate
       - run: pnpm run lint
       - run: pnpm run typecheck
       - run: pnpm run build
