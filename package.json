@@ -13,8 +13,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
-    "seed": "tsx prisma/seed.ts"
+    "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
     "@prisma/client": "6",
