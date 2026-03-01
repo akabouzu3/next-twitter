@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Apple } from "lucide-react"
@@ -18,7 +19,7 @@ export default function LoginBody() {
         </Button>
 
         {/* Apple */}
-        <Button
+        {/* <Button
           type="button"
           variant="secondary"
           className="w-full rounded-full h-11 bg-white text-black hover:bg-white/90 cursor-pointer"
@@ -26,7 +27,7 @@ export default function LoginBody() {
         >
           <span className="mr-2"><Apple className="fill-black" /></span>
           Appleのアカウントでログイン
-        </Button>
+        </Button> */}
       </div>
 
       {/* divider */}
@@ -37,8 +38,8 @@ export default function LoginBody() {
       </div>
 
       {/* input */}
-      <form className="space-y-4">
-        <div className="space-y-10">
+      <form className="flex flex-col gap-4">
+        <div className="">
           <label htmlFor="email">メールアドレス</label>
           <Input
             id="email"
@@ -47,14 +48,16 @@ export default function LoginBody() {
             className="h-14 rounded-md bg-black text-white placeholder:text-white/40 border-white/20 focus-visible:ring-0 focus-visible:ring-offset-0"
           />
         </div>
-        <label htmlFor="password" className="mb-2">パスワード</label>
-        <Input 
-          id="password"
-          name="password"
-          placeholder="password"
-          className="h-14 rounded-md bg-black text-white placeholder:text-white/40 border-white/20 
-            focus-visible:ring-0 focus-visible:ring-offset-0 "
-        />
+        <div className="">
+          <label htmlFor="password" className="mb-2">パスワード</label>
+          <Input 
+            id="password"
+            name="password"
+            placeholder="password"
+            className="h-14 rounded-md bg-black text-white placeholder:text-white/40 border-white/20 
+              focus-visible:ring-0 focus-visible:ring-offset-0 "
+          />
+        </div>
 
         <Button
           type="button"
@@ -63,21 +66,21 @@ export default function LoginBody() {
           ログイン
         </Button>
 
-        <Button
+        {/* <Button
           type="button"
           variant="outline"
           className="w-full rounded-full h-11 bg-black border-white/30 text-white hover:bg-black/90 hover:text-white/80 cursor-pointer line-through"
           disabled
         >
           パスワードを忘れた場合はこちら
-        </Button>
+        </Button> */}
       </form>
 
       <div className="mt-8 text-sm text-white/60">
         アカウントをお持ちでない場合は{" "}
-        <a href="/signup" className="text-sky-400 hover:underline">
+        <Link href="/signup" className="text-sky-400 hover:underline">
           登録
-        </a>
+        </Link>
       </div>
     </div>
   );
