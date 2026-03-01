@@ -1,9 +1,18 @@
+"use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Apple } from "lucide-react"
 
+import { useActionState } from "react";
+import { authenticate } from "@/features/auth/actions/authenticate";
+
 export default function LoginBody() {
+
+  const [errorMessage, formAction, isPending] = useActionState(
+    authenticate,
+    undefined,
+  );
   return (
     <div className="">
       <div className="flex flex-col gap-y-3">
@@ -38,29 +47,34 @@ export default function LoginBody() {
       </div>
 
       {/* input */}
-      <form className="flex flex-col gap-4">
+      <form action={formAction} className="flex flex-col gap-4">
+        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
         <div className="">
           <label htmlFor="email">メールアドレス</label>
           <Input
             id="email"
+            type="email"
             name="email"
             placeholder="example@google.com"
             className="h-14 rounded-md bg-black text-white placeholder:text-white/40 border-white/20 focus-visible:ring-0 focus-visible:ring-offset-0"
+            required
           />
         </div>
         <div className="">
           <label htmlFor="password" className="mb-2">パスワード</label>
           <Input 
             id="password"
+            type="password"
             name="password"
             placeholder="password"
             className="h-14 rounded-md bg-black text-white placeholder:text-white/40 border-white/20 
               focus-visible:ring-0 focus-visible:ring-offset-0 "
+            required
           />
         </div>
 
         <Button
-          type="button"
+          type="submit"
           className="w-full rounded-full h-11 bg-white text-black hover:bg-white/90 cursor-pointer"
         >
           ログイン
