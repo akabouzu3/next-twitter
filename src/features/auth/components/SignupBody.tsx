@@ -1,9 +1,18 @@
+"use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Apple } from "lucide-react"
 
+// import { useActionState } from "react";
+// import { authenticate } from "@/features/auth/actions/authenticate";
+
 export default function SignupBody() {
+  // const [errorMessage, formAction, isPending] = useActionState(
+  //   authenticate,
+  //   undefined,
+  // );
+
   return (
     <div className="">
       <div className="flex flex-col gap-y-3">
@@ -43,6 +52,7 @@ export default function SignupBody() {
           <label htmlFor="name">名前</label>
           <Input
             id="name"
+            type="text"
             name="name"
             placeholder="山田"
             className="h-14 rounded-md bg-black text-white placeholder:text-white/40 border-white/20 focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -52,6 +62,7 @@ export default function SignupBody() {
           <label htmlFor="email">メールアドレス</label>
           <Input
             id="email"
+            type="email"
             name="email"
             placeholder="example@google.com"
             className="h-14 rounded-md bg-black text-white placeholder:text-white/40 border-white/20 focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -61,6 +72,7 @@ export default function SignupBody() {
           <label htmlFor="password" className="mb-2">パスワード</label>
           <Input 
             id="password"
+            type="password"
             name="password"
             placeholder="password"
             className="h-14 rounded-md bg-black text-white placeholder:text-white/40 border-white/20 
