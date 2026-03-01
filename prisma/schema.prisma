@@ -28,9 +28,11 @@ model User {
 
   // login / identification
   email     String  @unique
-  username  String  @unique
+  username  String  @unique @default(cuid())
   name      String?
-  password  String
+  
+  // Credentials用（自前）
+  passwordHash  String
 
   // Role (default is user)
   role      UserRole @default(USER)
