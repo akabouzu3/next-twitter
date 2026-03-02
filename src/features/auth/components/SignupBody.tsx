@@ -56,6 +56,7 @@ export default function SignupBody() {
             name="name"
             placeholder="山田"
             className="h-14 rounded-md bg-black text-white placeholder:text-white/40 border-white/20 focus-visible:ring-0 focus-visible:ring-offset-0"
+            required
           />
         </div>
         <div className="">
@@ -66,6 +67,7 @@ export default function SignupBody() {
             name="email"
             placeholder="example@google.com"
             className="h-14 rounded-md bg-black text-white placeholder:text-white/40 border-white/20 focus-visible:ring-0 focus-visible:ring-offset-0"
+            required
           />
         </div>
         <div>
@@ -77,11 +79,12 @@ export default function SignupBody() {
             placeholder="password"
             className="h-14 rounded-md bg-black text-white placeholder:text-white/40 border-white/20 
               focus-visible:ring-0 focus-visible:ring-offset-0 "
+            required
           />
         </div>
 
         <Button
-          type="button"
+          type="submit"
           className="w-full rounded-full h-11 bg-white text-black hover:bg-white/90 cursor-pointer"
         >
           登録
