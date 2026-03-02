@@ -1,13 +1,10 @@
 "use server"
 
-import { z } from "zod"
 import { signIn } from "@/auth"
 import { AuthError } from "next-auth"
+import { loginSchema } from "../schemas/login"
 
-const schema = z.object({
-  email: z.string().email("メール形式が正しくありません"),
-  password: z.string().min(8, "パスワードは8文字以上です"),
-})
+
 
 export type LoginActionState = {
 	success: boolean;
@@ -22,7 +19,7 @@ export async function loginAction(
   _prevState: LoginActionState,
   formData: FormData
 ): Promise<LoginActionState> {
-  const parsed = schema.safeParse({
+  const parsed = loginSchema.safeParse({
     email: String(formData.get("email") ?? ""),
     password: String(formData.get("password") ?? ""),
   })

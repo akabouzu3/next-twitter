@@ -2,16 +2,10 @@
 
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-import { z } from "zod";
-
-const schema = z.object({
-  name: z.string().min(1).max(50).optional(),
-  email: z.string().email(),
-  password: z.string().min(8).max(100),
-});
+import { signupSchema } from "../schemas/signup";
 
 export async function signupAction(_: unknown, formData: FormData) {
-  const parsed = schema.safeParse({
+  const parsed = signupSchema.safeParse({
     name: (formData.get("name") ?? undefined) as string | undefined,
     email: String(formData.get("email") ?? ""),
     password: String(formData.get("password") ?? ""),
