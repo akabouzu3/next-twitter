@@ -6,16 +6,17 @@ import { Apple } from "lucide-react"
 
 import { useSearchParams } from "next/navigation";
 import { useActionState } from "react";
-import { authenticate } from "@/features/auth/actions/authenticate";
+import { loginAction, LoginActionState } from "@/features/auth/actions/login";
+
+const initialState: LoginActionState = { 
+	success: true
+};
 
 export default function LoginBody() {
 
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/app';
-  const [errorMessage, formAction, isPending] = useActionState(
-    authenticate,
-    undefined,
-  );
+  const [state, formAction, isPending] = useActionState(loginAction,initialState);
   return (
     <div className="">
       <div className="flex flex-col gap-y-3">
@@ -51,7 +52,7 @@ export default function LoginBody() {
 
       {/* input */}
       <form action={formAction} className="flex flex-col gap-4">
-        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+        {state?.serverError && <p className="text-red-500">{state.serverError}</p>}
         <div className="">
           <label htmlFor="email">メールアドレス</label>
           <Input
