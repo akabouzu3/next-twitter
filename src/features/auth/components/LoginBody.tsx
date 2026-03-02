@@ -4,11 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Apple } from "lucide-react"
 
+import { useSearchParams } from "next/navigation";
 import { useActionState } from "react";
 import { authenticate } from "@/features/auth/actions/authenticate";
 
 export default function LoginBody() {
 
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '/app';
   const [errorMessage, formAction, isPending] = useActionState(
     authenticate,
     undefined,
@@ -73,6 +76,7 @@ export default function LoginBody() {
           />
         </div>
 
+        <input type="hidden" name="redirectTo" value={callbackUrl} />
         <Button
           type="submit"
           className="w-full rounded-full h-11 bg-white text-black hover:bg-white/90 cursor-pointer"

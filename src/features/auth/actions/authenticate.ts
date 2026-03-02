@@ -8,20 +8,14 @@ export async function authenticate(
   formData: FormData,
 ) {
   try {
-    await signIn("credentials", {
-      email: String(formData.get("email") ?? ""),
-      password: String(formData.get("password") ?? ""),
-      redirectTo: "/app",
-    });
-
-    return undefined; // エラーなし
+    await signIn('credentials', formData);
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
-        case "CredentialsSignin":
-          return "メールアドレスまたはパスワードが間違っています。";
+        case 'CredentialsSignin':
+          return 'メールアドレスまたはパスワードが間違っています。';
         default:
-          return "エラーが発生しました。再度お試しください。";
+          return 'エラーが発生しました。再度お試しください。';
       }
     }
     throw error;
