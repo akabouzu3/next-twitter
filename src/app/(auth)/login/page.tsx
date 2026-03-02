@@ -1,10 +1,7 @@
-"use client";
 // app/(auth)/login/page.tsx
 import { LoginModal } from "@/features/auth/components/LoginModal";
-import { useState } from "react";
 
 export default function LoginPage() {
-  const [isOpen, setIsOpen] = useState(true);
 
   return (
     <>
@@ -26,7 +23,7 @@ export default function LoginPage() {
       </div>
     </div>
 
-    <LoginModal open={isOpen} />
+    <LoginModal open={true} />
     </>
   );
 }

@@ -1,10 +1,6 @@
-"use client";
-
 import { SignupModal } from "@/features/auth/components/SignupModal";
-import { useState } from "react";
 
 export default function LoginPage() {
-  const [isOpen, setIsOpen] = useState(true);
 
   return (
     <>
@@ -26,7 +22,7 @@ export default function LoginPage() {
       </div>
     </div>
 
-    <SignupModal open={isOpen} />
+    <SignupModal open={true} />
     </>
   );
 }
