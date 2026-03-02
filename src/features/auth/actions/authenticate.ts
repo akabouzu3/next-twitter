@@ -8,7 +8,13 @@ export async function authenticate(
   formData: FormData,
 ) {
   try {
-    await signIn('credentials', formData);
+    await signIn("credentials", {
+      email: String(formData.get("email") ?? ""),
+      password: String(formData.get("password") ?? ""),
+      redirectTo: "/app",
+    });
+
+    return undefined; // エラーなし
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
