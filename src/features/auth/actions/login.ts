@@ -3,6 +3,7 @@
 import { signIn } from "@/auth"
 import { AuthError } from "next-auth"
 import { loginSchema } from "../schemas/login"
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 export type LoginActionState = {
 	success: boolean;
@@ -52,6 +53,9 @@ export async function loginAction(
     return { success: true }
 
   } catch (err) {
+    // ✅ これが超重要：redirectは正常系なので握らない
+    if (isRedirectError(err)) throw err;
+    console.error(err)
     // 認証失敗などは AuthError で来る
     if (err instanceof AuthError) {
       // CredentialsSignin が多い
