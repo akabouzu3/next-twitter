@@ -4,8 +4,6 @@ import { signIn } from "@/auth"
 import { AuthError } from "next-auth"
 import { loginSchema } from "../schemas/login"
 
-
-
 export type LoginActionState = {
 	success: boolean;
 	errors?: {
@@ -13,6 +11,13 @@ export type LoginActionState = {
 		password?: string[],
 	};
 	serverError?: string
+}
+
+function safeRedirectTo(raw: unknown): string {
+  const v = typeof raw === "string" ? raw : "";
+  // 相対パス（/で始まる）かつ外部サイトではない（//evil.comなど）ものにはredirectする
+  if (v.startsWith("/") && !v.startsWith("//")) return v;
+  return "/app";
 }
 
 export async function loginAction(
@@ -40,13 +45,11 @@ export async function loginAction(
     await signIn("credentials", {
       email: parsed.data.email,
       password: parsed.data.password,
-      redirectTo: "/home",
-    })
+      redirectTo: safeRedirectTo(formData.get("redirectTo")),
+    });
 
     // signIn が redirect を投げる構成ならここには来ない場合もある
-    return { 
-      success: true
-     }
+    return { success: true }
 
   } catch (err) {
     // 認証失敗などは AuthError で来る
