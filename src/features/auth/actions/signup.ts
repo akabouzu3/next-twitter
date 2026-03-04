@@ -6,16 +6,14 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { signupSchema } from "../schemas/signup";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 export type SignupActionState = {
-	success: boolean;
-	errors?: {
-    name?: string[],
-		email?: string[],
-		password?: string[],
-	};
-	serverError?: string
-}
+  success: boolean;
+  values?: { name?: string; email?: string };
+  errors?: { name?: string[]; email?: string[]; password?: string[] };
+  serverError?: string;
+};
 
 function safeRedirectTo(raw: unknown): string {
   const v = typeof raw === "string" ? raw : "";
@@ -24,67 +22,65 @@ function safeRedirectTo(raw: unknown): string {
 }
 
 export async function signupAction(
-  _prevState: SignupActionState, 
+  _prevState: SignupActionState,
   formData: FormData
-):Promise<SignupActionState> {
-  const parsed = signupSchema.safeParse({
-    name: (formData.get("name") ?? undefined) as string | undefined,
-    email: String(formData.get("email") ?? ""),
-    password: String(formData.get("password") ?? ""),
-  });
+): Promise<SignupActionState> {
+  // ✅ まずは“生の入力値”を取る（失敗時に values に返すため）
+  let name = String(formData.get("name") ?? "");
+  let email = String(formData.get("email") ?? "");
+  let password = String(formData.get("password") ?? "");
+
+  const parsed = signupSchema.safeParse({ name, email, password });
 
   if (!parsed.success) {
-	  const errors = parsed.error.flatten();
-	  console.error('SignupAction error', errors)
-
+    const errors = parsed.error.flatten();
     return {
-	    success: false,
+      success: false,
+      values: { name, email }, // ✅ 入力保持（passwordは返さない）
       errors: errors.fieldErrors,
-      serverError: "入力が不正です"
-    }
+      serverError: "入力が不正です",
+    };
   }
 
-  const { name, email, password } = parsed.data;
+  // ✅ ここから先は “バリデーション済みの値” だけを使う
+  ({ name, email, password } = parsed.data);
 
-  // 既存のユーザーとメールアドレスが被っていいないかのチェック
-  const exists = await prisma.user.findUnique({ where: { email } });
-  if (exists) return { success: false, serverError: "既に登録済みです" };
-
-  // ユーザー作成
-  try{
+  try {
     const passwordHash = await bcrypt.hash(password, 12);
     await prisma.user.create({
       data: { name, email, passwordHash },
     });
-
-  }catch(e){
-    console.error(e);
-    // 同時に2リクエストのエラー
+  } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
-      return { success: false, serverError: "既に登録済みです" };
+      return {
+        success: false,
+        values: { name, email }, // ✅ 入力保持
+        serverError: "既に登録済みです",
+      };
     }
-    // 予期せぬエラー
-    return { success: false, serverError: "サーバーエラーが発生しました" }
+    return {
+      success: false,
+      values: { name, email }, // ✅ 入力保持
+      serverError: "サーバーエラーが発生しました",
+    };
   }
 
-
-  // ここで自動ログイン（成功すると redirect を投げて遷移することが多い）
   try {
     await signIn("credentials", {
       email,
       password,
       redirectTo: safeRedirectTo(formData.get("redirectTo")),
     });
-
-    // redirect を使わない構成ならここに来ることもある
     return { success: true };
   } catch (e) {
-    // Auth.js の signIn 失敗
+    if (isRedirectError(e)) throw e; // ✅ 成功リダイレクトは正常系
     if (e instanceof AuthError) {
-      return { success: false, serverError: "自動ログインに失敗しました。ログインしてください。" };
+      return {
+        success: false,
+        values: { name, email }, // ✅ 失敗しても保持
+        serverError: "自動ログインに失敗しました。ログインしてください。",
+      };
     }
-    // redirect 例外などは Next.js が処理するので、ここで握りつぶしたくない場合がある
     throw e;
   }
-
 }
