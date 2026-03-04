@@ -6,10 +6,10 @@ import { Button } from "@/components/ui/button";
 
 export function LoginBanner({
   open,
-  onClose,
+  // onClose,
 }: {
   open: boolean;
-  onClose: () => void;
+  // onClose: () => void;
 }) {
   if (!open) return null;
 

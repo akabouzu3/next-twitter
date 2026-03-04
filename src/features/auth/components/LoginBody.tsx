@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Apple } from "lucide-react"
+// import { Apple } from "lucide-react"
 
 import { useSearchParams } from "next/navigation";
 import { useActionState } from "react";
@@ -81,6 +81,7 @@ export default function LoginBody() {
         <Button
           type="submit"
           className="w-full rounded-full h-11 bg-white text-black hover:bg-white/90 cursor-pointer"
+          disabled={isPending}
         >
           ログイン
         </Button>

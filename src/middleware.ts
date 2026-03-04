@@ -30,7 +30,7 @@ export default auth((req) => {
       url.searchParams.set("callbackUrl", pathname);
       return NextResponse.redirect(url);
     }
-    const role = (req.auth?.user as any)?.role;
+    const role = req.auth?.user?.role;
     if (role !== "admin") {
       return NextResponse.redirect(new URL("/403", req.url));
     }
