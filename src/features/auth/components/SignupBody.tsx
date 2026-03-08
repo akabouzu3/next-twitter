@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useSearchParams } from "next/navigation";
 import { useActionState } from "react";
 import { signupAction, SignupActionState} from "@/features/auth/actions/signup";
+import { googleLoginAction } from "../actions/googleLogin";
 
 const initialState: SignupActionState = { 
 	success: true
@@ -21,15 +22,17 @@ export default function SignupBody() {
     <div className="">
       <div className="flex flex-col gap-y-3">
         {/* Google */}
-        <Button
-          type="button"
-          variant="secondary"
-          className="w-full rounded-full h-11 bg-white text-black hover:bg-white/90 cursor-pointer"
-          disabled
-        >
-          <span className="mr-2">G</span>
-          Googleで登録
-        </Button>
+        <form action={googleLoginAction}>
+          <Button
+            type="submit"
+            variant="secondary"
+            className="w-full rounded-full h-11 bg-white text-black hover:bg-white/90 cursor-pointer"
+            disabled={isPending}
+          >
+            <span className="mr-2">G</span>
+            Googleで登録
+          </Button>
+        </form>
 
         {/* Apple */}
         {/* <Button
