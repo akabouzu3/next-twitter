@@ -16,7 +16,7 @@ async function main() {
   // ---------------------------------
   // users
   // ---------------------------------
-  const password = await bcrypt.hash('password123', 10);
+  const passwordHash = await bcrypt.hash('password123', 10);
   const generateRandomImageUrl = () => `https://picsum.photos/seed/${Math.random()}/600/400`;
 
   const admin = await prisma.user.create({
@@ -24,9 +24,9 @@ async function main() {
       email: 'admin@example.com',
       username: 'admin',
       name: 'Admin',
-      password,
+      passwordHash,
       role: UserRole.ADMIN,
-      iconImage: generateRandomImageUrl(),
+      image: generateRandomImageUrl(),
       backgroundImage: generateRandomImageUrl(),
     },
   });
@@ -36,8 +36,8 @@ async function main() {
       email: 'user1@example.com',
       username: 'user1',
       name: 'User One',
-      password,
-      iconImage: generateRandomImageUrl(),
+      passwordHash,
+      image: generateRandomImageUrl(),
       backgroundImage: generateRandomImageUrl(),
     },
   });
@@ -47,8 +47,8 @@ async function main() {
       email: 'user2@example.com',
       username: 'user2',
       name: 'User Two',
-      password,
-      iconImage: generateRandomImageUrl(),
+      passwordHash,
+      image: generateRandomImageUrl(),
       backgroundImage: generateRandomImageUrl(),
     },
   });

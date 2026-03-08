@@ -27,17 +27,20 @@ model User {
   id        String  @id @default(cuid())
 
   // login / identification
-  email     String  @unique
-  username  String  @unique
   name      String?
-  password  String
+  username  String?  @unique @default(cuid())
+  email     String  @unique
+  emailVerified DateTime? 　　// ✅ Google認証に必要
+  image         String?       // ✅ Google認証に必要
+  backgroundImage String?    // ✅ 追加
+  
+  // Credentials用（自前）
+  passwordHash  String?
 
   // Role (default is user)
   role      UserRole @default(USER)
 
-  // profile images
-  iconImage       String?
-  backgroundImage String?
+
 
   // relations
   posts     Post[]
@@ -45,8 +48,47 @@ model User {
   following Follow[] @relation("UserFollowing")
   followers Follow[] @relation("UserFollowers")
 
+  accounts      Account[]
+  sessions      Session[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }
 
 model Post {
