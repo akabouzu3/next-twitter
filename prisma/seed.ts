@@ -26,7 +26,7 @@ async function main() {
       name: 'Admin',
       passwordHash,
       role: UserRole.ADMIN,
-      iconImage: generateRandomImageUrl(),
+      image: generateRandomImageUrl(),
       backgroundImage: generateRandomImageUrl(),
     },
   });
@@ -37,7 +37,7 @@ async function main() {
       username: 'user1',
       name: 'User One',
       passwordHash,
-      iconImage: generateRandomImageUrl(),
+      image: generateRandomImageUrl(),
       backgroundImage: generateRandomImageUrl(),
     },
   });
@@ -48,7 +48,7 @@ async function main() {
       username: 'user2',
       name: 'User Two',
       passwordHash,
-      iconImage: generateRandomImageUrl(),
+      image: generateRandomImageUrl(),
       backgroundImage: generateRandomImageUrl(),
     },
   });

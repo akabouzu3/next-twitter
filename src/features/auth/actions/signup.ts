@@ -38,7 +38,6 @@ export async function signupAction(
       success: false,
       values: { name, email }, // ✅ 入力保持（passwordは返さない）
       errors: errors.fieldErrors,
-      serverError: "入力が不正です",
     };
   }
 

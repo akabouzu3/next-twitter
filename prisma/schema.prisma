@@ -27,19 +27,20 @@ model User {
   id        String  @id @default(cuid())
 
   // login / identification
-  email     String  @unique
-  username  String  @unique @default(cuid())
   name      String?
+  username  String?  @unique @default(cuid())
+  email     String  @unique
+  emailVerified DateTime? 　　// ✅ Google認証に必要
+  image         String?       // ✅ Google認証に必要
+  backgroundImage String?    // ✅ 追加
   
   // Credentials用（自前）
-  passwordHash  String
+  passwordHash  String?
 
   // Role (default is user)
   role      UserRole @default(USER)
 
-  // profile images
-  iconImage       String?
-  backgroundImage String?
+
 
   // relations
   posts     Post[]

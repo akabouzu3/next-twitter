@@ -1,18 +1,16 @@
-"use server"
+"use server";
 
-import { signIn } from "@/auth"
-import { AuthError } from "next-auth"
-import { loginSchema } from "../schemas/login"
+import { signIn } from "@/auth";
+import { AuthError } from "next-auth";
+import { loginSchema } from "../schemas/login";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 export type LoginActionState = {
-	success: boolean;
-	errors?: {
-		email?: string[],
-		password?: string[],
-	};
-	serverError?: string
-}
+  success: boolean;
+  values?: { email?: string };
+  errors?: { email?: string[]; password?: string[] };
+  serverError?: string;
+};
 
 function safeRedirectTo(raw: unknown): string {
   const v = typeof raw === "string" ? raw : "";
@@ -25,24 +23,21 @@ export async function loginAction(
   _prevState: LoginActionState,
   formData: FormData
 ): Promise<LoginActionState> {
-  const parsed = loginSchema.safeParse({
-    email: String(formData.get("email") ?? ""),
-    password: String(formData.get("password") ?? ""),
-  })
+  const email = String(formData.get("email") ?? "");
+  const password = String(formData.get("password") ?? "");
+
+  const parsed = loginSchema.safeParse({ email, password });
 
   if (!parsed.success) {
-	  const errors = parsed.error.flatten();
-	  console.error('loginAction error', errors)
-
+    const errors = parsed.error.flatten();
     return {
-	    success: false,
+      success: false,
+      values: { email }, // ✅ email保持
       errors: errors.fieldErrors,
-      serverError: "メールアドレスまたはパスワードが違います"
-    }
+    };
   }
 
   try {
-    // redirect したいなら redirectTo を使う（Auth.js v5）
     await signIn("credentials", {
       email: parsed.data.email,
       password: parsed.data.password,
@@ -55,16 +50,15 @@ export async function loginAction(
   } catch (err) {
     // ✅ これが超重要：redirectは正常系なので握らない
     if (isRedirectError(err)) throw err;
-    console.error(err)
-    // 認証失敗などは AuthError で来る
+
     if (err instanceof AuthError) {
-      // CredentialsSignin が多い
       if (err.type === "CredentialsSignin") {
-        return { success: false, serverError: "メールアドレスまたはパスワードが違います" }
+        return { success: false, values: { email }, serverError: "メールアドレスまたはパスワードが違います" };
       }
-      return { success: false, serverError: "ログインに失敗しました" }
+      return { success: false, values: { email }, serverError: "ログインに失敗しました" };
     }
-    // 予期せぬエラー
-    return { success: false, serverError: "サーバーエラーが発生しました" }
+
+    console.error(err);
+    return { success: false, values: { email }, serverError: "サーバーエラーが発生しました" };
   }
 }
