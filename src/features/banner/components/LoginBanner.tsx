@@ -5,10 +5,10 @@ import { LayerPortal } from "@/components/layer/LayerPortal";
 import { Button } from "@/components/ui/button";
 
 export function LoginBanner({
-  open,
+  // open,
   // onClose,
 }: {
-  open: boolean;
+  // open: boolean;
   // onClose: () => void;
 }) {
   if (!open) return null;
