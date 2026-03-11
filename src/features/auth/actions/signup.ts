@@ -1,9 +1,9 @@
 "use server";
 
-import { signIn } from "@/auth";
+import { signIn } from "@/lib/auth/auth";
 import { AuthError } from "next-auth";
 import { Prisma } from "@prisma/client";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma/prisma";
 import bcrypt from "bcryptjs";
 import { signupSchema } from "../schemas/signup";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
@@ -23,7 +23,7 @@ function safeRedirectTo(raw: unknown): string {
 
 export async function signupAction(
   _prevState: SignupActionState,
-  formData: FormData
+  formData: FormData,
 ): Promise<SignupActionState> {
   // ✅ まずは“生の入力値”を取る（失敗時に values に返すため）
   let name = String(formData.get("name") ?? "");
@@ -50,7 +50,10 @@ export async function signupAction(
       data: { name, email, passwordHash },
     });
   } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
+    if (
+      e instanceof Prisma.PrismaClientKnownRequestError &&
+      e.code === "P2002"
+    ) {
       return {
         success: false,
         values: { name, email }, // ✅ 入力保持

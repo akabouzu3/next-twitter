@@ -1,24 +1,24 @@
-import "server-only"
-import { cache } from "react"
-import { prisma } from "@/lib/prisma"
-import { getCurrentSessionUser } from "@/lib/auth/session"
+import "server-only";
+import { cache } from "react";
+import { prisma } from "@/lib/prisma/prisma";
+import { getCurrentSessionUser } from "@/lib/auth/session";
 
-import { User } from "@prisma/client"
+import { User } from "@prisma/client";
 
 export type CurrentUser = Pick<
   User,
   "id" | "username" | "name" | "email" | "role" | "image" | "backgroundImage"
->
+>;
 /**
  * DBから現在ユーザーの詳細を取得する
  * - session.user.id を使う
  * - 未ログイン / DBにユーザーがいない場合は null
  */
 export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
-  const sessionUser = await getCurrentSessionUser()
+  const sessionUser = await getCurrentSessionUser();
 
   if (!sessionUser) {
-    return null
+    return null;
   }
 
   const user = await prisma.user.findUnique({
@@ -34,11 +34,11 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
       image: true,
       backgroundImage: true,
     },
-  })
+  });
 
   if (!user) {
-    return null
+    return null;
   }
 
-  return user
-})
+  return user;
+});

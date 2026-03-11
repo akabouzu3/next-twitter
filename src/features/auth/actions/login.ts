@@ -1,6 +1,6 @@
 "use server";
 
-import { signIn } from "@/auth";
+import { signIn } from "@/lib/auth/auth";
 import { AuthError } from "next-auth";
 import { loginSchema } from "../schemas/login";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
@@ -21,7 +21,7 @@ function safeRedirectTo(raw: unknown): string {
 
 export async function loginAction(
   _prevState: LoginActionState,
-  formData: FormData
+  formData: FormData,
 ): Promise<LoginActionState> {
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
@@ -45,20 +45,31 @@ export async function loginAction(
     });
 
     // signIn が redirect を投げる構成ならここには来ない場合もある
-    return { success: true }
-
+    return { success: true };
   } catch (err) {
     // ✅ これが超重要：redirectは正常系なので握らない
     if (isRedirectError(err)) throw err;
 
     if (err instanceof AuthError) {
       if (err.type === "CredentialsSignin") {
-        return { success: false, values: { email }, serverError: "メールアドレスまたはパスワードが違います" };
+        return {
+          success: false,
+          values: { email },
+          serverError: "メールアドレスまたはパスワードが違います",
+        };
       }
-      return { success: false, values: { email }, serverError: "ログインに失敗しました" };
+      return {
+        success: false,
+        values: { email },
+        serverError: "ログインに失敗しました",
+      };
     }
 
     console.error(err);
-    return { success: false, values: { email }, serverError: "サーバーエラーが発生しました" };
+    return {
+      success: false,
+      values: { email },
+      serverError: "サーバーエラーが発生しました",
+    };
   }
 }

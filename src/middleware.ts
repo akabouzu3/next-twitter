@@ -1,6 +1,6 @@
 // middleware.ts
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { auth } from "@/lib/auth/auth";
 
 export default auth((req) => {
   const { pathname } = req.nextUrl;
