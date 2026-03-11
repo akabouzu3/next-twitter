@@ -1,7 +1,11 @@
-
+import { Metadata } from "next";
 import { logoutAction } from "@/features/auth/actions/logout"
 
-export default function HomePage() {
+export const metadata: Metadata = {
+  title: "ホーム"
+};
+
+export default function AppPage() {
   return (
     <>
       <div>HomePage</div>
