@@ -2,7 +2,7 @@
 "use client";
 
 import { LayerPortal } from "@/components/layer/LayerPortal";
-import LoginBody from "./LoginBody";
+import LoginBody from "@/features/auth/components/LoginBody";
 
 export function LoginModal({
   open,

@@ -2,7 +2,7 @@
 "use client";
 
 import { LayerPortal } from "@/components/layer/LayerPortal";
-import SignupBody from "./SignupBody";
+import SignupBody from "@/features/auth/components/SignupBody";
 
 export function SignupModal({
   open,

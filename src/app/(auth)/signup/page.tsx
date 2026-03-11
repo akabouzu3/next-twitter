@@ -1,5 +1,5 @@
 import Home from "@/components/layout/Home";
-import { SignupModal } from "@/features/auth/components/SignupModal";
+import { SignupModal } from "@/components/modals/SignupModal";
 
 export default function LoginPage() {
 
