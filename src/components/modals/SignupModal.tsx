@@ -2,7 +2,7 @@
 "use client";
 
 import { LayerPortal } from "@/components/layer/LayerPortal";
-import SignupBody from "@/features/auth/components/SignupBody";
+import SignupForm from "@/features/auth/components/SignupForm";
 
 export function SignupModal({
   open,
@@ -36,7 +36,7 @@ export function SignupModal({
               <div className="w-full max-w-sm">
                 <div className="mb-4 text-3xl font-bold">アカウントを作成</div>
 
-                <SignupBody />
+                <SignupForm />
 
               </div>
             </div>
@@ -64,7 +64,7 @@ export function SignupModal({
               <div className="max-w-sm mx-auto p-4">
                 <div className="mb-4 text-3xl font-bold">アカウントを作成</div>
                 {/* 長い内容 */}
-                <SignupBody/>
+                <SignupForm/>
               </div>
             </div>
           </div>

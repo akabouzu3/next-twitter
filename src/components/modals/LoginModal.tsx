@@ -2,7 +2,7 @@
 "use client";
 
 import { LayerPortal } from "@/components/layer/LayerPortal";
-import LoginBody from "@/features/auth/components/LoginBody";
+import LoginForm from "@/features/auth/components/LoginForm";
 
 export function LoginModal({
   open,
@@ -36,7 +36,7 @@ export function LoginModal({
               <div className="w-full max-w-sm">
                 <div className="mb-4 text-3xl font-bold">Kにログイン</div>
 
-                <LoginBody />
+                <LoginForm />
 
               </div>
             </div>
@@ -64,7 +64,7 @@ export function LoginModal({
               <div className="max-w-sm mx-auto p-4">
                 <div className="mb-4 text-3xl font-bold">Kにログイン</div>
                 {/* 長い内容 */}
-                <LoginBody/>
+                <LoginForm/>
               </div>
             </div>
           </div>
