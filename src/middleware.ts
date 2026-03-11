@@ -8,13 +8,6 @@ export default auth((req) => {
 
   const isOnApp = pathname.startsWith("/app");
   const isOnAdmin = pathname.startsWith("/admin");
-  const isLoginPage = pathname === "/login";
-  const isSignupPage = pathname === "/signup";
-
-  // ログイン済みが /login /signup に来たら /app
-  if (isLoggedIn && (isLoginPage || isSignupPage)) {
-    return NextResponse.redirect(new URL("/app", req.url));
-  }
 
   // /app はログイン必須
   if (isOnApp && !isLoggedIn) {
@@ -31,7 +24,7 @@ export default auth((req) => {
       return NextResponse.redirect(url);
     }
     const role = req.auth?.user?.role;
-    if (role !== "admin") {
+    if (role !== "ADMIN") {
       return NextResponse.redirect(new URL("/403", req.url));
     }
   }
@@ -40,5 +33,5 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ["/app/:path*", "/admin/:path*", "/login", "/signup"],
+  matcher: ["/app/:path*", "/admin/:path*"],
 };
