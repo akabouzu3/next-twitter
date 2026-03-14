@@ -7,9 +7,12 @@ export default function Home() {
     <div className="flex md:hidden flex-col px-10">
       {/*header */}
       <div className="py-4">
-        <div className="">
+        {/* <div className="">
           <span className="text-5xl font-black">K</span>
-          </div>
+          </div> */}
+        <div className="w-16 h-16">
+          <img src="/k-logo.svg" alt="K" />
+        </div>
       </div>
 
       {/*body */}
@@ -38,8 +41,8 @@ export default function Home() {
     <div className="hidden md:flex mx-auto max-w-6xl min-h-dvh justify-center items-center px-10">
       {/* 左: 巨大X */}
       <div className="flex-1 flex items-center justify-center p-8">
-        <div className="text-[220px] leading-none font-black select-none">
-          K
+        <div className="">
+          <img src="/k-logo.svg" alt="K" />
         </div>
       </div>
 

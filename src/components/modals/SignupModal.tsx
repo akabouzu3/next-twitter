@@ -28,7 +28,9 @@ export function SignupModal({
                   onClick={onClose}
                   className="absolute top-4 left-4 w-8 h-8 rounded-full cursor-pointer hover:bg-white/20">✕</button>
               )}
-              <div className="text-3xl font-black">K</div>
+              <div className="w-12 h-12">
+                <img src="/k-logo.svg" alt="K" />
+              </div>
             </div>
 
             {/* body: 短い時は中央、長い時はスクロール */}
@@ -56,7 +58,9 @@ export function SignupModal({
                   onClick={onClose}
                   className="absolute top-4 left-4 w-8 h-8 rounded-full cursor-pointer hover:bg-white/20">✕</button>
               )}
-              <div className="text-3xl font-black">K</div>
+                            <div className="w-12 h-12">
+                <img src="/k-logo.svg" alt="K" />
+              </div>
             </div>
 
             {/* body */}
