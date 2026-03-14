@@ -13,7 +13,7 @@ const initialState: SignupActionState = {
 	success: true
 };
 
-export default function SignupBody() {
+export default function SignupForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/app';
   const [state, formAction, isPending] = useActionState(signupAction,initialState);

@@ -13,7 +13,7 @@ const initialState: LoginActionState = {
 	success: true
 };
 
-export default function LoginBody() {
+export default function LoginForm() {
 
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/app';
