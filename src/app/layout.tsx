@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Next Twitter",
-  description: "Next Twitter",
+  title: {
+    default: "K",
+    template: "%s / K",
+  },
+  description: "Kazuoが作成しているTwitterのcloneです。",
 };
 
 export default function RootLayout({
