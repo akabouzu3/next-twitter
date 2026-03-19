@@ -5,13 +5,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navItems = [
-  { label: "ホーム", icon: Home, url: "/app" },
-  { label: "話題を検索", icon: Search, url: "/app/search" },
-  { label: "通知", icon: Bell, url: "/app/notification" },
-  { label: "メッセージ", icon: Mail, url: "/app/messages" },
-  { label: "ブックマーク", icon: Bookmark, url: "/app/bookmark" },
-  { label: "プロフィール", icon: User, url: "/app/profile" },
-  { label: "もっと見る", icon: Ellipsis, url: "/app/more" },
+  { label: "ホーム", icon: Home, url: "/app", isVisible: true, },
+  { label: "話題を検索", icon: Search, url: "/app/search", isVisible: true,  },
+  { label: "通知", icon: Bell, url: "/app/notification", isVisible: true,  },
+  { label: "メッセージ", icon: Mail, url: "/app/messages", isVisible: true,  },
+  { label: "ブックマーク", icon: Bookmark, url: "/app/bookmark", isVisible: true,  },
+  { label: "プロフィール", icon: User, url: "/app/profile", isVisible: true,  },
+  { label: "もっと見る", icon: Ellipsis, url: "/app/more", isVisible: true,  },
 ];
 
 export default function LeftSidebar() {
@@ -27,7 +27,7 @@ export default function LeftSidebar() {
       <nav className="flex flex-col gap-1">
         {navItems.map((item) => {
           const Icon = item.icon;
-          return (
+          return item.isVisible && (
             <Link key={item.label} href={item.url} className="group">
               <button className="flex h-14 items-center rounded-full px-4 group-hover:bg-white/10 
                   md:w-14 md:justify-center md:px-0 
