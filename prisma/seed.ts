@@ -1,5 +1,6 @@
 import { PrismaClient, UserRole } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import { generateRandomImageUrl } from '@/lib/utils/image-url';
 
 const prisma = new PrismaClient();
 
@@ -17,7 +18,6 @@ async function main() {
   // users
   // ---------------------------------
   const passwordHash = await bcrypt.hash('password123', 10);
-  const generateRandomImageUrl = () => `https://picsum.photos/seed/${Math.random()}/600/400`;
 
   const admin = await prisma.user.create({
     data: {

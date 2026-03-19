@@ -1,10 +1,11 @@
+import { generateRandomImageUrl } from "@/lib/utils/image-url";
 export const mockPosts = [
   {
     id: "1",
     author: {
       name: "Hiroshi Wayama",
       username: "mushoku_swe",
-      avatarUrl: "/images/avatar-1.jpg",
+      avatarUrl: generateRandomImageUrl(),
       verified: true,
     },
     content:
@@ -22,7 +23,7 @@ export const mockPosts = [
     author: {
       name: "無印良品",
       username: "muji_net",
-      avatarUrl: "/images/avatar-2.jpg",
+      avatarUrl: generateRandomImageUrl(),
       verified: true,
     },
     content:
@@ -34,14 +35,14 @@ export const mockPosts = [
       likes: 0,
       views: "1.2万",
     },
-    imageUrl: "/images/post-1.jpg",
+    imageUrl: generateRandomImageUrl(),
   },
   {
     id: "3",
     author: {
       name: "無印良品",
       username: "muji_net",
-      avatarUrl: "/images/avatar-2.jpg",
+      avatarUrl: generateRandomImageUrl(),
       verified: true,
     },
     content:
@@ -53,14 +54,14 @@ export const mockPosts = [
       likes: 0,
       views: "1.2万",
     },
-    imageUrl: "/images/post-1.jpg",
+    imageUrl: generateRandomImageUrl(),
   },
   {
     id: "4",
     author: {
       name: "無印良品",
       username: "muji_net",
-      avatarUrl: "/images/avatar-2.jpg",
+      avatarUrl: generateRandomImageUrl(),
       verified: true,
     },
     content:
@@ -72,14 +73,14 @@ export const mockPosts = [
       likes: 0,
       views: "1.2万",
     },
-    imageUrl: "/images/post-1.jpg",
+    imageUrl: generateRandomImageUrl(),
   },
   {
     id: "5",
     author: {
       name: "無印良品",
       username: "muji_net",
-      avatarUrl: "/images/avatar-2.jpg",
+      avatarUrl:generateRandomImageUrl(),
       verified: true,
     },
     content:
@@ -91,6 +92,6 @@ export const mockPosts = [
       likes: 0,
       views: "1.2万",
     },
-    imageUrl: "/images/post-1.jpg",
+    imageUrl:generateRandomImageUrl(),
   },
 ];
