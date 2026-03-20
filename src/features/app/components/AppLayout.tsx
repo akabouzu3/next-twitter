@@ -60,22 +60,31 @@ export default function AppLayout({ posts }: Props) {
       <MobileTopBar />
 
       <div className="flex">
-        <div className="flex-1 md:basis-[88px] xl:basis-[275px] hidden md:flex justify-end">
-          <aside className="md:w-[88px] xl:w-[275px] shrink-0 border-r border-white/10">
+        <aside className="hidden flex-1 justify-end 
+          md:flex md:basis-[88px] 
+          xl:basis-[275px]">
+          <div className="sticky top-0 h-dvh overflow-y-auto shrink-0 border-r border-white/10
+            md:w-[88px] 
+            xl:w-[275px]">
             <LeftSidebar />
-          </aside>
-        </div>
+          </div>
+        </aside>
 
-        <div className="flex-1 md:basis-[600px] xl:basis-[950px] flex justify-start">
-          <main className="min-w-0 flex-1 border-r border-white/10 md:max-w-[600px]">
+        <div className="flex-1 flex justify-start 
+          md:basis-[600px] 
+          xl:basis-[950px]">
+          <main className="min-w-0 flex-1 border-r border-white/10 
+            md:max-w-[600px]">
             <AppTabs />
             <ComposerCard />
             <FeedList posts={posts} />
           </main>
 
-          <aside className="hidden xl:block xl:w-[350px] shrink-0">
+          <aside className="hidden shrink-0
+            xl:block xl:w-[350px]">
             <RightSidebar />
           </aside>
+          
         </div>
       </div>
 
