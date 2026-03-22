@@ -31,38 +31,13 @@ type Props = {
 
 export default function AppLayout({ posts }: Props) {
 
-  // return (
-  //   <div className="min-h-dvh bg-black text-white">
-  //     <MobileTopBar />
-
-  //     <div className="mx-auto flex w-full max-w-[1400px]">
-  //       <aside className="hidden md:flex md:w-20 xl:w-[275px] shrink-0 border-r border-white/10">
-  //         <LeftSidebar />
-  //       </aside>
-
-  //       <main className="min-w-0 flex-1 border-r border-white/10 md:max-w-[600px] xl:max-w-[620px]">
-  //         <AppTabs />
-  //         <ComposerCard />
-  //         <FeedList posts={posts} />
-  //       </main>
-
-  //       <aside className="hidden xl:block xl:w-[380px] shrink-0">
-  //         <RightSidebar />
-  //       </aside>
-  //     </div>
-
-  //     <MobileBottomNav />
-  //   </div>
-  // );
 
   return (
     <div className="min-h-dvh bg-black text-white">
       <MobileTopBar />
 
       <div className="flex">
-        <aside className="hidden flex-1 justify-end 
-          md:flex md:basis-[88px] 
-          xl:basis-[275px]">
+        <aside className="hidden md:flex flex-auto justify-end ">
           <div className="sticky top-0 h-dvh overflow-y-auto shrink-0 border-r border-white/10
             md:w-[88px] 
             xl:w-[275px]">
@@ -70,9 +45,7 @@ export default function AppLayout({ posts }: Props) {
           </div>
         </aside>
 
-        <div className="flex-1 flex justify-start 
-          md:basis-[600px] 
-          xl:basis-[950px]">
+        <div className="flex-auto flex justify-start ">
           <main className="min-w-0 flex-1 border-r border-white/10 
             md:max-w-[600px]">
             <AppTabs />
