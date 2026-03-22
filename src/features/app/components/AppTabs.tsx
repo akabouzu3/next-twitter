@@ -18,7 +18,7 @@ export default function AppTabs() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className="relative flex h-14 items-center justify-center text-lg font-bold"
+              className="relative flex h-14 items-center justify-center text-lg font-bold hover:bg-white/10"
             >
               <span className={cn(active ? "text-white" : "text-white/45")}>
                 {tab}
