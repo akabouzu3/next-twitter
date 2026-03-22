@@ -5,6 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { generateImageUrl } from "@/lib/utils/image-url";
+import { SidebarAccountMenu } from "./SidebarAccountMenu";
+import { CurrentUser } from "@/lib/auth/current-user";
 
 const navItems = [
   { label: "ホーム", icon: Home, url: "/app", isDisabled: false, },
@@ -16,7 +18,11 @@ const navItems = [
   { label: "もっと見る", icon: Ellipsis, url: "/app/more", isDisabled: true,  },
 ];
 
-export default function LeftSidebar() {
+type Props = {
+  currentUser: CurrentUser | null;
+};
+
+export default function LeftSidebar({currentUser}: Props) {
   const pathname = usePathname();
   console.log(pathname);
   const imageUrl = generateImageUrl();
@@ -77,7 +83,7 @@ export default function LeftSidebar() {
         </button>
       </div>
 
-      <div className="hidden items-center gap-3 rounded-full p-3 duration-200 hover:bg-white/10 cursor-pointer
+      {/* <div className="hidden items-center gap-3 rounded-full p-3 duration-200 hover:bg-white/10 cursor-pointer
         md:flex">
         <Image
           src={imageUrl}
@@ -90,7 +96,8 @@ export default function LeftSidebar() {
           <p className="truncate font-bold">カズオだよ！</p>
           <p className="truncate text-sm text-white/50">@kazuo_33333</p>
         </div>
-      </div>
+      </div> */}
+      <SidebarAccountMenu currentUser={currentUser}/>
     </div>
   );
 }

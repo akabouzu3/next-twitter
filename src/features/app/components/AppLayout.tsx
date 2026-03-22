@@ -5,6 +5,7 @@ import ComposerCard from "@/features/app/components/ComposerCard";
 import FeedList from "@/features/app/components/FeedList";
 import MobileTopBar from "@/features/app/components/MobileTopBar";
 import MobileBottomNav from "@/features/app/components/MobileBottomNav";
+import { CurrentUser } from "@/lib/auth/current-user";
 
 type Post = {
   id: string;
@@ -26,10 +27,11 @@ type Post = {
 };
 
 type Props = {
+  currentUser: CurrentUser | null;
   posts: Post[];
 };
 
-export default function AppLayout({ posts }: Props) {
+export default function AppLayout({ currentUser, posts }: Props) {
 
 
   return (
@@ -41,7 +43,7 @@ export default function AppLayout({ posts }: Props) {
           <div className="sticky top-0 h-dvh overflow-y-auto shrink-0 border-r border-white/10
             md:w-[88px] 
             xl:w-[275px]">
-            <LeftSidebar />
+            <LeftSidebar currentUser={currentUser} />
           </div>
         </aside>
 
