@@ -26,7 +26,7 @@ export function SidebarAccountMenu({ currentUser }: Props) {
           type="button"
           className="
             flex w-full items-center gap-3 rounded-full px-3 py-3 text-left
-            transition hover:bg-white/10
+            transition cursor-pointer hover:bg-white/10
             focus:outline-none
           "
           aria-label="アカウントメニューを開く"
@@ -67,7 +67,7 @@ export function SidebarAccountMenu({ currentUser }: Props) {
           shadow-[0_0_20px_rgba(255,255,255,0.08)]
         "
       >
-        <DropdownMenuItem
+        {/* <DropdownMenuItem
           className="
             cursor-pointer rounded-xl px-4 py-3 text-[15px] font-bold
             focus:bg-white/10 focus:text-white
@@ -80,7 +80,7 @@ export function SidebarAccountMenu({ currentUser }: Props) {
           既存のアカウントを追加
         </DropdownMenuItem>
 
-        <DropdownMenuSeparator className="my-1 bg-white/10" />
+        <DropdownMenuSeparator className="my-1 bg-white/10" /> */}
 
         <DropdownMenuItem
           className="
