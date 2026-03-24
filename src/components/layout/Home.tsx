@@ -1,4 +1,5 @@
 import HomeBody from "./HomeBody";
+import KLogo from "@/components/icons/KLogo";
  
 export default function Home() {
   return (
@@ -7,11 +8,8 @@ export default function Home() {
     <div className="flex md:hidden flex-col px-10">
       {/*header */}
       <div className="py-4">
-        {/* <div className="">
-          <span className="text-5xl font-black">K</span>
-          </div> */}
         <div className="w-16 h-16">
-          <img src="/k-logo.svg" alt="K" />
+          <KLogo />
         </div>
       </div>
 
@@ -41,9 +39,7 @@ export default function Home() {
     <div className="hidden md:flex mx-auto max-w-6xl min-h-dvh justify-center items-center px-10">
       {/* 左: 巨大X */}
       <div className="flex-1 flex items-center justify-center p-8">
-        <div className="">
-          <img src="/k-logo.svg" alt="K" />
-        </div>
+        <KLogo/>
       </div>
 
       {/* 右: コピー（画像にある雰囲気） */}

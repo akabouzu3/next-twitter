@@ -3,6 +3,7 @@
 
 import { LayerPortal } from "@/components/layer/LayerPortal";
 import SignupForm from "@/features/auth/components/SignupForm";
+import KLogo from "@/components/icons/KLogo";
 
 export function SignupModal({
   open,
@@ -29,7 +30,7 @@ export function SignupModal({
                   className="absolute top-4 left-4 w-8 h-8 rounded-full cursor-pointer hover:bg-white/20">✕</button>
               )}
               <div className="w-12 h-12">
-                <img src="/k-logo.svg" alt="K" />
+                <KLogo />
               </div>
             </div>
 
@@ -59,7 +60,7 @@ export function SignupModal({
                   className="absolute top-4 left-4 w-8 h-8 rounded-full cursor-pointer hover:bg-white/20">✕</button>
               )}
                             <div className="w-12 h-12">
-                <img src="/k-logo.svg" alt="K" />
+                <KLogo />
               </div>
             </div>
 

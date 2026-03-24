@@ -3,10 +3,9 @@ import { Home, Search, Bell, Mail, Bookmark, User, Ellipsis } from "lucide-react
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Image from "next/image";
-import { generateImageUrl } from "@/lib/utils/image-url";
 import { SidebarAccountMenu } from "./SidebarAccountMenu";
 import { CurrentUser } from "@/lib/auth/current-user";
+import KLogo from "@/components/icons/KLogo";
 
 const navItems = [
   { label: "ホーム", icon: Home, url: "/app", isDisabled: false, },
@@ -24,8 +23,6 @@ type Props = {
 
 export default function LeftSidebar({currentUser}: Props) {
   const pathname = usePathname();
-  console.log(pathname);
-  const imageUrl = generateImageUrl();
 
   return (
     <div className="flex min-h-full w-full flex-col justify-between px-2 py-2
@@ -34,9 +31,9 @@ export default function LeftSidebar({currentUser}: Props) {
       <div className="flex flex-col">
         <Link
           href="/app"
-          className="mb-2 flex h-14 w-14 items-center justify-center rounded-full hover:bg-white/10 duration-200" 
+          className="mb-2 flex h-14 w-14 items-center justify-center p-2 rounded-full hover:bg-white/10 duration-200" 
         >
-          <span className="text-4xl font-semibold">K</span>
+          <KLogo/>
         </Link>
 
         <nav className="flex flex-col gap-1">
@@ -83,20 +80,6 @@ export default function LeftSidebar({currentUser}: Props) {
         </button>
       </div>
 
-      {/* <div className="hidden items-center gap-3 rounded-full p-3 duration-200 hover:bg-white/10 cursor-pointer
-        md:flex">
-        <Image
-          src={imageUrl}
-          alt="プロフィール画像"
-          width={40}
-          height={40}
-          className="size-10 rounded-full object-cover"
-        />
-        <div className="min-w-0 hidden xl:block">
-          <p className="truncate font-bold">カズオだよ！</p>
-          <p className="truncate text-sm text-white/50">@kazuo_33333</p>
-        </div>
-      </div> */}
       <SidebarAccountMenu currentUser={currentUser}/>
     </div>
   );

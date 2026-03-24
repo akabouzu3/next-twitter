@@ -2,13 +2,16 @@
 
 import Image from "next/image";
 import { signOut } from "next-auth/react";
-import { ChevronDown, Ellipsis } from "lucide-react";
+import { 
+  // ChevronDown, 
+  Ellipsis
+ } from "lucide-react";
 
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
+  // DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { CurrentUser } from "@/lib/auth/current-user";
