@@ -2,6 +2,7 @@ import { FeedItem as FeedItemType } from "@/features/post/types/feed";
 import { MessageCircle, Repeat2, Heart, BarChart2, Bookmark, Share2, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
 import PostImages from "@/features/post/components/PostImages";
+import { formatRelativeTime } from "@/lib/utils/date";
 
 type Props = {
   post: FeedItemType;
@@ -25,7 +26,7 @@ export default function FeedItem({ post }: Props) {
             {/* {post.author.verified && <CheckCircle2 className="size-4 fill-sky-500 text-sky-500" />} */}
             <span className="truncate text-white/50">@{post.user.username}</span>
             <span className="text-white/50">·</span>
-            <span className="text-white/50">{post.createdAt.getDate()}</span>
+            <span className="text-white/50">{ formatRelativeTime(post.createdAt) }</span>
           </div>
 
           <p className="mt-1 whitespace-pre-wrap text-[15px] leading-6">
