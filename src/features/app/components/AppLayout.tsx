@@ -22,7 +22,7 @@ export default function AppLayout({ currentUser, posts }: Props) {
       <MobileTopBar />
 
       <div className="flex">
-        <aside className="hidden md:flex flex-auto justify-end ">
+        <aside className="hidden md:flex flex-auto md:basis-[88px] xl:basis-[275px] justify-end">
           <div className="sticky top-0 h-dvh overflow-y-auto shrink-0 border-r border-white/10
             md:w-[88px] 
             xl:w-[275px]">
@@ -30,7 +30,7 @@ export default function AppLayout({ currentUser, posts }: Props) {
           </div>
         </aside>
 
-        <div className="flex-auto flex justify-start ">
+        <div className="min-w-0 flex-auto md:basis-[600px] xl:basis-[950px] flex justify-start">
           <main className="min-w-0 flex-1 border-r border-white/10 
             md:max-w-[600px]">
             <AppTabs />

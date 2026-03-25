@@ -16,8 +16,7 @@ export default async function AppPage() {
 
   return (
     <>
-    <AppLayout currentUser={currentUser} posts={mockPosts}/>
-    {/* <AppLayout currentUser={currentUser} posts={timeline}/> */}
+    <AppLayout currentUser={currentUser} posts={timeline}/>
     </>
   )
 }
