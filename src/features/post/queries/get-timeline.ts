@@ -1,9 +1,9 @@
 // src/features/post/server/getTimeline.ts
 import { prisma } from "@/lib/prisma/prisma";
 import { getCurrentSessionUserId } from "@/lib/auth/session";
-import type { TimelineItem } from "@/features/post/types/timeline";
+import type { FeedItem } from "@/features/post/types/feed";
 
-export async function getTimeline(): Promise<TimelineItem[]> {
+export async function getTimeline(): Promise<FeedItem[]> {
   const userId = await getCurrentSessionUserId();
 
   if (!userId) {
@@ -19,7 +19,9 @@ export async function getTimeline(): Promise<TimelineItem[]> {
     },
   });
 
-  const followingIds = [...new Set([...follows.map((f) => f.followingId), userId])];
+  const followingIds = [
+    ...new Set([...follows.map((f) => f.followingId), userId]),
+  ];
 
   const posts = await prisma.post.findMany({
     where: {
@@ -54,14 +56,11 @@ export async function getTimeline(): Promise<TimelineItem[]> {
         },
       },
     },
-    orderBy: [
-      { createdAt: "desc" },
-      { id: "desc" },
-    ],
+    orderBy: [{ createdAt: "desc" }, { id: "desc" }],
     take: 20,
   });
 
-  const timeline:TimelineItem[] = posts.map<TimelineItem>((post) => ({
+  const timeline: FeedItem[] = posts.map<FeedItem>((post) => ({
     id: post.id,
     content: post.content,
     createdAt: post.createdAt,

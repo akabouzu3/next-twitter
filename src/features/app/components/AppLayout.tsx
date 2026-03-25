@@ -6,12 +6,12 @@ import FeedList from "@/features/app/components/FeedList";
 import MobileTopBar from "@/features/app/components/MobileTopBar";
 import MobileBottomNav from "@/features/app/components/MobileBottomNav";
 import { CurrentUser } from "@/lib/auth/current-user";
-import { TimelineItem } from "@/features/post/types/timeline";
+import { FeedItem } from "@/features/post/types/feed";
 
 
 type Props = {
   currentUser: CurrentUser | null;
-  posts: TimelineItem[];
+  posts: FeedItem[];
 };
 
 export default function AppLayout({ currentUser, posts }: Props) {

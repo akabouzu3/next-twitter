@@ -1,9 +1,9 @@
-import { TimelineItem } from "@/features/post/types/timeline";
+import { FeedItem as FeedItemType } from "@/features/post/types/feed";
 import { MessageCircle, Repeat2, Heart, BarChart2, Bookmark, Share2, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
 
 type Props = {
-  post: TimelineItem;
+  post: FeedItemType;
 };
 
 export default function FeedItem({ post }: Props) {

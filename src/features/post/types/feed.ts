@@ -1,5 +1,5 @@
-// src/features/post/types/timeline.ts
-export type TimelineItem = {
+
+export type FeedItem = {
   id: string;
   content: string;
   createdAt: Date;

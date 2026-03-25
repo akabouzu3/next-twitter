@@ -1,16 +1,16 @@
-import FeedItem from "@/features/app/components/FeedItem";
-import { TimelineItem } from "@/features/post/types/timeline";
+import Feed from "@/features/app/components/FeedItem";
+import { FeedItem } from "@/features/post/types/feed";
 
 
 type Props = {
-  posts: TimelineItem[];
+  posts: FeedItem[];
 };
 
 export default function FeedList({ posts }: Props) {
   return (
     <section>
       {posts.map((post) => (
-        <FeedItem key={post.id} post={post} />
+        <Feed key={post.id} post={post} />
       ))}
     </section>
   );
