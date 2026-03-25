@@ -7,21 +7,23 @@ import { SidebarAccountMenu } from "./SidebarAccountMenu";
 import { CurrentUser } from "@/lib/auth/current-user";
 import KLogo from "@/components/icons/KLogo";
 
-const navItems = [
-  { label: "ホーム", icon: Home, url: "/app", isDisabled: false, },
-  { label: "話題を検索", icon: Search, url: "/app/search", isDisabled: true,  },
-  { label: "通知", icon: Bell, url: "/app/notification", isDisabled: true,  },
-  { label: "メッセージ", icon: Mail, url: "/app/messages", isDisabled: true,  },
-  { label: "ブックマーク", icon: Bookmark, url: "/app/bookmark", isDisabled: true,  },
-  { label: "プロフィール", icon: User, url: "/app/profile", isDisabled: false,  },
-  { label: "もっと見る", icon: Ellipsis, url: "/app/more", isDisabled: true,  },
-];
+
 
 type Props = {
   currentUser: CurrentUser | null;
 };
 
 export default function LeftSidebar({currentUser}: Props) {
+  const navItems = [
+    { label: "ホーム", icon: Home, url: "/app", isDisabled: false, },
+    { label: "話題を検索", icon: Search, url: "/app/search", isDisabled: true,  },
+    { label: "通知", icon: Bell, url: "/app/notification", isDisabled: true,  },
+    { label: "メッセージ", icon: Mail, url: "/app/messages", isDisabled: true,  },
+    { label: "ブックマーク", icon: Bookmark, url: "/app/bookmark", isDisabled: true,  },
+    { label: "プロフィール", icon: User, url: "/app/users/" + currentUser?.username, isDisabled: false,  },
+    { label: "もっと見る", icon: Ellipsis, url: "/app/more", isDisabled: true,  },
+  ];
+
   const pathname = usePathname();
 
   return (

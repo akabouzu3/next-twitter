@@ -1,4 +1,4 @@
-import Feed from "@/features/app/components/FeedItem";
+import Feed from "@/features/post/components/FeedItem";
 import { FeedItem } from "@/features/post/types/feed";
 
 
