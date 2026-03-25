@@ -27,8 +27,8 @@ model User {
   id        String  @id @default(cuid())
 
   // login / identification
-  name      String?
-  username  String?  @unique @default(cuid())
+  name      String
+  username  String  @unique @default(cuid())
   email     String  @unique
   emailVerified DateTime? 　　// ✅ Google認証に必要
   image         String?       // ✅ Google認証に必要

@@ -1,26 +1,9 @@
 import FeedItem from "@/features/app/components/FeedItem";
+import { TimelineItem } from "@/features/post/types/timeline";
 
-type Post = {
-  id: string;
-  author: {
-    name: string;
-    username: string;
-    avatarUrl: string;
-    verified?: boolean;
-  };
-  content: string;
-  createdAt: string;
-  stats: {
-    replies: number;
-    reposts: number;
-    likes: number;
-    views: string;
-  };
-  imageUrl?: string;
-};
 
 type Props = {
-  posts: Post[];
+  posts: TimelineItem[];
 };
 
 export default function FeedList({ posts }: Props) {

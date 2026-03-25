@@ -6,29 +6,12 @@ import FeedList from "@/features/app/components/FeedList";
 import MobileTopBar from "@/features/app/components/MobileTopBar";
 import MobileBottomNav from "@/features/app/components/MobileBottomNav";
 import { CurrentUser } from "@/lib/auth/current-user";
+import { TimelineItem } from "@/features/post/types/timeline";
 
-type Post = {
-  id: string;
-  author: {
-    name: string;
-    username: string;
-    avatarUrl: string;
-    verified?: boolean;
-  };
-  content: string;
-  createdAt: string;
-  stats: {
-    replies: number;
-    reposts: number;
-    likes: number;
-    views: string;
-  };
-  imageUrl?: string;
-};
 
 type Props = {
   currentUser: CurrentUser | null;
-  posts: Post[];
+  posts: TimelineItem[];
 };
 
 export default function AppLayout({ currentUser, posts }: Props) {

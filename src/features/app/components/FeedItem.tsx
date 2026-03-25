@@ -1,27 +1,9 @@
+import { TimelineItem } from "@/features/post/types/timeline";
 import { MessageCircle, Repeat2, Heart, BarChart2, Bookmark, Share2, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
 
-type Post = {
-  id: string;
-  author: {
-    name: string;
-    username: string;
-    avatarUrl: string;
-    verified?: boolean;
-  };
-  content: string;
-  createdAt: string;
-  stats: {
-    replies: number;
-    reposts: number;
-    likes: number;
-    views: string;
-  };
-  imageUrl?: string;
-};
-
 type Props = {
-  post: Post;
+  post: TimelineItem;
 };
 
 export default function FeedItem({ post }: Props) {
@@ -51,14 +33,14 @@ export default function FeedItem({ post }: Props) {
 
           {post.imageUrl && (
             <div className="mt-3 overflow-hidden rounded-2xl border border-white/10">
-              <Image
+                <Image
                 src={post.imageUrl}
-                alt=""
-                width={800}
-                height={450}
-                className="h-auto w-full object-cover"
-              />
-            </div>
+                  alt=""
+                  width={800}
+                  height={450}
+                  className="h-auto w-full object-cover"
+                />
+              </div>
           )}
 
           <div className="mt-3 grid grid-cols-6 text-white/50">
