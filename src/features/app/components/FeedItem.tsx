@@ -1,6 +1,7 @@
 import { FeedItem as FeedItemType } from "@/features/post/types/feed";
 import { MessageCircle, Repeat2, Heart, BarChart2, Bookmark, Share2, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
+import PostImages from "@/features/post/components/PostImages";
 
 type Props = {
   post: FeedItemType;
@@ -31,17 +32,7 @@ export default function FeedItem({ post }: Props) {
             {post.content}
           </p>
 
-          {post.images && (
-            <div className="mt-3 overflow-hidden rounded-2xl border border-white/10">
-                <Image
-                src={post.images[0].url}
-                  alt=""
-                  width={800}
-                  height={450}
-                  className="h-auto w-full object-cover"
-                />
-              </div>
-          )}
+          <PostImages post={post}/>
 
           <div className="mt-3 grid grid-cols-6 text-white/50">
             <button className="flex items-center gap-2"><MessageCircle className="size-4" />{10}</button>
