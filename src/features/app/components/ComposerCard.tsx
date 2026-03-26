@@ -4,7 +4,7 @@ import { ImageIcon, MapPin, ScanSearch, Smile, CalendarDays } from "lucide-react
 
 export default function ComposerCard() {
   return (
-    <section className="border-b border-white/10 px-4 py-3">
+    <section className="hidden md:block border-b border-white/10 px-4 py-3">
       <div className="flex gap-3">
         <div className="mt-1 size-10 shrink-0 rounded-full bg-zinc-700" />
         <div className="min-w-0 flex-1">

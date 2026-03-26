@@ -18,7 +18,7 @@ export default function AppTabs() {
   const [activeTab, setActiveTab] = useState<String>("フォロー中");
 
   return (
-    <div className="sticky top-14 z-20 border-b border-white/10 bg-black/80 backdrop-blur md:top-0">
+    <div className="sticky top-14 md:top-0 z-20 border-b border-white/10 bg-black/80 backdrop-blur ">
       <div className="grid grid-cols-2">
         {tabs.map((tab) => {
           const active = activeTab === tab.title;

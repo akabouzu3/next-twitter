@@ -30,7 +30,8 @@ model User {
   name      String
   username  String  @unique @default(cuid())
   email     String  @unique
-  emailVerified DateTime? 　　// ✅ Google認証に必要
+  bio       String?
+  emailVerified DateTime?    // ✅ Google認証に必要
   image         String?       // ✅ Google認証に必要
   backgroundImage String?    // ✅ 追加
   

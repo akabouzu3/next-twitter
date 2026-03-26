@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import AppLayout from "@/features/app/components/AppLayout";
+import App from "@/features/app/components/App";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { getTimeline } from "@/features/post/queries/get-timeline";
 
@@ -15,7 +15,7 @@ export default async function AppPage() {
 
   return (
     <>
-    <AppLayout currentUser={currentUser} posts={timeline}/>
+    <App currentUser={currentUser} posts={timeline}/>
     </>
   )
 }

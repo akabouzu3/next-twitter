@@ -1,6 +1,7 @@
 import { requireAuth } from "@/lib/auth/guards";
 import LeftSidebar from "@/features/app/components/LeftSidebar";
 import { getCurrentUser } from "@/lib/auth/current-user";
+import MobileBottomNav from "@/features/app/components/MobileBottomNav";
 
 export default async function AppLayout({
   children,
@@ -15,7 +16,6 @@ export default async function AppLayout({
   return (
     <>
     <div className="min-h-dvh bg-black text-white">
-      {/* <MobileTopBar /> */}
 
       <div className="flex">
         <aside className="hidden md:flex flex-auto md:basis-[88px] xl:basis-[275px] justify-end">
@@ -29,7 +29,7 @@ export default async function AppLayout({
         {children}
       </div>
 
-      {/* <MobileBottomNav /> */}
+      <MobileBottomNav />
     </div>
     </>
   );
