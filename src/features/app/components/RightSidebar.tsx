@@ -6,11 +6,14 @@ import type { RecommendedUser } from "@/features/user/types/user";
 import type { CurrentUser } from "@/lib/auth/current-user";
 
 type Props = {
-  currentUser: CurrentUser | null;
+  // currentUser: CurrentUser | null;
   recommendUsers: RecommendedUser[];
 };
 
-export default function RightSidebar({ currentUser, recommendUsers }: Props) {
+export default function RightSidebar({ 
+  // currentUser, 
+  recommendUsers
+ }: Props) {
   /**
    * =========================
    * refs
@@ -259,7 +262,7 @@ export default function RightSidebar({ currentUser, recommendUsers }: Props) {
 
             <div className="mt-4 space-y-4">
               {recommendUsers.map((user) => (
-                <RecommendedUserItem key={user.id} user={user} currentUser={currentUser} />
+                <RecommendedUserItem key={user.id} user={user} />
               ))}
             </div>
 

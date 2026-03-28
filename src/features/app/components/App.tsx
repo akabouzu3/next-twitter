@@ -21,13 +21,13 @@ export default function App({ currentUser, posts, recommendUsers }: Props) {
     <div className="min-w-0 flex-auto flex justify-start">
       <main className="min-w-0 flex-1 basis-[600px] border-r border-white/10 max-w-[600px]">
         <AppHeader />
-        <ComposerCard />
+        <ComposerCard currentUser={currentUser} />
         <FeedList posts={posts} />
       </main>
 
       <aside className="hidden shrink-0
         xl:block xl:w-[350px]">
-        <RightSidebar currentUser={currentUser} recommendUsers={recommendUsers}/>
+        <RightSidebar recommendUsers={recommendUsers}/>
       </aside>
       
     </div>

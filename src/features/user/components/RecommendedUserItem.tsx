@@ -1,14 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { RecommendedUser } from "@/features/user/types/user";
-import type { CurrentUser } from "@/lib/auth/current-user";
+// import type { CurrentUser } from "@/lib/auth/current-user";
 
 type Props = {
-  currentUser: CurrentUser | null;
+  // currentUser: CurrentUser | null;
   user: RecommendedUser
 };
 
-export function RecommendedUserItem({ currentUser, user }: Props) {
+export function RecommendedUserItem({ user }: Props) {
   return (
     <Link
       href={`app/users/${user.username}`}
