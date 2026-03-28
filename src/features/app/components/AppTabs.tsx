@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { title } from "process";
+import KLogo from "@/components/icons/KLogo";
 
 const tabs = [
   {
@@ -18,7 +18,26 @@ export default function AppTabs() {
   const [activeTab, setActiveTab] = useState<String>("フォロー中");
 
   return (
-    <div className="sticky top-14 md:top-0 z-20 border-b border-white/10 bg-black/80 backdrop-blur ">
+    <header className="sticky top-0 z-20 border-b border-white/10 bg-black/80 backdrop-blur ">
+      {/**
+       * モバイル限定：header
+       */}
+      <div className="md:hidden flex h-14 items-center justify-between px-4">
+        <div className="size-8 rounded-full bg-zinc-700" />
+        <div className="w-8 h-8">
+          <KLogo/>
+        </div>
+        <button 
+          className="rounded-full border border-white/30 px-4 py-2 font-bold cursor-pointer
+            disabled:pointer-events-none disabled:cursor-default disabled:opacity-50"
+          disabled={true}>
+          購入する
+        </button>
+      </div>
+
+      {/**
+       * 切り替えタブ
+       */}
       <div className="grid grid-cols-2">
         {tabs.map((tab) => {
           const active = activeTab === tab.title;
@@ -43,6 +62,6 @@ export default function AppTabs() {
           );
         })}
       </div>
-    </div>
+    </header>
   );
 }
