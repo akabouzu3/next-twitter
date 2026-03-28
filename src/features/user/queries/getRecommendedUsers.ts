@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma/prisma";
-import { auth } from "@/lib/auth/auth";
 import { getCurrentSessionUserId } from "@/lib/auth/session";
 import { RecommendedUser } from "@/features/user/types/user";
 

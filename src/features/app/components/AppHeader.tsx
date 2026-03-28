@@ -14,8 +14,8 @@ const tabs = [
     isDisabled: false,
   }] as const;
 
-export default function AppTabs() {
-  const [activeTab, setActiveTab] = useState<String>("フォロー中");
+export default function AppHeader() {
+  const [activeTab, setActiveTab] = useState<string>("フォロー中");
 
   return (
     <header className="sticky top-0 z-20 border-b border-white/10 bg-black/80 backdrop-blur ">

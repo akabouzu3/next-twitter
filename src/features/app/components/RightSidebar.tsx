@@ -1,15 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { RecommendedUserItem } from "@/features/user/components/RecommendedUserItem";
 import type { RecommendedUser } from "@/features/user/types/user";
+import type { CurrentUser } from "@/lib/auth/current-user";
 
 type Props = {
+  currentUser: CurrentUser | null;
   recommendUsers: RecommendedUser[];
 };
 
-export default function RightSidebar({ recommendUsers }: Props) {
+export default function RightSidebar({ currentUser, recommendUsers }: Props) {
   /**
    * =========================
    * refs
@@ -258,7 +259,7 @@ export default function RightSidebar({ recommendUsers }: Props) {
 
             <div className="mt-4 space-y-4">
               {recommendUsers.map((user) => (
-                <RecommendedUserItem key={user.id} user={user} />
+                <RecommendedUserItem key={user.id} user={user} currentUser={currentUser} />
               ))}
             </div>
 

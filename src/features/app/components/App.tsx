@@ -1,6 +1,6 @@
-import LeftSidebar from "@/features/app/components/LeftSidebar"
+
 import RightSidebar from "@/features/app/components/RightSidebar"
-import AppTabs from "@/features/app/components/AppTabs";
+import AppHeader from "@/features/app/components/AppHeader";
 import ComposerCard from "@/features/app/components/ComposerCard";
 import FeedList from "@/features/post/components/FeedList";
 import { CurrentUser } from "@/lib/auth/current-user";
@@ -20,14 +20,14 @@ export default function App({ currentUser, posts, recommendUsers }: Props) {
   return (
     <div className="min-w-0 flex-auto flex justify-start">
       <main className="min-w-0 flex-1 basis-[600px] border-r border-white/10 max-w-[600px]">
-        <AppTabs />
+        <AppHeader />
         <ComposerCard />
         <FeedList posts={posts} />
       </main>
 
       <aside className="hidden shrink-0
         xl:block xl:w-[350px]">
-        <RightSidebar recommendUsers={recommendUsers}/>
+        <RightSidebar currentUser={currentUser} recommendUsers={recommendUsers}/>
       </aside>
       
     </div>
