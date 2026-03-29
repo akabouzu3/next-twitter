@@ -1,4 +1,6 @@
 // src/features/post/server/getTimeline.ts
+import "server-only";
+
 import { prisma } from "@/lib/prisma/prisma";
 import { getCurrentSessionUserId } from "@/lib/auth/session";
 import type { FeedItem } from "@/features/post/types/feed";

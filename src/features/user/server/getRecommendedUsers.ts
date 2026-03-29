@@ -1,3 +1,5 @@
+import "server-only";
+
 import { prisma } from "@/lib/prisma/prisma";
 import { getCurrentSessionUserId } from "@/lib/auth/session";
 import { RecommendedUser } from "@/features/user/types/user";
