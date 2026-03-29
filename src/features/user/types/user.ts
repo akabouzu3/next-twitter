@@ -6,4 +6,5 @@ export type RecommendedUser = {
   image: string | null;
   bio: string | null;
   followerCount: number;
+  isFollowing: boolean;
 };
