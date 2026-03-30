@@ -2,7 +2,7 @@
 
 import { signIn } from "@/lib/auth/auth";
 import { AuthError } from "next-auth";
-import { loginSchema } from "../schemas/login";
+import { loginSchema } from "@/features/auth/schemas/login";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 export type LoginActionState = {

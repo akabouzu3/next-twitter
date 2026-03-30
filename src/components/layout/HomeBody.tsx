@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 // import { Apple } from "lucide-react"
 
 
-import { googleLoginAction } from '@/features/auth/actions/googleLogin'
+import { googleLoginAction } from '@/features/auth/actions/google-login-action'
 
 export default function HomeBody
 () {

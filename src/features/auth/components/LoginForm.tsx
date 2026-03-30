@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input";
 
 import { useSearchParams } from "next/navigation";
 import { useActionState } from "react";
-import { loginAction, LoginActionState } from "@/features/auth/actions/login";
-import { googleLoginAction } from "../actions/googleLogin";
+import { loginAction, LoginActionState } from "@/features/auth/actions/login-action";
+import { googleLoginAction } from "@/features/auth/actions/google-login-action";
 
 const initialState: LoginActionState = { 
 	success: true
