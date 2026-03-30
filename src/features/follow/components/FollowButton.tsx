@@ -1,21 +1,16 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { followUserAction } from "@/features/follow/actions/followUser";
-import { unfollowUserAction } from "@/features/follow/actions/unfollowUser";
+import { followUserAction } from "@/features/follow/actions/follow-user-action";
+import { unfollowUserAction } from "@/features/follow/actions/unfollow-user-action";
 
 type Props = {
-  user: {
-    id: string;
-    name: string;
-    username: string;
-    image: string | null;
-    isFollowing: boolean;
-  };
+  userId: string;
+  isFollowing: boolean;
 };
 
-export function FollowButton({ user }: Props) {
-  const [isFollowing, setIsFollowing] = useState(user.isFollowing);
+export default function FollowButton({ userId, isFollowing: initialIsFollowing }: Props) {
+  const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
   const [isPending, startTransition] = useTransition();
 
   const handleClick = (e: React.MouseEvent) => {
@@ -29,9 +24,9 @@ export function FollowButton({ user }: Props) {
     startTransition(async () => {
       try {
         if (next) {
-          await followUserAction(user.id);
+          await followUserAction(userId);
         } else {
-          await unfollowUserAction(user.id);
+          await unfollowUserAction(userId);
         }
       } catch (e) {
         // エラー時ロールバック

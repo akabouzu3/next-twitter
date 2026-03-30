@@ -1,18 +1,17 @@
-"use server";
+import "server-only";
 
 import { prisma } from "@/lib/prisma/prisma";
-import { getCurrentSessionUserId } from "@/lib/auth/session";
-// import { revalidatePath } from "next/cache";
 
-export async function followUserAction(targetUserId: string) {
-  const currentUserId = await getCurrentSessionUserId();
+type FollowUserInput = {
+  currentUserId: string;
+  targetUserId: string;
+};
 
-  // 認証チェック
-  if (!currentUserId) {
-    throw new Error("ログインが必要です。");
-  }
+export async function followUser({
+  currentUserId,
+  targetUserId,
+}: FollowUserInput): Promise<void> {
 
-  // 自分自身はフォロー不可
   if (currentUserId === targetUserId) {
     throw new Error("自分自身はフォローできません。");
   }
@@ -35,8 +34,4 @@ export async function followUserAction(targetUserId: string) {
       followingId: targetUserId,
     },
   });
-
-  // // 関連画面の再検証
-  // revalidatePath("/app");
-  // revalidatePath("/app/connect_people");
 }

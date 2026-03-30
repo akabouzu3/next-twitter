@@ -1,7 +1,7 @@
 "use server";
 
-import { prisma } from "@/lib/prisma/prisma";
 import { getCurrentSessionUserId } from "@/lib/auth/session";
+import { unfollowUser } from "@/features/follow/server/unfollow-user";
 // import { revalidatePath } from "next/cache";
 
 export async function unfollowUserAction(targetUserId: string) {
@@ -11,15 +11,9 @@ export async function unfollowUserAction(targetUserId: string) {
     throw new Error("ログインが必要です。");
   }
 
-  if (currentUserId === targetUserId) {
-    throw new Error("自分自身はアンフォローできません。");
-  }
-
-  await prisma.follow.deleteMany({
-    where: {
-      followerId: currentUserId,
-      followingId: targetUserId,
-    },
+  unfollowUser({
+    currentUserId, 
+    targetUserId
   });
 
   // revalidatePath("/app");

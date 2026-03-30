@@ -61,6 +61,7 @@ export async function getRecommendedUsers(
         select: {
           id: true,
         },
+        take: 1, // ← 最適化（重要）
       },
     },
     orderBy: [
@@ -73,10 +74,10 @@ export async function getRecommendedUsers(
         username: "asc",
       },
     ],
-    take: limit,
+    take: limit*3, // 多めにとって後で並び変え
   });
 
-  return users.map<RecommendedUser>(user => {
+  const mapped = users.map<RecommendedUser>(user => {
     return {
       id: user.id,
       name: user.name,
@@ -87,4 +88,21 @@ export async function getRecommendedUsers(
       isFollowing: user.followers.length > 0,
     }
   });
+
+  mapped.sort((a, b) => {
+    // ① 未フォロー優先
+    if (a.isFollowing !== b.isFollowing) {
+      return Number(a.isFollowing) - Number(b.isFollowing);
+    }
+
+    // ② 人気順
+    if (a.followerCount !== b.followerCount) {
+      return b.followerCount - a.followerCount;
+    }
+
+    // ③ 安定ソート
+    return a.username.localeCompare(b.username);
+  });
+
+  return mapped.slice(0, limit);
 }

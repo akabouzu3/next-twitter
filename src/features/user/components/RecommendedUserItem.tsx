@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { RecommendedUser } from "@/features/user/types/user";
+import FollowButton from "@/features/follow/components/FollowButton";
 // import type { CurrentUser } from "@/lib/auth/current-user";
 
 type Props = {
@@ -41,7 +42,7 @@ export function RecommendedUserItem({ user }: Props) {
       </div>
 
       {/* フォローボタン */}
-      <button
+      {/* <button
         type="button"
         onClick={(e) => {
           e.preventDefault(); // ← Link遷移を止める（重要）
@@ -54,7 +55,19 @@ export function RecommendedUserItem({ user }: Props) {
         "
       >
         フォロー
-      </button>
+      </button> */}
+      <div
+        onClick={(e) => {
+          // Link への遷移を止める
+          e.preventDefault();
+          e.stopPropagation();
+        }}
+      >
+        <FollowButton
+          userId={user.id}
+          isFollowing={user.isFollowing}
+        />
+      </div>
     </Link>
   );
 }
