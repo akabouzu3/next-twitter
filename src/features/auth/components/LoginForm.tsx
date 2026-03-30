@@ -67,8 +67,8 @@ export default function LoginForm() {
             className="h-14 rounded-md bg-black text-white placeholder:text-white/40 border-white/20 focus-visible:ring-0 focus-visible:ring-offset-0"
             required
           />
-          { state?.errors?.email && (
-            <p className="text-red-500 text-sm mt-1">{state?.errors?.email.join(',')}</p>
+          { state?.fieldErrors?.email && (
+            <p className="text-red-500 text-sm mt-1">{state?.fieldErrors?.email.join(',')}</p>
           )}
         </div>
         <div className="">
@@ -82,8 +82,8 @@ export default function LoginForm() {
               focus-visible:ring-0 focus-visible:ring-offset-0 "
             required
           />
-          { state?.errors?.password && (
-            <p className="text-red-500 text-sm mt-1">{state?.errors?.password.join(',')}</p>
+          { state?.fieldErrors?.password && (
+            <p className="text-red-500 text-sm mt-1">{state?.fieldErrors?.password.join(',')}</p>
           )}
         </div>
 

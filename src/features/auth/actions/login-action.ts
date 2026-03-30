@@ -8,7 +8,7 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 export type LoginActionState = {
   success: boolean;
   values?: { email?: string };
-  errors?: { email?: string[]; password?: string[] };
+  fieldErrors?: { email?: string[]; password?: string[] };
   serverError?: string;
 };
 
@@ -33,7 +33,7 @@ export async function loginAction(
     return {
       success: false,
       values: { email }, // ✅ email保持
-      errors: errors.fieldErrors,
+      fieldErrors: errors.fieldErrors,
     };
   }
 

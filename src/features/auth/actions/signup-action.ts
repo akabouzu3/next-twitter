@@ -11,7 +11,7 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 export type SignupActionState = {
   success: boolean;
   values?: { name?: string; email?: string };
-  errors?: { name?: string[]; email?: string[]; password?: string[] };
+  fieldErrors?: { name?: string[]; email?: string[]; password?: string[] };
   serverError?: string;
 };
 
@@ -37,7 +37,7 @@ export async function signupAction(
     return {
       success: false,
       values: { name, email }, // ✅ 入力保持（passwordは返さない）
-      errors: errors.fieldErrors,
+      fieldErrors: errors.fieldErrors,
     };
   }
 
