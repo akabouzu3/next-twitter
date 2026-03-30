@@ -1,7 +1,7 @@
 
 import RightSidebar from "@/features/app/components/RightSidebar"
 import AppHeader from "@/features/app/components/AppHeader";
-import ComposerCard from "@/features/app/components/ComposerCard";
+import PostComposer from "@/features/post/components/PostCompose";
 import FeedList from "@/features/post/components/FeedList";
 import { CurrentUser } from "@/lib/auth/current-user";
 import { FeedItem } from "@/features/post/types/feed";
@@ -21,7 +21,7 @@ export default function App({ currentUser, posts, recommendUsers }: Props) {
     <div className="min-w-0 flex-auto flex justify-start">
       <main className="min-w-0 flex-1 basis-[600px] border-r border-white/10 max-w-[600px]">
         <AppHeader />
-        <ComposerCard currentUser={currentUser} />
+        <PostComposer currentUser={currentUser} />
         <FeedList posts={posts} />
       </main>
 
