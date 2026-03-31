@@ -1,4 +1,4 @@
-import { FeedItem as FeedItemType } from "@/features/post/types/feed";
+import { FeedItem as FeedItemType } from "@/features/post/types/post.types";
 import { 
   MessageCircle, Repeat2, Heart, BarChart2, Bookmark, Share2, 
   // CheckCircle2

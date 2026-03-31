@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import type { RecommendedUser } from "@/features/user/types/user";
+import type { RecommendedUser } from "@/features/user/types/user.types";
 import FollowButton from "@/features/follow/components/FollowButton";
 // import type { CurrentUser } from "@/lib/auth/current-user";
 

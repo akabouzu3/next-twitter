@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { RecommendedUserItem } from "@/features/user/components/RecommendedUserItem";
-import type { RecommendedUser } from "@/features/user/types/user";
+import type { RecommendedUser } from "@/features/user/types/user.types";
 import type { CurrentUser } from "@/lib/auth/current-user";
 
 type Props = {

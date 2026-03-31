@@ -2,15 +2,13 @@ import "server-only";
 
 import { prisma } from "@/lib/prisma/prisma";
 import { getCurrentSessionUserId } from "@/lib/auth/session";
-import { RecommendedUser } from "@/features/user/types/user";
-
+import { RecommendedUser } from "@/features/user/types/user.types";
 
 const RECOMMEND_LIMIT = 10;
 
 export async function getRecommendedUsers(
-  limit: number = RECOMMEND_LIMIT
+  limit: number = RECOMMEND_LIMIT,
 ): Promise<RecommendedUser[]> {
-
   const currentUserId = await getCurrentSessionUserId();
 
   if (!currentUserId) {
@@ -74,10 +72,10 @@ export async function getRecommendedUsers(
         username: "asc",
       },
     ],
-    take: limit*3, // 多めにとって後で並び変え
+    take: limit * 3, // 多めにとって後で並び変え
   });
 
-  const mapped = users.map<RecommendedUser>(user => {
+  const mapped = users.map<RecommendedUser>((user) => {
     return {
       id: user.id,
       name: user.name,
@@ -86,7 +84,7 @@ export async function getRecommendedUsers(
       bio: user.bio,
       followerCount: user._count.followers,
       isFollowing: user.followers.length > 0,
-    }
+    };
   });
 
   mapped.sort((a, b) => {

@@ -1,5 +1,5 @@
 import Feed from "@/features/post/components/FeedItem";
-import { FeedItem } from "@/features/post/types/feed";
+import { FeedItem } from "@/features/post/types/post.types";
 
 
 type Props = {

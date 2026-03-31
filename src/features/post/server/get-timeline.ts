@@ -3,7 +3,7 @@ import "server-only";
 
 import { prisma } from "@/lib/prisma/prisma";
 import { getCurrentSessionUserId } from "@/lib/auth/session";
-import type { FeedItem } from "@/features/post/types/feed";
+import type { FeedItem } from "@/features/post/types/post.types";
 
 export async function getTimeline(): Promise<FeedItem[]> {
   const userId = await getCurrentSessionUserId();

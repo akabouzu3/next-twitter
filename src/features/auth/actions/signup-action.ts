@@ -5,7 +5,7 @@ import { AuthError } from "next-auth";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma/prisma";
 import bcrypt from "bcryptjs";
-import { signupSchema } from "@/features/auth/schemas/signup";
+import { signupSchema } from "@/features/auth/schemas/signup.schema";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 export type SignupActionState = {

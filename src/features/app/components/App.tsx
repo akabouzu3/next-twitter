@@ -4,8 +4,8 @@ import AppHeader from "@/features/app/components/AppHeader";
 import PostComposer from "@/features/post/components/PostCompose";
 import FeedList from "@/features/post/components/FeedList";
 import { CurrentUser } from "@/lib/auth/current-user";
-import { FeedItem } from "@/features/post/types/feed";
-import { RecommendedUser } from "@/features/user/types/user";
+import { FeedItem } from "@/features/post/types/post.types";
+import { RecommendedUser } from "@/features/user/types/user.types";
 
 
 type Props = {

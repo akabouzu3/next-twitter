@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { FeedItem } from "@/features/post/types/feed";
+import { FeedItem } from "@/features/post/types/post.types";
 
 type Props = {
   post: FeedItem;
