@@ -10,7 +10,8 @@ import { signupAction, SignupActionState} from "@/features/auth/actions/signup-a
 import { googleLoginAction } from "@/features/auth/actions/google-login-action";
 
 const initialState: SignupActionState = { 
-	success: true
+	success: true,
+  message: "",
 };
 
 export default function SignupForm() {
@@ -55,7 +56,9 @@ export default function SignupForm() {
 
       {/* input */}
       <form action={formAction} className="flex flex-col gap-4">
-        {state?.serverError && <p className="text-red-500">{state.serverError}</p>}
+        {state?.success === false && state?.message ? (
+          <p className="text-red-500">{state.message}</p>
+        ) : null}
         <div className="">
           <label htmlFor="name">名前</label>
           <Input

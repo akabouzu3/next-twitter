@@ -7,9 +7,9 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 export type LoginActionState = {
   success: boolean;
+  message: string;
   values?: { email?: string };
   fieldErrors?: { email?: string[]; password?: string[] };
-  serverError?: string;
 };
 
 function safeRedirectTo(raw: unknown): string {
@@ -32,6 +32,7 @@ export async function loginAction(
     const errors = parsed.error.flatten();
     return {
       success: false,
+      message: "入力内容を確認してください。",
       values: { email }, // ✅ email保持
       fieldErrors: errors.fieldErrors,
     };
@@ -45,7 +46,7 @@ export async function loginAction(
     });
 
     // signIn が redirect を投げる構成ならここには来ない場合もある
-    return { success: true };
+    return { success: true, message: "ログインしました。" };
   } catch (err) {
     // ✅ これが超重要：redirectは正常系なので握らない
     if (isRedirectError(err)) throw err;
@@ -54,22 +55,22 @@ export async function loginAction(
       if (err.type === "CredentialsSignin") {
         return {
           success: false,
+          message: "メールアドレスまたはパスワードが違います",
           values: { email },
-          serverError: "メールアドレスまたはパスワードが違います",
         };
       }
       return {
         success: false,
+        message: "ログインに失敗しました",
         values: { email },
-        serverError: "ログインに失敗しました",
       };
     }
 
     console.error(err);
     return {
       success: false,
+      message: "サーバーエラーが発生しました",
       values: { email },
-      serverError: "サーバーエラーが発生しました",
     };
   }
 }

@@ -10,9 +10,9 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 export type SignupActionState = {
   success: boolean;
+  message: string;
   values?: { name?: string; email?: string };
   fieldErrors?: { name?: string[]; email?: string[]; password?: string[] };
-  serverError?: string;
 };
 
 function safeRedirectTo(raw: unknown): string {
@@ -36,6 +36,7 @@ export async function signupAction(
     const errors = parsed.error.flatten();
     return {
       success: false,
+      message: "入力内容を確認してください。",
       values: { name, email }, // ✅ 入力保持（passwordは返さない）
       fieldErrors: errors.fieldErrors,
     };
@@ -56,14 +57,14 @@ export async function signupAction(
     ) {
       return {
         success: false,
+        message: "既に登録済みです",
         values: { name, email }, // ✅ 入力保持
-        serverError: "既に登録済みです",
       };
     }
     return {
       success: false,
+      message: "サーバーエラーが発生しました",
       values: { name, email }, // ✅ 入力保持
-      serverError: "サーバーエラーが発生しました",
     };
   }
 
@@ -73,14 +74,14 @@ export async function signupAction(
       password,
       redirectTo: safeRedirectTo(formData.get("redirectTo")),
     });
-    return { success: true };
+    return { success: true, message: "登録が完了しました。" };
   } catch (e) {
     if (isRedirectError(e)) throw e; // ✅ 成功リダイレクトは正常系
     if (e instanceof AuthError) {
       return {
         success: false,
+        message: "自動ログインに失敗しました。ログインしてください。",
         values: { name, email }, // ✅ 失敗しても保持
-        serverError: "自動ログインに失敗しました。ログインしてください。",
       };
     }
     throw e;

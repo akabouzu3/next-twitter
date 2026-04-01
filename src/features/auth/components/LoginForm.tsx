@@ -10,7 +10,8 @@ import { loginAction, LoginActionState } from "@/features/auth/actions/login-act
 import { googleLoginAction } from "@/features/auth/actions/google-login-action";
 
 const initialState: LoginActionState = { 
-	success: true
+	success: true,
+  message: "",
 };
 
 export default function LoginForm() {
@@ -55,7 +56,10 @@ export default function LoginForm() {
 
       {/* input */}
       <form action={formAction} className="flex flex-col gap-4">
-        {state?.serverError && <p className="text-red-500">{state.serverError}</p>}
+        {state?.success === false && state?.message ? (
+          <p className="text-red-500">{state.message}</p>
+        ) : null}
+        
         <div className="">
           <label htmlFor="email">メールアドレス</label>
           <Input
