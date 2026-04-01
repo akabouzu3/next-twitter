@@ -1,54 +1,58 @@
 "use server";
 
-import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
 import { getCurrentSessionUserId } from "@/lib/auth/session";
 import { createPost } from "@/features/post/server/create-post";
+import { createPostSchema } from "@/features/post/schemas/create-post.schema";
 
 export type CreatePostActionState = {
   success: boolean;
-  message: string;
+  message: string;     // 成功 or 失敗のメッセージ
+  values?: {
+    content?: string;
+  };
   fieldErrors?: {
     content?: string[];
   };
 };
 
-const createPostSchema = z.object({
-  content: z
-    .string()
-    .trim()
-    .min(1, "投稿内容を入力してください。")
-    .max(280, "投稿は280文字以内で入力してください。"),
-});
-
 export async function createPostAction(
   _prevState: CreatePostActionState,
   formData: FormData
 ): Promise<CreatePostActionState> {
+
   const currentUserId = await getCurrentSessionUserId();
 
+  // 認可チェック
   if (!currentUserId) {
     return {
       success: false,
       message: "ログインが必要です。",
     };
   }
+  
+  // 生のデータを取得
+  let content = String(formData.get("content") ?? "");
 
+  // バリデーション
   const validatedFields = createPostSchema.safeParse({
-    content: formData.get("content"),
+    content,
   });
 
   if (!validatedFields.success) {
     return {
       success: false,
       message: "入力内容を確認してください。",
+      values: { content },
       fieldErrors: validatedFields.error.flatten().fieldErrors,
     };
   }
 
-  const { content } = validatedFields.data;
+  // 生のデータをバリデーション済みの値に変換
+  ({ content } = validatedFields.data);
 
+  // 投稿作成
   await createPost({
     userId: currentUserId,
     content,
