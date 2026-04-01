@@ -27,7 +27,7 @@ const initialState: CreatePostActionState = {
 };
 
 export default function PostComposer({ currentUser }: Props) {
-  const [state, formAction, pending] = useActionState(
+  const [state, formAction, isPending] = useActionState(
     createPostAction,
     initialState
   );
@@ -67,7 +67,7 @@ export default function PostComposer({ currentUser }: Props) {
               name="content"
               placeholder="いまどうしてる？"
               maxLength={280}
-              disabled={pending}
+              disabled={isPending}
               className="min-h-28 w-full resize-none bg-transparent text-3xl text-white placeholder:text-white/35 outline-none disabled:opacity-70"
             />
 
@@ -87,29 +87,29 @@ export default function PostComposer({ currentUser }: Props) {
 
             <div className="mt-4 flex items-center justify-between gap-4">
               <div className="flex flex-wrap items-center gap-4 text-sky-500">
-                <button type="button" className="cursor-pointer" disabled={pending}>
+                <button type="button" className="cursor-pointer" disabled={isPending}>
                   <ImageIcon className="size-5" />
                 </button>
-                <button type="button" className="cursor-pointer" disabled={pending}>
+                <button type="button" className="cursor-pointer" disabled={isPending}>
                   <ScanSearch className="size-5" />
                 </button>
-                <button type="button" className="cursor-pointer" disabled={pending}>
+                <button type="button" className="cursor-pointer" disabled={isPending}>
                   <Smile className="size-5" />
                 </button>
-                <button type="button" className="cursor-pointer" disabled={pending}>
+                <button type="button" className="cursor-pointer" disabled={isPending}>
                   <CalendarDays className="size-5" />
                 </button>
-                <button type="button" className="cursor-pointer" disabled={pending}>
+                <button type="button" className="cursor-pointer" disabled={isPending}>
                   <MapPin className="size-5" />
                 </button>
               </div>
 
               <button
                 type="submit"
-                disabled={pending}
-                className="rounded-full bg-white px-6 py-2 font-bold text-black disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={isPending}
+                className="rounded-full bg-white px-6 py-2 font-bold text-black cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {pending ? "投稿中..." : "ポストする"}
+                {isPending ? "投稿中..." : "ポストする"}
               </button>
             </div>
           </div>
