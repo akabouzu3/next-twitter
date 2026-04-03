@@ -63,9 +63,6 @@ export async function createPostAction(
       success: false,
       message: "本文または画像を追加してください。",
       values: { content },
-      fieldErrors: {
-        content: ["本文または画像を追加してください。"],
-      },
     };
   }
 
