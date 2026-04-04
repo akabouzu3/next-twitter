@@ -36,7 +36,7 @@ export async function createPostAction(
   // 投稿内容を取得
   const rawContent = String(formData.get("content") ?? "");
   const rawFiles = formData.getAll("images");
-  const images = rawFiles.filter((file): file is File => {
+  const imageFiles = rawFiles.filter((file): file is File => {
     return file instanceof File && file.size > 0;
   });
 
@@ -58,7 +58,7 @@ export async function createPostAction(
   const { content } = validatedFields.data;
 
   // 投稿内容が空で画像もない場合はエラーを返す
-  if (!content.trim() && images.length === 0) {
+  if (!content.trim() && imageFiles.length === 0) {
     return {
       success: false,
       message: "本文または画像を追加してください。",
@@ -67,7 +67,7 @@ export async function createPostAction(
   }
 
   // 画像バリデーションを行う
-  const validationResult = validatePostImages(images);
+  const validationResult = validatePostImages(imageFiles);
   // 画像バリデーションエラーがあればエラーを返す
   if (!validationResult.success) {
     return {
@@ -84,7 +84,7 @@ export async function createPostAction(
   await createPost({
     userId: currentUserId,
     content,
-    images,
+    images: imageFiles,
   });
 
   // パスを再検証
