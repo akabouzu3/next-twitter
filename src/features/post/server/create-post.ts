@@ -3,9 +3,9 @@ import "server-only";
 /**
  * Node.js標準モジュール
  */
-import { randomUUID } from "crypto"; // 一意なファイル名を生成する
-import { mkdir, writeFile } from "fs/promises"; // ディレクトリ作成・ファイル書き込み
-import path from "path"; // パス操作
+import { randomUUID } from "crypto"; // 一意なファイル名を生成する（暗号、セキュリティ系のユーティリティ）
+import { mkdir, writeFile } from "fs/promises"; // ディレクトリ作成・ファイル書き込み（ファイル操作）
+import path from "path"; // パス操作を安全に行う
 
 import { prisma } from "@/lib/prisma/prisma";
 
@@ -69,8 +69,8 @@ export async function createPost({
        *
        * writeFile は Buffer を要求するため変換が必要
        */
-      const bytes = await image.arrayBuffer();
-      const buffer = Buffer.from(bytes);
+      const arrayBuffer = await image.arrayBuffer();  // 画像の実データ（JS標準のバイナリデータ）
+      const buffer = Buffer.from(arrayBuffer);  // Node専用のバイナリデータに変換（fsはBufferを扱うため）
 
       /**
        * 拡張子を取得
@@ -134,9 +134,9 @@ export async function createPost({
      */
     select: {
       id: true,
+      userId: true,
       content: true,
       createdAt: true,
-      userId: true,
       images: {
         /**
          * 画像は表示順で並び替え
