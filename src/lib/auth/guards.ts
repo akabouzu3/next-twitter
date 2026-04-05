@@ -26,13 +26,13 @@ export async function requireCurrentUser() {
 }
 
 export async function requireAdminUser() {
-  const user = await requireCurrentUser();
+  const currentUser = await requireCurrentUser();
 
-  if (!isAdmin(user)) {
+  if (!isAdmin(currentUser)) {
     throw new PermissionError("管理者権限が必要です。");
   }
 
-  return user;
+  return currentUser;
 }
 
 export function assertCanEditPost(

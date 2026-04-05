@@ -1,4 +1,4 @@
-import { requireAuth } from "@/lib/auth/guards";
+import { requireAuth } from "@/lib/auth/page-guards";
 import LeftSidebar from "@/features/app/components/LeftSidebar";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import MobileBottomNav from "@/features/app/components/MobileBottomNav";

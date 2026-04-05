@@ -5,7 +5,7 @@ import { getCurrentSessionUser } from "@/lib/auth/session";
 import { AuthError, PermissionError } from "@/lib/auth/errors";
 import { requireAdminUser, requireSessionUser } from "@/lib/auth/guards";
 
-export async function requirePageAuth() {
+export async function requireAuth() {
   try {
     return await requireSessionUser();
   } catch {
@@ -13,7 +13,7 @@ export async function requirePageAuth() {
   }
 }
 
-export async function requireGuestPage() {
+export async function requireGuest() {
   const sessionUser = await getCurrentSessionUser();
 
   if (sessionUser) {
@@ -21,7 +21,7 @@ export async function requireGuestPage() {
   }
 }
 
-export async function requireAdminPage() {
+export async function requireAdmin() {
   try {
     return await requireAdminUser();
   } catch (error) {

@@ -1,4 +1,4 @@
-import { requireAdmin } from "@/lib/auth/guards";
+import { requireAdmin } from "@/lib/auth/page-guards";
 
 export default async function PublicLayout({
   children,
