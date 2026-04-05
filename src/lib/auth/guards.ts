@@ -1,52 +1,54 @@
-import "server-only"
-import { redirect } from "next/navigation"
-import { getCurrentSessionUser } from "@/lib/auth/session"
-import { getCurrentUser } from "@/lib/auth/current-user"
+import "server-only";
 
-/**
- * ログイン必須
- * - 未ログインなら /login へ
- * - ログイン済みなら session user を返す
- */
-export async function requireAuth() {
-  const sessionUser = await getCurrentSessionUser()
+import { getCurrentSessionUser } from "@/lib/auth/session";
+import { getCurrentUser } from "@/lib/auth/current-user";
+import { AuthError, PermissionError } from "@/lib/auth/errors";
+import { canDeletePost, canEditPost, isAdmin } from "@/lib/auth/permissions";
+
+export async function requireSessionUser() {
+  const sessionUser = await getCurrentSessionUser();
 
   if (!sessionUser) {
-    redirect("/login")
+    throw new AuthError("ログインが必要です。");
   }
 
-  return sessionUser
+  return sessionUser;
 }
 
-/**
- * ゲスト専用
- * - ログイン済みなら /app へ
- * - 未ログインならそのまま続行
- */
-export async function requireGuest() {
-  const sessionUser = await getCurrentSessionUser()
+export async function requireCurrentUser() {
+  const currentUser = await getCurrentUser();
 
-  if (sessionUser) {
-    redirect("/app")
+  if (!currentUser) {
+    throw new AuthError("ログインが必要です。");
+  }
+
+  return currentUser;
+}
+
+export async function requireAdminUser() {
+  const user = await requireCurrentUser();
+
+  if (!isAdmin(user)) {
+    throw new PermissionError("管理者権限が必要です。");
+  }
+
+  return user;
+}
+
+export function assertCanEditPost(
+  user: { id: string; role: "USER" | "ADMIN" },
+  post: { userId: string }
+) {
+  if (!canEditPost(user, post)) {
+    throw new PermissionError("この投稿を編集する権限がありません。");
   }
 }
 
-/**
- * 管理者専用
- * - 未ログインなら /login
- * - role !== ADMIN なら /403
- * - 管理者なら DB user を返す
- */
-export async function requireAdmin() {
-  const user = await getCurrentUser()
-
-  if (!user) {
-    redirect("/login")
+export function assertCanDeletePost(
+  user: { id: string; role: "USER" | "ADMIN" },
+  post: { userId: string }
+) {
+  if (!canDeletePost(user, post)) {
+    throw new PermissionError("この投稿を削除する権限がありません。");
   }
-
-  if (user.role !== "ADMIN") {
-    redirect("/403")
-  }
-
-  return user
 }

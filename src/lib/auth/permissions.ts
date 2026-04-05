@@ -1,32 +1,28 @@
-// src/lib/auth/permissions.ts
-import "server-only"
-import { redirect } from "next/navigation"
-import { getCurrentUser } from "@/lib/auth/current-user"
+import "server-only";
 
-/**
- * ユーザー本人 or ADMIN のみ許可
- *
- * 用途
- * - プロフィール編集
- * - ユーザー削除
- *
- * 例
- * /users/[id]/edit
- */
-export async function requireSelfOrAdmin(targetUserId: string) {
+type Role = "USER" | "ADMIN";
 
-  const user = await getCurrentUser()
+type UserLike = {
+  id: string;
+  role: Role;
+};
 
-  if (!user) {
-    redirect("/login")
-  }
+type PostLike = {
+  userId: string;
+};
 
-  const isSelf = user.id === targetUserId
-  const isAdmin = user.role === "ADMIN"
+export function isAdmin(user: UserLike): boolean {
+  return user.role === "ADMIN";
+}
 
-  if (!isSelf && !isAdmin) {
-    redirect("/403")
-  }
+export function isPostOwner(user: UserLike, post: PostLike): boolean {
+  return user.id === post.userId;
+}
 
-  return user
+export function canEditPost(user: UserLike, post: PostLike): boolean {
+  return isAdmin(user) || isPostOwner(user, post);
+}
+
+export function canDeletePost(user: UserLike, post: PostLike): boolean {
+  return isAdmin(user) || isPostOwner(user, post);
 }
