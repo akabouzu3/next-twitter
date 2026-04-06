@@ -1,4 +1,3 @@
-// src/features/auth/components/LoginModal.tsx
 "use client";
 
 import { LayerPortal } from "@/components/layer/LayerPortal";

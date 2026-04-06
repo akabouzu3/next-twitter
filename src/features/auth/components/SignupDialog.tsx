@@ -2,10 +2,10 @@
 "use client";
 
 import { LayerPortal } from "@/components/layer/LayerPortal";
-import LoginForm from "@/features/auth/components/LoginForm";
+import SignupForm from "@/features/auth/components/SignupForm";
 import KLogo from "@/components/icons/KLogo";
 
-export function LoginModal({
+export default function SignupDialog({
   open,
   onClose,
 }: {
@@ -30,16 +30,16 @@ export function LoginModal({
                   className="absolute top-4 left-4 w-8 h-8 rounded-full cursor-pointer hover:bg-white/20">✕</button>
               )}
               <div className="w-12 h-12">
-                <KLogo/>
+                <KLogo />
               </div>
             </div>
 
             {/* body: 短い時は中央、長い時はスクロール */}
             <div className="flex-1 min-h-full flex items-center justify-center px-8 py-30">
               <div className="w-full max-w-sm">
-                <div className="mb-4 text-3xl font-bold">Kにログイン</div>
+                <div className="mb-4 text-3xl font-bold">アカウントを作成</div>
 
-                <LoginForm />
+                <SignupForm />
 
               </div>
             </div>
@@ -59,17 +59,17 @@ export function LoginModal({
                   onClick={onClose}
                   className="absolute top-4 left-4 w-8 h-8 rounded-full cursor-pointer hover:bg-white/20">✕</button>
               )}
-              <div className="w-12 h-12">
-                <KLogo/>
+                            <div className="w-12 h-12">
+                <KLogo />
               </div>
             </div>
 
             {/* body */}
             <div className="flex-1 min-h-0">
               <div className="max-w-sm mx-auto p-4">
-                <div className="mb-4 text-3xl font-bold">Kにログイン</div>
+                <div className="mb-4 text-3xl font-bold">アカウントを作成</div>
                 {/* 長い内容 */}
-                <LoginForm/>
+                <SignupForm/>
               </div>
             </div>
           </div>
