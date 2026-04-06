@@ -1,7 +1,7 @@
 
 import RightSidebar from "@/features/app/components/RightSidebar"
 import AppHeader from "@/features/app/components/AppHeader";
-import PostComposer from "@/features/post/components/PostCompose";
+import PostComposer from "@/features/post/components/PostComposer";
 import FeedList from "@/features/post/components/FeedList";
 import { CurrentUser } from "@/lib/auth/current-user";
 import { FeedItem } from "@/features/post/types/post.types";
