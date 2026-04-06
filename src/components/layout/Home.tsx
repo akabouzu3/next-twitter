@@ -22,7 +22,7 @@ export default function Home() {
         </div>
         <div>
           <span className="text-2xl font-bold tracking-wide">
-            今すぐ参加しましょう。
+            今すぐ参加しましょう。_
             </span>
         </div>
         <div className="w-full max-w-sm py-6">

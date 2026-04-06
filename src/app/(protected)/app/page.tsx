@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import App from "@/features/app/components/App";
+import App from "@/app/(protected)/app/_components/App";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { getTimeline } from "@/features/post/server/get-timeline";
 import { getRecommendedUsers } from "@/features/user/server/get-recommended-users";

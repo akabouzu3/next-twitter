@@ -1,6 +1,6 @@
 
-import RightSidebar from "@/features/app/components/RightSidebar"
-import AppHeader from "@/features/app/components/AppHeader";
+import RightSidebar from "@/components/layout/RightSidebar"
+import AppHeader from "@/app/(protected)/app/_components/AppHeader";
 import PostComposer from "@/features/post/components/PostComposer";
 import FeedList from "@/features/post/components/FeedList";
 import { CurrentUser } from "@/lib/auth/current-user";

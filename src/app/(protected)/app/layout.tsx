@@ -1,7 +1,7 @@
 import { requireAuth } from "@/lib/auth/page-guards";
-import LeftSidebar from "@/features/app/components/LeftSidebar";
+import LeftSidebar from "@/components/layout/LeftSidebar";
 import { getCurrentUser } from "@/lib/auth/current-user";
-import MobileBottomNav from "@/features/app/components/MobileBottomNav";
+import MobileBottomNav from "@/components/layout/MobileBottomNav";
 
 export default async function AppLayout({
   children,
