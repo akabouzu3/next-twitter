@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { SidebarAccountMenu } from "./SidebarAccountMenu";
 import { CurrentUser } from "@/lib/auth/current-user";
 import KLogo from "@/components/icons/KLogo";
+import { PostDialogTrigger } from "@/features/post/components/PostComposerTrigger";
 
 
 
@@ -71,15 +72,7 @@ export default function LeftSidebar({currentUser}: Props) {
           })}
         </nav>
 
-        <button className="mt-4 hidden h-14 rounded-full bg-white px-8 text-lg font-bold text-black cursor-pointer hover:bg-white/80 duration-200
-          xl:block">
-          ポストする
-        </button>
-
-        <button className="mt-4 flex h-14 w-14 items-center justify-center rounded-full bg-white text-black cursor-pointer duration-200
-          xl:hidden">
-          +
-        </button>
+        <PostDialogTrigger currentUser={currentUser} />
       </div>
 
       <SidebarAccountMenu currentUser={currentUser}/>
