@@ -47,15 +47,11 @@ export function PostDialogTrigger({
         <SquarePen className="size-6" />
       </button>
 
+
       <PostComposerDialog
         open={open}
         onOpenChange={setOpen}
         currentUser={currentUser}
-        onSubmit={async (formData) => {
-          // ここはあとで Server Action に接続
-          console.log("submit", Object.fromEntries(formData.entries()));
-          setOpen(false);
-        }}
       />
     </>
   );

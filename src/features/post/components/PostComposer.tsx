@@ -24,8 +24,11 @@ import {
   type CreatePostActionState,
 } from "@/features/post/actions/create-post-action";
 
+import { cn } from "@/lib/utils";
+
 type Props = {
   currentUser: CurrentUser | null;
+  onSuccess?: () => void;
 };
 
 const initialState: CreatePostActionState = {
@@ -35,29 +38,40 @@ const initialState: CreatePostActionState = {
 
 const MAX_IMAGE_COUNT = 4;
 const TEXTAREA_MAX_HEIGHT = 300;
+const MAX_POST_LENGTH = 280;
 
-export default function PostComposer({ currentUser }: Props) {
+export default function PostComposer({ currentUser, onSuccess }: Props) {
   const [state, formAction, isPending] = useActionState(
     createPostAction,
     initialState
   );
 
+  const [content, setContent] = useState(state.values?.content || "");
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
+  const remaining = MAX_POST_LENGTH - content.length;
+  const isOverLimit = remaining < 0;
+  const isDisabled = isPending || content.trim().length === 0 || isOverLimit;
+
   /**
-   * 投稿成功時に画像をリセット
+   * 投稿成功時の処理
    */
   useEffect(() => {
     if (state.success) {
+      // 選択している画像をリセット
       setSelectedImages([]);
 
+      // テキストエリアをリセット
       if (textareaRef.current) {
         textareaRef.current.value = "";
         resizeTextarea(textareaRef.current);
       }
+      
+      // 成功時の処理（ダイアログを閉じるなど）
+      onSuccess?.();
     }
-  }, [state.success]);
+  }, [state.success, onSuccess]);
 
   /**
    * 画像プレビュー用URL生成
@@ -85,6 +99,7 @@ export default function PostComposer({ currentUser }: Props) {
 
   useEffect(() => {
     if (!textareaRef.current) return;
+    setContent(state.values?.content ?? "");
     resizeTextarea(textareaRef.current);
   }, [state.values?.content]);
 
@@ -111,6 +126,8 @@ export default function PostComposer({ currentUser }: Props) {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { value } = e.target;
+    setContent(value);
     resizeTextarea(e.currentTarget);
   };
 
@@ -122,153 +139,161 @@ export default function PostComposer({ currentUser }: Props) {
   }
 
   return (
-    <section className="hidden border-b border-white/10 px-4 py-4 md:block">
-      <div className="max-h-[520px] overflow-hidden">
-        <form action={formAction} className="flex min-h-0 max-h-[520px] flex-col">
-          <div className="flex min-h-0 flex-1 gap-3 overflow-hidden">
-            <Link
-              href={`/app/users/${currentUser.username}`}
-              className="relative size-10 shrink-0 overflow-hidden rounded-full bg-zinc-700"
-            >
-              {currentUser.image ? (
-                <Image
-                  src={currentUser.image}
-                  alt={currentUser.name ?? currentUser.username ?? "user"}
-                  fill
-                  className="object-cover"
-                  sizes="40px"
-                />
-              ) : null}
-            </Link>
+    <div className="max-h-[520px] overflow-hidden">
+      <form action={formAction} className="flex min-h-0 max-h-[520px] flex-col">
+        <div className="flex min-h-0 flex-1 gap-3 overflow-hidden">
+          <Link
+            href={`/app/users/${currentUser.username}`}
+            className="relative size-10 shrink-0 overflow-hidden rounded-full bg-zinc-700"
+          >
+            {currentUser.image ? (
+              <Image
+                src={currentUser.image}
+                alt={currentUser.name ?? currentUser.username ?? "user"}
+                fill
+                className="object-cover"
+                sizes="40px"
+              />
+            ) : null}
+          </Link>
 
-            <div className="flex min-h-0 flex-1 flex-col">
-              <div className="min-h-0 flex-1 overflow-y-auto pr-2">
-                <textarea
-                  ref={textareaRef}
-                  name="content"
-                  placeholder="いまどうしてる？"
-                  defaultValue={state.values?.content ?? ""}
-                  maxLength={280}
-                  disabled={isPending}
-                  onChange={handleChange}
-                  rows={1}
-                  className="
-                    min-h-28
-                    w-full
-                    resize-none
-                    overflow-y-auto
-                    bg-transparent
-                    text-3xl
-                    text-white
-                    placeholder:text-white/35
-                    outline-none
-                    disabled:opacity-70
-                  "
-                  style={{ maxHeight: `${TEXTAREA_MAX_HEIGHT}px` }}
-                />
+          <div className="flex min-h-0 flex-1 flex-col">
+            <div className="min-h-0 flex-1 overflow-y-auto pr-2">
+              <textarea
+                ref={textareaRef}
+                name="content"
+                placeholder="いまどうしてる？"
+                defaultValue={content}
+                maxLength={280}
+                disabled={isPending}
+                onChange={handleChange}
+                rows={1}
+                className="
+                  min-h-28
+                  w-full
+                  resize-none
+                  overflow-y-auto
+                  bg-transparent
+                  text-2xl
+                  text-white
+                  placeholder:text-white/35
+                  outline-none
+                  disabled:opacity-70
+                "
+                style={{ maxHeight: `${TEXTAREA_MAX_HEIGHT}px` }}
+              />
 
-                {previewUrls.length > 0 ? (
-                  <div className="mt-3 grid grid-cols-2 gap-2">
-                    {previewUrls.map((item, index) => (
-                      <div
-                        key={`${item.file.name}-${index}`}
-                        className="relative overflow-hidden rounded-2xl border border-white/10"
-                      >
-                        <div className="relative aspect-square">
-                          <Image
-                            src={item.url}
-                            alt={`preview-${index + 1}`}
-                            fill
-                            className="object-cover"
-                            unoptimized
-                          />
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveImage(index)}
-                          disabled={isPending}
-                          className="absolute right-2 top-2 rounded-full bg-black/70 p-1 text-white disabled:opacity-50"
-                          aria-label="画像を削除"
-                        >
-                          <X className="size-4" />
-                        </button>
+              {previewUrls.length > 0 ? (
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  {previewUrls.map((item, index) => (
+                    <div
+                      key={`${item.file.name}-${index}`}
+                      className="relative overflow-hidden rounded-2xl border border-white/10"
+                    >
+                      <div className="relative aspect-square">
+                        <Image
+                          src={item.url}
+                          alt={`preview-${index + 1}`}
+                          fill
+                          className="object-cover"
+                          unoptimized
+                        />
                       </div>
-                    ))}
-                  </div>
-                ) : null}
 
-                {/* エラーメッセージ */}
-                {!state.success && state.message ? (
-                  <p className="mt-2 text-sm text-red-500">{state.message}</p>
-                ) : null}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveImage(index)}
+                        disabled={isPending}
+                        className="absolute right-2 top-2 rounded-full bg-black/70 p-1 text-white disabled:opacity-50"
+                        aria-label="画像を削除"
+                      >
+                        <X className="size-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
 
-                {/* 成功メッセージ */}
-                {state.success && state.message ? (
-                  <p className="mt-2 text-sm text-emerald-500">{state.message}</p>
-                ) : null}
+              {/* エラーメッセージ */}
+              {!state.success && state.message ? (
+                <p className="mt-2 text-sm text-red-500">{state.message}</p>
+              ) : null}
 
-                {/* contentのバリデーションエラー */}
-                {state.fieldErrors?.content?.map((error, index) => (
-                  <p key={`${error}-${index}`} className="text-sm text-red-500">
-                    {error}
-                  </p>
-                ))}
+              {/* 成功メッセージ */}
+              {state.success && state.message ? (
+                <p className="mt-2 text-sm text-emerald-500">{state.message}</p>
+              ) : null}
 
-                {/* 画像のバリデーションエラー */}
-                {state.fieldErrors?.images?.map((error, index) => (
-                  <p key={`${error}-${index}`} className="text-sm text-red-500">
-                    {error}
-                  </p>
-                ))}
-              </div>
+              {/* contentのバリデーションエラー */}
+              {state.fieldErrors?.content?.map((error, index) => (
+                <p key={`${error}-${index}`} className="text-sm text-red-500">
+                  {error}
+                </p>
+              ))}
 
-              {/* 下部アクションエリア */}
-              <div className="mt-4 shrink-0 border-t border-zinc-800 px-2 pt-4">
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex flex-wrap items-center gap-4 text-sky-500">
-                    <ImageUploadButton
-                      isPending={isPending}
-                      selectedImages={selectedImages}
-                      onSelect={handleSelectImages}
-                    />
+              {/* 画像のバリデーションエラー */}
+              {state.fieldErrors?.images?.map((error, index) => (
+                <p key={`${error}-${index}`} className="text-sm text-red-500">
+                  {error}
+                </p>
+              ))}
+            </div>
 
-                    <button
-                      type="button"
-                      className="cursor-pointer"
-                      disabled={isPending}
-                    >
-                      <ScanSearch className="size-5" />
-                    </button>
-
-                    <button
-                      type="button"
-                      className="cursor-pointer"
-                      disabled={isPending}
-                    >
-                      <Smile className="size-5" />
-                    </button>
-
-                    <button
-                      type="button"
-                      className="cursor-pointer"
-                      disabled={isPending}
-                    >
-                      <CalendarDays className="size-5" />
-                    </button>
-
-                    <button
-                      type="button"
-                      className="cursor-pointer"
-                      disabled={isPending}
-                    >
-                      <MapPin className="size-5" />
-                    </button>
-                  </div>
+            {/* 下部アクションエリア */}
+            <div className="mt-4 shrink-0 border-t border-zinc-800 px-2 pt-4">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex flex-wrap items-center gap-4 text-sky-500">
+                  <ImageUploadButton
+                    isPending={isPending}
+                    selectedImages={selectedImages}
+                    onSelect={handleSelectImages}
+                  />
 
                   <button
-                    type="submit"
+                    type="button"
+                    className="cursor-pointer"
                     disabled={isPending}
+                  >
+                    <ScanSearch className="size-5" />
+                  </button>
+
+                  <button
+                    type="button"
+                    className="cursor-pointer"
+                    disabled={isPending}
+                  >
+                    <Smile className="size-5" />
+                  </button>
+
+                  <button
+                    type="button"
+                    className="cursor-pointer"
+                    disabled={isPending}
+                  >
+                    <CalendarDays className="size-5" />
+                  </button>
+
+                  <button
+                    type="button"
+                    className="cursor-pointer"
+                    disabled={isPending}
+                  >
+                    <MapPin className="size-5" />
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <span
+                    className={cn(
+                      "text-sm tabular-nums",
+                      isOverLimit ? "text-red-500" : "text-zinc-500"
+                    )}
+                  >
+                    {remaining}
+                  </span>
+                  <button
+                    type="submit"
+                    disabled={isDisabled}
                     className="cursor-pointer rounded-full bg-white px-6 py-2 font-bold text-black disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {isPending ? "投稿中..." : "ポストする"}
@@ -277,9 +302,9 @@ export default function PostComposer({ currentUser }: Props) {
               </div>
             </div>
           </div>
-        </form>
-      </div>
-    </section>
+        </div>
+      </form>
+    </div>
   );
 }
 

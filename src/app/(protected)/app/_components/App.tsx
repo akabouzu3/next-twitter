@@ -21,7 +21,9 @@ export default function App({ currentUser, posts, recommendUsers }: Props) {
     <div className="min-w-0 flex-auto flex justify-start">
       <main className="min-w-0 flex-1 basis-[600px] border-r border-white/10 max-w-[600px]">
         <AppHeader />
-        <PostComposer currentUser={currentUser} />
+        <section className="hidden md:block border-b border-white/10 px-4 py-4">
+          <PostComposer currentUser={currentUser} />
+        </section>
         <FeedList posts={posts} />
       </main>
 
