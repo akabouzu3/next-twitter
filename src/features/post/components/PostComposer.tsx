@@ -13,6 +13,7 @@ import {
   Smile,
   CalendarDays,
   X,
+  Send
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -37,7 +38,7 @@ const initialState: CreatePostActionState = {
 };
 
 const MAX_IMAGE_COUNT = 4;
-const TEXTAREA_MAX_HEIGHT = 300;
+// const TEXTAREA_MAX_HEIGHT = 300;
 const MAX_POST_LENGTH = 280;
 
 export default function PostComposer({ currentUser, onSuccess }: Props) {
@@ -139,8 +140,8 @@ export default function PostComposer({ currentUser, onSuccess }: Props) {
   }
 
   return (
-    <div className="max-h-[520px] overflow-hidden">
-      <form action={formAction} className="flex min-h-0 max-h-[520px] flex-col">
+    <div className="h-full">
+      <form action={formAction} className="flex min-h-0 flex-col">
         <div className="flex min-h-0 flex-1 gap-3 overflow-hidden">
           <Link
             href={`/app/users/${currentUser.username}`}
@@ -164,7 +165,7 @@ export default function PostComposer({ currentUser, onSuccess }: Props) {
                 name="content"
                 placeholder="いまどうしてる？"
                 defaultValue={content}
-                maxLength={280}
+                // maxLength={280}
                 disabled={isPending}
                 onChange={handleChange}
                 rows={1}
@@ -180,7 +181,7 @@ export default function PostComposer({ currentUser, onSuccess }: Props) {
                   outline-none
                   disabled:opacity-70
                 "
-                style={{ maxHeight: `${TEXTAREA_MAX_HEIGHT}px` }}
+                // style={{ maxHeight: `${TEXTAREA_MAX_HEIGHT}px` }}
               />
 
               {previewUrls.length > 0 ? (
@@ -294,10 +295,20 @@ export default function PostComposer({ currentUser, onSuccess }: Props) {
                   <button
                     type="submit"
                     disabled={isDisabled}
-                    className="cursor-pointer rounded-full bg-white px-6 py-2 font-bold text-black disabled:cursor-not-allowed disabled:opacity-50"
+                    className="hidden md:inline-block cursor-pointer rounded-full bg-white px-6 py-2 font-bold text-black disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {isPending ? "投稿中..." : "ポストする"}
                   </button>
+                  <button
+                    type="submit"
+                    disabled={isDisabled}
+                    className={cn("md:hidden flex h-12 w-12 items-center justify-center transition cursor-pointer rounded-full bg-white text-black hover:bg-white/80", 
+                      "disabled:cursor-not-allowed disabled:opacity-50",
+                    )}
+                  >
+                    <Send className="size-6"/>
+                  </button>
+
                 </div>
               </div>
             </div>
@@ -310,5 +321,7 @@ export default function PostComposer({ currentUser, onSuccess }: Props) {
 
 function resizeTextarea(textarea: HTMLTextAreaElement) {
   textarea.style.height = "0px";
-  textarea.style.height = `${Math.min(textarea.scrollHeight, TEXTAREA_MAX_HEIGHT)}px`;
+  // テキストエリアの高さの上限を設定する場合はこれを有効にする
+  // textarea.style.height = `${Math.min(textarea.scrollHeight, TEXTAREA_MAX_HEIGHT)}px`;
+  textarea.style.height = textarea.scrollHeight + "px";
 }

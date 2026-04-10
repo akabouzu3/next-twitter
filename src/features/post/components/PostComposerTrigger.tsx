@@ -12,7 +12,7 @@ type PostDialogTriggerProps = {
   className?: string;
 };
 
-export function PostDialogTrigger({
+export default function PostDialogTrigger({
   currentUser,
   className,
 }: PostDialogTriggerProps) {
@@ -40,7 +40,7 @@ export function PostDialogTrigger({
         onClick={() => setOpen(true)}
         aria-label="投稿を作成"
         className={cn(
-          "mt-4 flex h-14 w-14 items-center justify-center rounded-full bg-white text-black transition hover:bg-white/80 xl:hidden",
+          "mt-4 flex h-14 w-14 items-center justify-center rounded-full bg-blue-400 md:bg-white text-white md:text-black transition hover:bg-white/80 xl:hidden",
           className
         )}
       >

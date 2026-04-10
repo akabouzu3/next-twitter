@@ -7,16 +7,10 @@ import {
 
 } from "lucide-react";
 
-import { cn } from "@/lib/utils";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-} from "@/components/ui/dialog";
 
 import PostComposer from "./PostComposer";
 import { CurrentUser } from "@/lib/auth/current-user";
+import { LayerPortal } from "@/components/layer/LayerPortal";
 
 
 type Props = {
@@ -32,72 +26,80 @@ export default function PostComposerDialog({
   currentUser,
 }: Props) {
 
-  const closeLabel = open ? "投稿ダイアログを閉じる" : "投稿ダイアログを開く";
+  return !open ? null : (
+    <LayerPortal>
+      {/* モバイル */}
+      <div className="md:hidden fixed inset-0 z-50 bg-black/60 overflow-y-auto overscroll-contain">
+        {/* 中央寄せ担当 */}
+        <div className="min-h-dvh flex items-center justify-center">
+          {/* “モバイルは全画面”の中身 */}
+          <div className="relative w-full min-h-dvh bg-black text-white flex flex-col gray-scrollbar">
+            {/* header */}
+            <div className="sticky top-0 z-10 flex px-4 py-4  bg-black/60 backdrop-blur-md">
+              { (!onOpenChange) ? null :(
+                <button
+                  type="button"
+                  aria-label="閉じる"
+                  onClick={()=> onOpenChange(false)}
+                  className="w-8 h-8 rounded-full cursor-pointer hover:bg-white/20"
+                >
+                  <ArrowLeft className="size-5" />
+                </button>
+              )}
 
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        showCloseButton={false}
-        className={cn(
-          "gap-0 overflow-hidden border-zinc-800 bg-black p-0 text-white shadow-2xl",
-          "fixed inset-0 h-dvh w-screen max-w-none translate-x-0 translate-y-0 rounded-none",
-          "sm:inset-auto sm:left-1/2 sm:top-12 sm:h-auto sm:max-h-[90dvh] sm:w-[min(600px,calc(100vw-2rem))] sm:-translate-x-1/2 sm:translate-y-0 sm:rounded-2xl"
-        )}
-      >
-        <DialogTitle className="sr-only">投稿を作成</DialogTitle>
-        <DialogDescription className="sr-only">
-          テキストや画像を入力して新しい投稿を作成します。
-        </DialogDescription>
-
-        <header className="flex h-14 shrink-0 items-center justify-between px-3 sm:px-4">
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                aria-label={closeLabel}
-                onClick={() => onOpenChange(false)}
-                className="inline-flex size-9 items-center justify-center rounded-full text-white transition hover:bg-white/10 sm:hidden"
-              >
-                <ArrowLeft className="size-5" />
-              </button>
-
-              <button
-                type="button"
-                aria-label={closeLabel}
-                onClick={() => onOpenChange(false)}
-                className="hidden size-9 items-center justify-center rounded-full text-white transition hover:bg-white/10 sm:inline-flex"
-              >
-                <X className="size-5" />
-              </button>
             </div>
 
-            <button
-              type="button"
-              className="text-[15px] font-bold text-sky-500 transition hover:opacity-80"
-            >
-              下書き
-            </button>
+            {/* body: 短い時は中央、長い時はスクロール */}
+            <div className="flex-1 min-h-full flex justify-center">
+              <div className="w-full">
+                {/** 投稿部分 */}
+                <section className="border-b border-white/10 px-4 py-4">
+                  <PostComposer 
+                    currentUser={currentUser}
+                    onSuccess={() => onOpenChange(false)} />
+                </section>
 
-            {/* <Button
-              type="submit"
-              disabled={isDisabled}
-              className={cn(
-                "h-9 rounded-full px-4 text-[17px] font-bold text-black",
-                "bg-white hover:bg-white/90 disabled:bg-sky-700/70 disabled:text-white/70",
-                "sm:hidden"
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* タブレット以上 */}
+      <div className="hidden md:block fixed inset-0 z-50 bg-slate-500/20 overflow-y-auto overscroll-contain">
+        <div className="min-h-dvh p-4 grid place-items-center">
+          <div className="overflow-y-auto gray-scrollbar w-full max-w-lg max-h-[90dvh] rounded-2xl bg-black text-white shadow-2xl flex flex-col">
+            {/* header (固定) */}
+            <div className="sticky z-1 top-0 bg-black/60 backdrop-blur-md shrink-0 flex justify-center p-4 ">
+              { (!onOpenChange) ? null :(
+                <button
+                  type="button"
+                  aria-label="閉じる"
+                  onClick={() => onOpenChange(false)}
+                  className="absolute top-4 left-4 w-8 h-8 rounded-full cursor-pointer hover:bg-white/20"
+                >
+                  <X className="size-5" />
+                </button>
               )}
-            >
-              ポストする
-            </Button> */}
-          </header>
+            </div>
 
-          {/** 投稿部分 */}
-          <section className="border-b border-white/10 px-4 py-4">
-            <PostComposer 
-              currentUser={currentUser}
-              onSuccess={() => onOpenChange(false)} />
-          </section>
-      </DialogContent>
-    </Dialog>
+            {/* body */}
+            <div className="flex-1 min-h-0">
+              <div className="mx-auto p-4">
+                {/** 投稿部分 */}
+                <section className="border-b border-white/10 px-4 py-4">
+                  <PostComposer 
+                    currentUser={currentUser}
+                   onSuccess={() => onOpenChange(false)} />
+                </section>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </LayerPortal>
   );
 }
 

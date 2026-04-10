@@ -2,6 +2,7 @@ import { requireAuth } from "@/lib/auth/page-guards";
 import LeftSidebar from "@/components/layout/LeftSidebar";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import MobileBottomNav from "@/components/layout/MobileBottomNav";
+import { MobilePostComposerTrigger } from "@/features/post/components/MobilePostComposerTrigger";
 
 export default async function AppLayout({
   children,
@@ -29,6 +30,7 @@ export default async function AppLayout({
         {children}
       </div>
 
+      <MobilePostComposerTrigger currentUser={currentUser} />
       <MobileBottomNav />
     </div>
     </>

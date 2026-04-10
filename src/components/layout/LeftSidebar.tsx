@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { SidebarAccountMenu } from "./SidebarAccountMenu";
 import { CurrentUser } from "@/lib/auth/current-user";
 import KLogo from "@/components/icons/KLogo";
-import { PostDialogTrigger } from "@/features/post/components/PostComposerTrigger";
+import PostDialogTrigger from "@/features/post/components/PostComposerTrigger";
 
 
 
