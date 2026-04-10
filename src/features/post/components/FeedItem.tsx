@@ -6,6 +6,7 @@ import {
 import Image from "next/image";
 import PostImages from "@/features/post/components/PostImages";
 import { formatRelativeTime } from "@/lib/utils/date";
+import Link from "next/link";
 
 type Props = {
   post: FeedItemType;
@@ -15,13 +16,20 @@ export default function FeedItem({ post }: Props) {
   return (
     <article className="border-b border-white/10 px-4 py-3">
       <div className="flex gap-3">
-        <Image
-          src={post.user.image ?? ""}
-          alt={post.user.name}
-          width={40}
-          height={40}
-          className="size-10 rounded-full object-cover"
-        />
+        <Link
+          href={`/app/users/${post.user.username}`}
+          className="relative size-10 shrink-0 overflow-hidden rounded-full bg-zinc-700"
+        >
+          {post.user.image ? (
+            <Image
+              src={post.user.image ?? ""}
+              alt={post.user.name}
+              width={40}
+              height={40}
+              className="size-10 rounded-full object-cover"
+            />
+          ) : null}
+        </Link>
 
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1 text-sm">
