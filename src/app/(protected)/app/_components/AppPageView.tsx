@@ -14,7 +14,7 @@ type Props = {
   recommendUsers: RecommendedUser[];
 };
 
-export default function App({ currentUser, posts, recommendUsers }: Props) {
+export default function AppPageView({ currentUser, posts, recommendUsers }: Props) {
 
 
   return (
