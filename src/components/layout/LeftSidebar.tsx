@@ -74,8 +74,10 @@ export default function LeftSidebar({currentUser}: Props) {
 
         <PostDialogTrigger currentUser={currentUser} />
       </div>
-
-      <SidebarAccountMenu currentUser={currentUser}/>
+      
+      <div className="mt-6">
+        <SidebarAccountMenu currentUser={currentUser}/>
+      </div>
     </div>
   );
 }

@@ -28,7 +28,7 @@ export function SidebarAccountMenu({ currentUser }: Props) {
         <button
           type="button"
           className="
-            flex w-full items-center gap-3 rounded-full px-3 py-3 text-left
+            flex w-full justify-center items-center gap-3 rounded-full px-3 py-3 text-left
             transition cursor-pointer hover:bg-white/10
             focus:outline-none
           "
