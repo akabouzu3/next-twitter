@@ -144,7 +144,7 @@ export default function PostComposer({ currentUser, onSuccess }: Props) {
       <form action={formAction} className="flex min-h-0 flex-col">
         <div className="flex min-h-0 flex-1 gap-3 overflow-hidden">
           <Link
-            href={`/app/users/${currentUser.username}`}
+            href={`/users/${currentUser.username}`}
             className="relative size-10 shrink-0 overflow-hidden rounded-full bg-zinc-700"
           >
             {currentUser.image ? (

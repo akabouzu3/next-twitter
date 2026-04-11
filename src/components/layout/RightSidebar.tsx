@@ -266,7 +266,7 @@ export default function RightSidebar({
               ))}
             </div>
 
-            {/* <Link href="/app/recommended_users" className="mt-2 flex w-full">
+            {/* <Link href="/recommended_users" className="mt-2 flex w-full">
               <span className="text-blue-300/80">さらに表示</span>
             </Link> */}
           </section>

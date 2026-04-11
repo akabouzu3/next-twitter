@@ -17,5 +17,5 @@ export async function unfollowUserAction(targetUserId: string) {
   });
 
   // revalidatePath("/app");
-  // revalidatePath("/app/connect_people");
+  // revalidatePath("/connect_people");
 }

@@ -17,12 +17,12 @@ type Props = {
 export default function LeftSidebar({currentUser}: Props) {
   const navItems = [
     { label: "ホーム", icon: Home, url: "/app", isDisabled: false, },
-    { label: "話題を検索", icon: Search, url: "/app/search", isDisabled: true,  },
-    { label: "通知", icon: Bell, url: "/app/notification", isDisabled: true,  },
-    { label: "メッセージ", icon: Mail, url: "/app/messages", isDisabled: true,  },
-    { label: "ブックマーク", icon: Bookmark, url: "/app/bookmark", isDisabled: true,  },
-    { label: "プロフィール", icon: User, url: "/app/users/" + currentUser?.username, isDisabled: false,  },
-    { label: "もっと見る", icon: Ellipsis, url: "/app/more", isDisabled: true,  },
+    { label: "話題を検索", icon: Search, url: "/search", isDisabled: true,  },
+    { label: "通知", icon: Bell, url: "/notification", isDisabled: true,  },
+    { label: "メッセージ", icon: Mail, url: "/messages", isDisabled: true,  },
+    { label: "ブックマーク", icon: Bookmark, url: "/bookmark", isDisabled: true,  },
+    { label: "プロフィール", icon: User, url: "/users/" + currentUser?.username, isDisabled: false,  },
+    { label: "もっと見る", icon: Ellipsis, url: "/more", isDisabled: true,  },
   ];
 
   const pathname = usePathname();

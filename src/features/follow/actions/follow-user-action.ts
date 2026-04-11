@@ -19,5 +19,5 @@ export async function followUserAction(targetUserId: string) {
 
   // // 関連画面の再検証
   // revalidatePath("/app");
-  // revalidatePath("/app/connect_people");
+  // revalidatePath("/connect_people");
 }

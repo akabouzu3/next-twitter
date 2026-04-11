@@ -17,7 +17,7 @@ export default function FeedItem({ post }: Props) {
     <article className="border-b border-white/10 px-4 py-3">
       <div className="flex gap-3">
         <Link
-          href={`/app/users/${post.user.username}`}
+          href={`/users/${post.user.username}`}
           className="relative size-10 shrink-0 overflow-hidden rounded-full bg-zinc-700"
         >
           {post.user.image ? (
