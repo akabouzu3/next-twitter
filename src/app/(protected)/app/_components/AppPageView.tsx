@@ -1,37 +1,27 @@
 
-import RightSidebar from "@/components/layout/RightSidebar"
 import AppHeader from "@/app/(protected)/app/_components/AppHeader";
 import PostComposer from "@/features/post/components/PostComposer";
 import FeedList from "@/features/post/components/FeedList";
 import { CurrentUser } from "@/lib/auth/current-user";
 import { FeedItem } from "@/features/post/types/post.types";
-import { RecommendedUser } from "@/features/user/types/user.types";
+
 
 
 type Props = {
   currentUser: CurrentUser | null;
   posts: FeedItem[];
-  recommendUsers: RecommendedUser[];
 };
 
-export default function AppPageView({ currentUser, posts, recommendUsers }: Props) {
+export default function AppPageView({ currentUser, posts }: Props) {
 
 
   return (
-    <div className="min-w-0 flex-auto flex justify-start">
-      <main className="min-w-0 flex-1 basis-[600px] border-r border-white/10 md:max-w-[600px]">
-        <AppHeader />
-        <section className="hidden md:block border-b border-white/10 px-4 py-4">
-          <PostComposer currentUser={currentUser} />
-        </section>
-        <FeedList posts={posts} />
-      </main>
-
-      <aside className="hidden shrink-0
-        xl:block xl:w-[350px]">
-        <RightSidebar recommendUsers={recommendUsers}/>
-      </aside>
-      
-    </div>
+    <>
+      <AppHeader />
+      <section className="hidden md:block border-b border-white/10 px-4 py-4">
+        <PostComposer currentUser={currentUser} />
+      </section>
+      <FeedList posts={posts} />
+    </>
   );
 }
