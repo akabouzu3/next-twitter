@@ -12,7 +12,7 @@ type Props = {
 export function RecommendedUserItem({ user }: Props) {
   return (
     <Link
-      href={`app/users/${user.username}`}
+      href={`/users/${user.username}`}
       className="
         flex w-full items-center gap-3 px-3 py-3 rounded-full
         transition hover:bg-white/10
