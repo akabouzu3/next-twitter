@@ -17,7 +17,7 @@ export default function AppPageView({ currentUser, posts }: Props) {
 
   return (
     <>
-      <AppHeader />
+      <AppHeader currentUser={currentUser} />
       <section className="hidden md:block border-b border-white/10 px-4 py-4">
         <PostComposer currentUser={currentUser} />
       </section>

@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import KLogo from "@/components/icons/KLogo";
+import { CurrentUser } from "@/lib/auth/current-user";
+import Image from "next/image";
 
 const tabs = [
   {
@@ -14,7 +16,13 @@ const tabs = [
     isDisabled: false,
   }] as const;
 
-export default function AppHeader() {
+type Props = {
+  currentUser: CurrentUser | null;
+}
+
+export default function AppHeader({
+  currentUser,
+}:Props) {
   const [activeTab, setActiveTab] = useState<string>("フォロー中");
 
   return (
@@ -23,7 +31,22 @@ export default function AppHeader() {
        * モバイル限定：header
        */}
       <div className="md:hidden flex h-14 items-center justify-between px-4">
-        <div className="size-8 rounded-full bg-zinc-700" />
+        <button
+          type="button"
+          className="p-2"
+        >
+          <div className="relative size-8 shrink-0 overflow-hidden rounded-full bg-zinc-700">
+              {currentUser?.image ? (
+                <Image
+                  src={currentUser.image}
+                  alt={currentUser.name ?? ""}
+                  fill
+                  className="object-cover"
+                  sizes="32px"
+                />
+              ) : null}
+          </div>
+        </button>
         <div className="w-8 h-8">
           <KLogo/>
         </div>
@@ -46,7 +69,7 @@ export default function AppHeader() {
             <button
               key={tab.title}
               onClick={() => setActiveTab(tab.title)}
-              className={cn("relative flex h-14 items-center justify-center text-lg font-bold cursor-pointer hover:bg-white/10",
+              className={cn("relative flex h-12 items-center justify-center text-md font-bold cursor-pointer hover:bg-white/10",
                 tab.isDisabled ? "cursor-not-allowed" : ""
               )}
               disabled={tab.isDisabled}
