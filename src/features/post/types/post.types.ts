@@ -1,4 +1,23 @@
+// =====================
+// Cursor
+// =====================
+export type Cursor = {
+  createdAt: string;
+  id: string;
+};
 
+// =====================
+// Pagination
+// =====================
+export type PaginatedResult<T> = {
+  items: T[];
+  nextCursor: Cursor | null;
+  hasMore: boolean;
+};
+
+// =====================
+// Feed
+// =====================
 export type FeedItem = {
   id: string;
   content: string;
@@ -15,3 +34,8 @@ export type FeedItem = {
   }[];
   likeCount: number;
 };
+
+// =====================
+// Usecase
+// =====================
+export type TimelinePage = PaginatedResult<FeedItem>;
