@@ -30,6 +30,7 @@ export default function FollowButton({ userId, isFollowing: initialIsFollowing }
         }
       } catch (e) {
         // エラー時ロールバック
+        console.error(e);
         setIsFollowing(!next);
       }
     });

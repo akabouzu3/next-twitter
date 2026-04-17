@@ -1,9 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { SquarePen } from "lucide-react";
-
-import { cn } from "@/lib/utils";
 import { CurrentUser } from "@/lib/auth/current-user";
 import PostComposerTrigger from "@/features/post/components/PostComposerTrigger";
 import { LayerPortal } from "@/components/layer/LayerPortal";
@@ -23,7 +20,7 @@ export function MobilePostComposerTrigger({
   return (
     <LayerPortal>
       <div className="md:hidden fixed bottom-20 right-6 z-20">
-        <PostComposerTrigger currentUser={currentUser} />
+        <PostComposerTrigger currentUser={currentUser} className={className} />
       </div>
 
     </LayerPortal>
