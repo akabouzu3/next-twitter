@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import AppPageView from "@/app/(protected)/app/_components/AppPageView";
 import { getCurrentUser } from "@/lib/auth/current-user";
-import { getTimeline } from "@/features/post/server/get-timeline";
+import { getTimelinePage } from "@/features/post/server/get-timeline-page";
 
 
 export const metadata: Metadata = {
@@ -11,12 +11,14 @@ export const metadata: Metadata = {
 export default async function AppPage() {
 
   const currentUser = await getCurrentUser();
-  const timeline = await getTimeline();
+  const timelinePage = await getTimelinePage({
+    limit: 10,
+  });
   
 
   return (
     <>
-      <AppPageView currentUser={currentUser} posts={timeline}/>
+      <AppPageView currentUser={currentUser} timelinePage={timelinePage}/>
     </>
   )
 }
