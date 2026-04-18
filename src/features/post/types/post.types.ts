@@ -9,7 +9,7 @@ export type Cursor = {
 // =====================
 // Pagination
 // =====================
-export type PaginatedResult<T> = {
+export type CursorPage<T> = {
   items: T[];
   nextCursor: Cursor | null;
   hasMore: boolean;
@@ -38,4 +38,4 @@ export type FeedItem = {
 // =====================
 // Usecase
 // =====================
-export type TimelinePage = PaginatedResult<FeedItem>;
+export type FeedPage = CursorPage<FeedItem>;
