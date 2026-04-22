@@ -70,6 +70,9 @@ export function useInfiniteTimeline(timelinePage: FeedPage) {
     initialState.nextCursor
   );
   const [hasMore, setHasMore] = useState(initialState.hasMore);
+  /**
+   * ローディング状態（UI表示用）
+   */
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -80,11 +83,12 @@ export function useInfiniteTimeline(timelinePage: FeedPage) {
   const observerRef = useRef<HTMLDivElement | null>(null);
 
   /**
-   * 二重取得防止用フラグ（重要）
+   * ローディング状態（ロジック用）：二重取得防止用フラグ（重要）
    *
    * useState だけだと setState が反映されるまでの間に
    * observer が複数回発火する可能性があるため、
    * ref で即時判定する
+   * isLoadingRef.current = ture; は同期的に即時更新出来る
    */
   const isLoadingRef = useRef(false);
 
@@ -127,7 +131,7 @@ export function useInfiniteTimeline(timelinePage: FeedPage) {
    * useCallback により再生成を防ぐ
    */
   const loadMore = useCallback(async () => {
-    // 二重リクエスト防止
+    // 二重リクエスト防止（取得中の場合、新しいリクエストを投げない）
     if (isLoadingRef.current) return;
 
     // もう続きがない場合
@@ -136,8 +140,12 @@ export function useInfiniteTimeline(timelinePage: FeedPage) {
     // cursorがない場合
     if (!nextCursor) return;
 
+
+    // ローディング開始：次ページの取得行動に入る
     isLoadingRef.current = true;
     setIsLoading(true);
+
+    // 前回のエラーをリセット
     setError(null);
 
     // 既存リクエストをキャンセル
@@ -152,6 +160,7 @@ export function useInfiniteTimeline(timelinePage: FeedPage) {
        */
       const data = await fetchTimelinePage({
         cursor: nextCursor,
+        limit: 10,
         signal: controller.signal,
       });
 
@@ -203,17 +212,17 @@ export function useInfiniteTimeline(timelinePage: FeedPage) {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        const entry = entries[0];
+        const entry: IntersectionObserverEntry = entries[0];
 
-        // 画面内に入ったら発火
+        // 画面に要素が交際してない場合、終了
         if (!entry?.isIntersecting) return;
 
         void loadMore();
       },
       {
-        root: null,
-        rootMargin: "300px 0px", // 早めに読み込む
-        threshold: 0,
+        root: null, // 画面のビューポートを基準にする（画面に要素が見えたら発火）
+        rootMargin: "300px 0px", // 300px手前で当たり判定する
+        threshold: 0, // 要素が少しでも交差したら発火（0~1）
       }
     );
 
