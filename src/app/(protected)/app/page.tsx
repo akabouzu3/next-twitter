@@ -12,7 +12,7 @@ export default async function AppPage() {
 
   const currentUser = await getCurrentUser();
   const timelinePage = await getTimelinePage({
-    limit: 10,
+    limit: 20,
   });
   
 

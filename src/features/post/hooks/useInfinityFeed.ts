@@ -213,7 +213,7 @@ export function useInfiniteFeed({
       },
       {
         root: null, // 画面のビューポートを基準にする（画面に要素が見えたら発火）
-        rootMargin: "300px 0px", // 300px手前で当たり判定する
+        rootMargin: "500px 0px", // 300px手前で当たり判定する
         threshold: 0, // 要素が少しでも交差したら発火（0~1）
       }
     );

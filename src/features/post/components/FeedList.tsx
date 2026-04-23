@@ -33,7 +33,7 @@ export default function FeedList({ initialPage, fetchPage }: Props) {
     error,
     observerRef,
     retry,
-  } = useInfiniteFeed({ initialPage, fetchPage, pageSize: 10 });
+  } = useInfiniteFeed({ initialPage, fetchPage, pageSize: 20 });
 
   /**
    * 空状態の表示条件
