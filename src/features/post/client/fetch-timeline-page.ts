@@ -19,7 +19,7 @@ function encodeCursor(cursor: Cursor) {
 /**
  * タイムライン取得関数の引数型
  */
-type Input = {
+type fetchTimelinePageInput = {
   cursor: Cursor; // 次ページ取得用カーソル
   limit?: number;                 // 取得件数（任意）
   signal?: AbortSignal;           // fetchキャンセル用（React Query等で重要）
@@ -32,7 +32,7 @@ export async function fetchTimelinePage({
   cursor,
   limit = PAGE_SIZE, // 指定がなければ10件
   signal,
-}: Input): Promise<FeedPage> {
+}: fetchTimelinePageInput): Promise<FeedPage> {
   
   // cursorをURL用にエンコード
   const encodedCursor = encodeCursor(cursor);

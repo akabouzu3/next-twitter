@@ -1,14 +1,21 @@
 "use client";
 
 import Feed from "@/features/post/components/FeedItem";
-import { useInfiniteTimeline } from "@/features/post/hooks/useInfinityTimeline";
-import { FeedPage } from "@/features/post/types/post.types";
+import { useInfiniteFeed } from "@/features/post/hooks/useInfinityFeed";
+import { FeedPage, Cursor } from "@/features/post/types/post.types";
 
-type Props = {
-  feedPage: FeedPage;
+type FetchPageInput = {
+  cursor: Cursor; // 次ページ取得用カーソル
+  limit?: number;                 // 取得件数（任意）
+  signal?: AbortSignal;           // fetchキャンセル用（React Query等で重要）
 };
 
-export default function FeedList({ feedPage }: Props) {
+type Props = {
+  initialPage: FeedPage;
+  fetchPage: (input: FetchPageInput) => Promise<FeedPage>; 
+}
+
+export default function FeedList({ initialPage, fetchPage }: Props) {
   /**
    * カスタムフックから状態と操作を取得
    *
@@ -20,13 +27,13 @@ export default function FeedList({ feedPage }: Props) {
    * - retry: エラー時の再試行
    */
   const {
-    posts,
+    items,
     hasMore,
     isLoading,
     error,
     observerRef,
     retry,
-  } = useInfiniteTimeline(feedPage);
+  } = useInfiniteFeed({ initialPage, fetchPage, pageSize: 10 });
 
   /**
    * 空状態の表示条件
@@ -35,7 +42,7 @@ export default function FeedList({ feedPage }: Props) {
    * - エラーでもない
    * - 投稿が0件
    */
-  const showEmpty = !isLoading && !error && posts.length === 0;
+  const showEmpty = !isLoading && !error && items.length === 0;
 
   /**
    * 終端表示条件（これ以上データがない）
@@ -43,7 +50,7 @@ export default function FeedList({ feedPage }: Props) {
    * - hasMore が false
    * - 投稿が1件以上ある
    */
-  const showEnd = !hasMore && posts.length > 0;
+  const showEnd = !hasMore && items.length > 0;
 
   return (
     <div>
@@ -51,7 +58,7 @@ export default function FeedList({ feedPage }: Props) {
           投稿一覧
          ======================== */}
       <section className="flex flex-col">
-        {posts.map((post) => (
+        {items.map((post) => (
           <Feed key={post.id} post={post} />
         ))}
       </section>

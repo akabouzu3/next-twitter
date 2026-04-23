@@ -2,8 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { fetchTimelinePage } from "@/features/post/client/fetch-timeline-page";
-import { FeedItem, FeedPage } from "@/features/post/types/post.types";
+import { FeedItem, FeedPage, Cursor } from "@/features/post/types/post.types";
 
 /**
  * 投稿配列を id ベースでマージしつつ重複を除去する
@@ -14,35 +13,33 @@ import { FeedItem, FeedPage } from "@/features/post/types/post.types";
  *
  * Mapを使うことで O(n) で一意化できる
  */
-function mergeUniquePosts(prev: FeedItem[], next: FeedItem[]) {
+function mergeUniqueItems(prev: FeedItem[], next: FeedItem[]) {
   const map = new Map<string, FeedItem>();
 
   // 既存データを先に入れる
-  for (const post of prev) {
-    map.set(post.id, post);
+  for (const item of prev) {
+    map.set(item.id, item);
   }
 
   // 新規データを上書き的に追加
-  for (const post of next) {
-    map.set(post.id, post);
+  for (const item of next) {
+    map.set(item.id, item);
   }
 
   // Map → Array
   return Array.from(map.values());
 }
 
-/**
- * サーバーから渡されたページデータを
- * useState の初期値に変換する関数
- *
- * → フックの責務をシンプルに保つために分離
- */
-function createInitialState(timelinePage: FeedPage) {
-  return {
-    posts: timelinePage.items,
-    nextCursor: timelinePage.nextCursor,
-    hasMore: timelinePage.hasMore,
-  };
+type FetchPageInput = {
+  cursor: Cursor; // 次ページ取得用カーソル
+  limit?: number;                 // 取得件数（任意）
+  signal?: AbortSignal;           // fetchキャンセル用（React Query等で重要）
+};
+
+type Props = {
+  initialPage: FeedPage;
+  fetchPage: (input: FetchPageInput) => Promise<FeedPage>; 
+  pageSize?: number;
 }
 
 /**
@@ -55,21 +52,17 @@ function createInitialState(timelinePage: FeedPage) {
  * - 通信キャンセル
  * - エラーハンドリング
  */
-export function useInfiniteTimeline(timelinePage: FeedPage) {
-  /**
-   * 初期値をメモ化
-   * timelinePage が変わった時のみ再計算
-   */
-  const initialState = useMemo(
-    () => createInitialState(timelinePage),
-    [timelinePage]
-  );
+export function useInfiniteFeed({
+  initialPage,
+  fetchPage,
+  pageSize = 10,
+}: Props) {
 
-  const [posts, setPosts] = useState<FeedItem[]>(initialState.posts);
+  const [items, setItems] = useState<FeedItem[]>(initialPage.items);
   const [nextCursor, setNextCursor] = useState<FeedPage["nextCursor"]>(
-    initialState.nextCursor
+    initialPage.nextCursor
   );
-  const [hasMore, setHasMore] = useState(initialState.hasMore);
+  const [hasMore, setHasMore] = useState(initialPage.hasMore);
   /**
    * ローディング状態（UI表示用）
    */
@@ -109,11 +102,10 @@ export function useInfiniteTimeline(timelinePage: FeedPage) {
    * - 初期データ再取得
    */
   useEffect(() => {
-    const next = createInitialState(timelinePage);
 
-    setPosts(next.posts);
-    setNextCursor(next.nextCursor);
-    setHasMore(next.hasMore);
+    setItems(initialPage.items);
+    setNextCursor(initialPage.nextCursor);
+    setHasMore(initialPage.hasMore);
     setError(null);
 
     // 古いリクエストを中断
@@ -123,7 +115,7 @@ export function useInfiniteTimeline(timelinePage: FeedPage) {
     // ローディング状態もリセット
     isLoadingRef.current = false;
     setIsLoading(false);
-  }, [timelinePage]);
+  }, [initialPage]);
 
   /**
    * 次ページ取得関数
@@ -158,16 +150,16 @@ export function useInfiniteTimeline(timelinePage: FeedPage) {
       /**
        * APIから次ページ取得
        */
-      const data = await fetchTimelinePage({
+      const data = await fetchPage({
         cursor: nextCursor,
-        limit: 10,
+        limit: pageSize,
         signal: controller.signal,
       });
 
       /**
        * 投稿をマージ（重複除去）
        */
-      setPosts((prev) => mergeUniquePosts(prev, data.items));
+      setItems((prev) => mergeUniqueItems(prev, data.items));
 
       /**
        * 次ページ情報更新
@@ -195,7 +187,7 @@ export function useInfiniteTimeline(timelinePage: FeedPage) {
       isLoadingRef.current = false;
       setIsLoading(false);
     }
-  }, [hasMore, nextCursor]);
+  }, [hasMore, nextCursor, fetchPage]);
 
   /**
    * IntersectionObserver 設定
@@ -255,7 +247,7 @@ export function useInfiniteTimeline(timelinePage: FeedPage) {
    * UIで使う値を返す
    */
   return {
-    posts,
+    items,
     nextCursor,
     hasMore,
     isLoading,
