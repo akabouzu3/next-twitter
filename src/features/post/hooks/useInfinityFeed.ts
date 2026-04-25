@@ -30,7 +30,7 @@ function mergeUniqueItems(prev: FeedItem[], next: FeedItem[]) {
   return Array.from(map.values());
 }
 
-type FetchPageInput = {
+export type FetchPageInput = {
   cursor: Cursor; // 次ページ取得用カーソル
   limit?: number;                 // 取得件数（任意）
   signal?: AbortSignal;           // fetchキャンセル用（React Query等で重要）

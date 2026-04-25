@@ -1,7 +1,5 @@
-
 import "server-only";
 
-import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma/prisma";
 import { Cursor, FeedItem, FeedPage } from "@/features/post/types/post.types";
 import { feedPostItemSelect, FeedPostItemPayload } from "@/features/post/server/selects/selects";
@@ -59,9 +57,7 @@ export async function getUserPostsPageByUsername({
    */
   const posts: FeedPostItemPayload[] = await prisma.post.findMany({
     where: {
-      user: {
-        username,
-      }
+      userId: user.id,
     },
 
     /**

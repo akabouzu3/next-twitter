@@ -1,14 +1,8 @@
 "use client";
 
 import Feed from "@/features/post/components/FeedItem";
-import { useInfiniteFeed } from "@/features/post/hooks/useInfinityFeed";
-import { FeedPage, Cursor } from "@/features/post/types/post.types";
-
-type FetchPageInput = {
-  cursor: Cursor; // 次ページ取得用カーソル
-  limit?: number;                 // 取得件数（任意）
-  signal?: AbortSignal;           // fetchキャンセル用（React Query等で重要）
-};
+import { useInfiniteFeed, FetchPageInput } from "@/features/post/hooks/useInfinityFeed";
+import { FeedPage } from "@/features/post/types/post.types";
 
 type Props = {
   initialPage: FeedPage;
