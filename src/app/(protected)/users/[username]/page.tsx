@@ -1,6 +1,6 @@
 import UserPageView from "@/app/(protected)/users/[username]/_components/UserPageView";
 import { getUserByUsername } from "@/features/user/server/get-user";
-import { getUserPostsByUsername } from "@/features/post/server/get-user-posts";
+import { getUserPostsPageByUsername } from "@/features/post/server/get-user-posts-page";
 import { notFound } from "next/navigation";
 import { requireCurrentUser } from "@/lib/auth/guards";
 
@@ -14,10 +14,10 @@ type Props = {
 export default async function UserPage(props: Props) {
   const { username } = await props.params;
 
-  const [currentUser, user, posts] = await Promise.all([
+  const [currentUser, user, feedPage] = await Promise.all([
     requireCurrentUser(),
     getUserByUsername(username),
-    getUserPostsByUsername({username, limit: 30}),
+    getUserPostsPageByUsername({username, limit: 20}),
   ]);
 
   // ❗ userがない = URLが不正
@@ -29,7 +29,7 @@ export default async function UserPage(props: Props) {
     <UserPageView
       currentUser={currentUser}
       user={user}
-      posts={posts}
+      feedPage={feedPage}
     />
   );
 }

@@ -187,7 +187,7 @@ export function useInfiniteFeed({
       isLoadingRef.current = false;
       setIsLoading(false);
     }
-  }, [hasMore, nextCursor, fetchPage]);
+  }, [hasMore, nextCursor, fetchPage, pageSize]);
 
   /**
    * IntersectionObserver 設定
