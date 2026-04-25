@@ -20,7 +20,7 @@ type Props = {
   currentUser: CurrentUser | null;
 }
 
-export default function AppHeader({
+export default function AppPageHeader({
   currentUser,
 }:Props) {
   const [activeTab, setActiveTab] = useState<string>("フォロー中");
