@@ -69,14 +69,14 @@ type Props = {
 }
 
 /**
- * GET /api/posts/timeline
+ * GET /api/posts/[username]
  */
 export async function GET(
   request: NextRequest,
   { params }: Props
  ) {
   try {
-
+    // Propsからparamsを取得
     const username = params?.username;
 
     /**
