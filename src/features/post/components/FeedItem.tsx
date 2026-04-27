@@ -1,6 +1,7 @@
 import { FeedItem as FeedItemType } from "@/features/post/types/post.types";
 import { 
-  MessageCircle, Repeat2, Heart, BarChart2, Bookmark, Share2, 
+  MessageCircle, Repeat2, Heart, BarChart2, Bookmark, Share2,
+  Ellipsis, 
   // CheckCircle2
  } from "lucide-react";
 import Image from "next/image";
@@ -32,12 +33,26 @@ export default function FeedItem({ post }: Props) {
         </Link>
 
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-1 text-sm">
-            <span className="truncate font-bold">{post.user.name}</span>
-            {/* {post.author.verified && <CheckCircle2 className="size-4 fill-sky-500 text-sky-500" />} */}
-            <span className="truncate text-white/50">@{post.user.username}</span>
-            <span className="text-white/50">·</span>
-            <span className="text-white/50">{ formatRelativeTime(post.createdAt) }</span>
+          <div className="flex justify-between">
+            <div className="flex items-center gap-1 text-sm">
+              <span className="truncate font-bold">{post.user.name}</span>
+              {/* {post.author.verified && <CheckCircle2 className="size-4 fill-sky-500 text-sky-500" />} */}
+              <span className="truncate text-white/50">@{post.user.username}</span>
+              <span className="text-white/50">·</span>
+              <span className="text-white/50">{ formatRelativeTime(post.createdAt) }</span>
+            </div>
+            <div className="flex item-center gap-1">
+              <button
+                type="button"
+                className=" relative grid place-items-center size-6"
+              >
+                <Ellipsis className="size-4" />
+                {/* ヒットエリア拡張 */}
+                <span className="absolute -inset-1 rounded-full transition cursor-pointer
+                  hover:bg-white/10
+                  focus:outline-none focus:bg-white/10" />
+              </button>
+            </div>
           </div>
 
           <p className="mt-1 whitespace-pre-wrap text-[15px] leading-6">
@@ -51,8 +66,8 @@ export default function FeedItem({ post }: Props) {
             <button className="flex items-center gap-2"><Repeat2 className="size-4" />{10}</button>
             <button className="flex items-center gap-2"><Heart className="size-4" />{post.likeCount}</button>
             <button className="flex items-center gap-2"><BarChart2 className="size-4" />{10}</button>
-            <button className="flex items-center gap-2"><Bookmark className="size-4" /></button>
-            <button className="flex items-center gap-2"><Share2 className="size-4" /></button>
+            {/* <button className="flex items-center gap-2"><Bookmark className="size-4" /></button> */}
+            {/* <button className="flex items-center gap-2"><Share2 className="size-4" /></button> */}
           </div>
         </div>
       </div>
