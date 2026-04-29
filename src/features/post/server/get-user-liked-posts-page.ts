@@ -3,7 +3,7 @@ import "server-only";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma/prisma";
 import { Cursor, FeedItem, FeedPage } from "@/features/post/types/post.types";
-import { feedPostItemSelect, FeedPostItemPayload } from "@/features/post/server/selects/selects";
+import { feedPostItemSelect } from "@/features/post/server/selects/selects";
 import { toFeedItem } from "@/features/post/server/mappers/mappers";
 
 // 1ページあたりの取得件数（無限スクロールの単位）
@@ -12,30 +12,30 @@ const PAGE_SIZE = 10;
 /**
  * 入力パラメータ
  */
-type GetUserPostsPageInput = {
-  where: Prisma.PostWhereInput;
+type GetUserLikedPostsPageInput = {
+  where: Prisma.PostLikeWhereInput;
   limit?: number;
   // 前回の最後の投稿（cursor pagination）
   cursor?: Cursor | null;
 };
 
 /**
- * username からそのユーザーの投稿一覧を取得する
+ * ユーザーのいいねした投稿一覧を取得する
  *
- * - まず User を username で引いて id を取得
- * - その後 Post を userId で取得
+ * - PostLike を起点に取得する
+ * - PostLike.createdAt の新しい順で並べる
  * - cursor がある場合は次ページを返す
  */
-export async function getUserPostsPage({
+export async function getUserLikedPostsPage({
   where,
   limit = PAGE_SIZE,
   cursor,
-}: GetUserPostsPageInput): Promise<FeedPage> {
+}: GetUserLikedPostsPageInput): Promise<FeedPage> {
 
   /**
-   * 2. 投稿取得（カーソルページング）
+   * 2. いいねログを取得（カーソルページング）
    */
-  const posts: FeedPostItemPayload[] = await prisma.post.findMany({
+  const likes = await prisma.postLike.findMany({
     where,
 
     /**
@@ -75,7 +75,14 @@ export async function getUserPostsPage({
     /**
      * 必要なデータを取得（パフォーマンス最適化）
      */
-    select: feedPostItemSelect,
+    select: {
+      createdAt: true,
+      id: true,
+  
+      post: {
+        select: feedPostItemSelect, // ✅ これ
+      },
+    },
   });
 
   /**
@@ -83,30 +90,30 @@ export async function getUserPostsPage({
    * limit+1件取っているので
    * → limitを超えてたら「次ページあり」
    */
-  const hasMore = posts.length > limit;
+  const hasMore = likes.length > limit;
 
   /**
    * 4. 表示用データに切り出し
    */
-  const sliced: FeedPostItemPayload[] = hasMore ? posts.slice(0, limit) : posts;
+  const sliced = hasMore ? likes.slice(0, limit) : likes;
 
   /**
    * 5. 次カーソル作成
    */
-  const lastPost = sliced.at(-1);
+  const lastLike = sliced.at(-1);
 
   /**
    * 6. 表示用形式に整える
    */
-  const items: FeedItem[] = sliced.map((post) => toFeedItem(post));
+  const items: FeedItem[] = sliced.map((like) => toFeedItem(like.post));
 
   return {
     items,
 
-    nextCursor: lastPost
+    nextCursor: lastLike
       ? {
-          createdAt: lastPost.createdAt.toISOString(),
-          id: lastPost.id,
+          createdAt: lastLike.createdAt.toISOString(),
+          id: lastLike.id,
         }
       : null,
 

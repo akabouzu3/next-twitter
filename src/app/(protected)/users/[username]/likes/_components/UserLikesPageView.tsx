@@ -13,7 +13,7 @@ type Props = {
 };
 
 
-export default function UserPostsPageView({
+export default function UserLikesPageView({
   username,
   feedPage,
 }: Props) {
