@@ -1,6 +1,8 @@
 import { FeedItem as FeedItemType } from "@/features/post/types/post.types";
 import { 
-  MessageCircle, Repeat2, Heart, BarChart2, Bookmark, Share2,
+  MessageCircle, Repeat2, Heart, BarChart2, 
+  // Bookmark, 
+  // Share2,
   Ellipsis, 
   // CheckCircle2
  } from "lucide-react";
