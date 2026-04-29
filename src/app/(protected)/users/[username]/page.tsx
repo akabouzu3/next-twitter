@@ -1,7 +1,5 @@
 import UserPostsPageView from "@/app/(protected)/users/[username]/_components/UserPostsPageView";
 import { getUserPostsPageByUsername } from "@/features/post/server/get-user-posts-page";
-import { getUserByUsername } from "@/features/user/server/get-user";
-import { notFound } from "next/navigation";
 
 type Props = {
   params: {
@@ -14,19 +12,13 @@ export default async function UserPostsPage({
 }: Props) {
   const { username } = params;
 
-  const [user,feedPage] = await Promise.all([
-    getUserByUsername(username),
+  const [feedPage] = await Promise.all([
     getUserPostsPageByUsername({username, limit: 20}),
   ]);
 
-  // ❗ userがない = URLが不正
-  if (!user) {
-    notFound();
-  }
-
   return (
     <UserPostsPageView
-      user={user}
+      username={username}
       feedPage={feedPage}
     />
   );

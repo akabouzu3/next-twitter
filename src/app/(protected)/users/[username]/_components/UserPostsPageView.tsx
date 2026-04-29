@@ -1,7 +1,6 @@
 "use client"
 import { useCallback } from "react";
 import FeedList from "@/features/post/components/FeedList";
-import { UserProfile } from "@/features/user/server/get-user";
 import { FeedPage } from "@/features/post/types/post.types";
 import { fetchUserPostsPageByUsername } from "@/features/post/client/fetch-user-posts-page";
 import { FetchPageInput } from "@/features/post/hooks/useInfinityFeed";
@@ -9,13 +8,13 @@ import { FetchPageInput } from "@/features/post/hooks/useInfinityFeed";
 
 
 type Props = {
-  user: UserProfile;
+  username: string;
   feedPage: FeedPage;
 };
 
 
 export default function UserPageView({
-  user,
+  username,
   feedPage,
 }: Props) {
 
@@ -25,11 +24,11 @@ export default function UserPageView({
   const fetchPage = useCallback(
     (input: FetchPageInput) => {
       return fetchUserPostsPageByUsername({
-        username: user.username,
+        username,
         ...input,
       });
     },
-    [user]
+    [username]
   );
 
   return (
