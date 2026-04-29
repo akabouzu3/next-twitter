@@ -1,21 +1,20 @@
-import UserPageView from "@/app/(protected)/users/[username]/_components/UserPageView";
-import { getUserByUsername } from "@/features/user/server/get-user";
+import UserPostsPageView from "@/app/(protected)/users/[username]/_components/UserPostsPageView";
 import { getUserPostsPageByUsername } from "@/features/post/server/get-user-posts-page";
+import { getUserByUsername } from "@/features/user/server/get-user";
 import { notFound } from "next/navigation";
-import { requireCurrentUser } from "@/lib/auth/guards";
-
 
 type Props = {
-  params: Promise<{
+  params: {
     username: string;
-  }>;
+  };
 };
 
-export default async function UserPage(props: Props) {
-  const { username } = await props.params;
+export default async function UserPostsPage({
+  params
+}: Props) {
+  const { username } = params;
 
-  const [currentUser, user, feedPage] = await Promise.all([
-    requireCurrentUser(),
+  const [user,feedPage] = await Promise.all([
     getUserByUsername(username),
     getUserPostsPageByUsername({username, limit: 20}),
   ]);
@@ -26,8 +25,7 @@ export default async function UserPage(props: Props) {
   }
 
   return (
-    <UserPageView
-      currentUser={currentUser}
+    <UserPostsPageView
       user={user}
       feedPage={feedPage}
     />
