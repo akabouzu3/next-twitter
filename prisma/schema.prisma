@@ -194,9 +194,16 @@ model PostLike {
 
   createdAt DateTime @default(now())
 
+
+  // 同じユーザーが同じ投稿に複数回いいねできないようにする
   @@unique([userId, postId])
+  // いいね一覧を cursor pagination で取得するため
+  @@unique([createdAt, id])
+
+  // ユーザーのいいね一覧用
+  @@index([userId, createdAt(sort: Desc), id(sort: Desc)])
+  // 投稿ごとのいいね数・いいね済み判定用
   @@index([postId])
-  @@index([userId])
 }
 
 model PostImage {
