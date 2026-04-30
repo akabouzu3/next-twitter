@@ -2,10 +2,12 @@ import Image from "next/image";
 import { CalendarDays, BadgeCheck, ChevronRight } from "lucide-react";
 import { CurrentUser } from "@/lib/auth/current-user";
 import type { UserProfile } from "@/features/user/server/get-user";
+import FollowButton from "@/features/follow/components/FollowButton";
+import { UserProfileItem } from "@/features/user/types/user.types";
 
 type Props = {
   currentUser: CurrentUser | null;
-  user: UserProfile;
+  user: UserProfileItem;
 };
 
 export default function UserProfile({ currentUser, user }: Props) {
@@ -18,7 +20,7 @@ export default function UserProfile({ currentUser, user }: Props) {
       {/* =========================
          ヘッダー画像（カバー画像）
       ========================= */}
-      <div className="relative h-[120px] bg-neutral-900 sm:h-[200px]">
+      <div className="relative h-[120px] sm:h-[200px] bg-neutral-900 ">
         {user.backgroundImage ? (
           <Image
             src={user.backgroundImage}
@@ -72,12 +74,7 @@ export default function UserProfile({ currentUser, user }: Props) {
               </button>
             ) : (
               // 他人 → フォローボタン
-              <button
-                type="button"
-                className="h-10 rounded-full bg-white px-5 text-sm font-bold text-black transition hover:bg-neutral-200"
-              >
-                フォロー
-              </button>
+              <FollowButton userId={user.id} isFollowing={user.isFollowing}/>
             )}
           </div>
         </div>
@@ -85,7 +82,7 @@ export default function UserProfile({ currentUser, user }: Props) {
         {/* =========================
            ユーザー情報
         ========================= */}
-        <div className="mt-12 sm:mt-16">
+        <div className="pt-10">
           
           {/* 🧠 名前 + 認証バッジ */}
           <div className="flex items-center gap-2">
@@ -133,7 +130,7 @@ export default function UserProfile({ currentUser, user }: Props) {
             {/* フォロー中 */}
             <div>
               <span className="font-bold text-white">
-                {user._count.following}
+                {user.followingCount}
               </span>{" "}
               <span className="text-neutral-500">フォロー中</span>
             </div>
@@ -141,7 +138,7 @@ export default function UserProfile({ currentUser, user }: Props) {
             {/* フォロワー */}
             <div>
               <span className="font-bold text-white">
-                {user._count.followers}
+                {user.followerCount}
               </span>{" "}
               <span className="text-neutral-500">フォロワー</span>
             </div>

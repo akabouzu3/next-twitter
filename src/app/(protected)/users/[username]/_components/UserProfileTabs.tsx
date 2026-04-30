@@ -1,5 +1,6 @@
 "use client";
-import { UserProfile } from "@/features/user/server/get-user";
+
+import { UserProfileItem } from "@/features/user/types/user.types";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -37,7 +38,7 @@ const tabs = [
 ] as const;
 
 type Props = {
-  user: UserProfile;
+  user: UserProfileItem;
 };
 
 export default function UserProfileTabs({

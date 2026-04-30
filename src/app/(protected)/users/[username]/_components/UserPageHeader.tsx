@@ -6,10 +6,10 @@ import {
   ArrowLeft, 
   // Search,
  } from "lucide-react";
-import { UserProfile } from "@/features/user/server/get-user";
+import { UserProfileItem } from "@/features/user/types/user.types";
 
 type Props = {
-  user: UserProfile;
+  user: UserProfileItem;
 };
 
 export default function UserPageHeader({
@@ -45,7 +45,7 @@ export default function UserPageHeader({
             {user.name ?? user.username}
           </h1>
           <p className="text-sm leading-5 text-neutral-500">
-            {user._count.posts} 件のポスト
+            {user.postCount} 件のポスト
           </p>
         </div>
       </div>
