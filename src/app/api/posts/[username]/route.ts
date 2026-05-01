@@ -5,7 +5,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 // 投稿取得ロジック（DBアクセス）
-import { getUserPostsPageByUsername } from "@/features/post/server/get-user-posts-page";
+import { getUserPostsPage } from "@/features/post/server/get-user-posts-page";
+import { getUserByUsername } from "@/features/user/server/get-user";
 
 /**
  * cursor の query string を復元するための schema
@@ -63,9 +64,9 @@ function parseCursor(rawCursor?: string) {
  * 
  */
 type Props = {
-  params: {
+  params: Promise<{
     username: string;
-  }
+  }>;
 }
 
 /**
@@ -77,7 +78,18 @@ export async function GET(
  ) {
   try {
     // Propsからparamsを取得
-    const username = params?.username;
+    const { username } = await params;
+    const user = await getUserByUsername(username);
+
+    // userがいない場合
+    if(!user){
+      return NextResponse.json(
+        {
+          message: "ユーザを取得できませんでした。",
+        },
+        { status: 400 },
+      );
+    }
 
     /**
      * query string取得
@@ -135,8 +147,8 @@ export async function GET(
      * - null → 初回ページ
      * - 値あり → 次ページ
      */
-    const page = await getUserPostsPageByUsername({
-      username,
+    const page = await getUserPostsPage({
+      where: { userId: user.id},
       limit,
       cursor,
     });
