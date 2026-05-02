@@ -29,7 +29,7 @@ export type Input = {
 /**
  * ユーザ投稿の次ページを取得する関数
  */
-export async function fetchUserPostsPageByUsername({
+export async function fetchUserPostFeedPageByUsername({
   username,
   cursor,
   limit = PAGE_SIZE, // 指定がなければ10件

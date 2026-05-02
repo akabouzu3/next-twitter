@@ -1,15 +1,16 @@
 "use client";
 
+import { UserProfileItem } from "@/features/user/types/user.types";
 import { useEffect } from "react";
 
 type Props = {
-  username: string;
+  user: UserProfileItem;
 };
 
-export default function ScrollToTopOnUserChange({ username }: Props) {
+export default function ScrollToTopOnUserChange({ user }: Props) {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
-  }, [username]);
+  }, [user]);
 
   return null;
 }

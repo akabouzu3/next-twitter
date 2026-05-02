@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 // 投稿取得ロジック（DBアクセス）
-import { getUserPostsPage } from "@/features/post/server/get-user-posts-page";
+import { getUserPostFeedPageByUserId } from "@/features/post/server/get-user-post-feed-page";
 import { getUserByUsername } from "@/features/user/server/get-user";
 
 /**
@@ -61,28 +61,25 @@ function parseCursor(rawCursor?: string) {
 }
 
 /**
- * 
+ *
  */
 type Props = {
   params: Promise<{
     username: string;
   }>;
-}
+};
 
 /**
  * GET /api/posts/[username]
  */
-export async function GET(
-  request: NextRequest,
-  { params }: Props
- ) {
+export async function GET(request: NextRequest, { params }: Props) {
   try {
     // Propsからparamsを取得
     const { username } = await params;
     const user = await getUserByUsername(username);
 
     // userがいない場合
-    if(!user){
+    if (!user) {
       return NextResponse.json(
         {
           message: "ユーザを取得できませんでした。",
@@ -147,8 +144,8 @@ export async function GET(
      * - null → 初回ページ
      * - 値あり → 次ページ
      */
-    const page = await getUserPostsPage({
-      where: { userId: user.id},
+    const page = await getUserPostFeedPageByUserId({
+      userId: user.id,
       limit,
       cursor,
     });

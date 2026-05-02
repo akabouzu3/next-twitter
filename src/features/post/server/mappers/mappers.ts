@@ -1,8 +1,8 @@
 // src/features/post/server/mappers.ts
 import type { FeedItem } from "@/features/post/types/post.types";
-import type { FeedPostItemPayload } from "@/features/post/server/selects/selects";
+import type { PostFeedItemPayload } from "@/features/post/server/selects/selects";
 
-export function toFeedItem(post: FeedPostItemPayload): FeedItem {
+export function toFeedItem(post: PostFeedItemPayload): FeedItem {
   return {
     id: post.id,
     content: post.content,
