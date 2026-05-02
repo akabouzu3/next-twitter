@@ -18,7 +18,7 @@ import { Prisma } from "@prisma/client";
  * - Prisma.PostSelectとして正しい形かを型チェック
  * - ただし型推論は壊さない（重要）
  */
-export const feedPostItemSelect = {
+export const postFeedItemSelect = {
   id: true,
   content: true,
   createdAt: true,
@@ -67,6 +67,6 @@ export const feedPostItemSelect = {
  * - selectと型が完全に一致する
  * - selectを変更すると型も自動更新される
  */
-export type FeedPostItemPayload = Prisma.PostGetPayload<{
-  select: typeof feedPostItemSelect;
+export type PostFeedItemPayload = Prisma.PostGetPayload<{
+  select: typeof postFeedItemSelect;
 }>;
