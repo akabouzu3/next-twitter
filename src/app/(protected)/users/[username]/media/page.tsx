@@ -29,7 +29,7 @@ export default async function UserMediaPage({
   const [feedPage] = await Promise.all([
     getUserMediaPostFeedPageByUserId({
       userId: user.id,
-      limit: 20,
+      limit: 10,
     }),
   ]);
 

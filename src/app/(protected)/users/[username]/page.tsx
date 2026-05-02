@@ -29,7 +29,7 @@ export default async function UserPostsPage({
   const [feedPage] = await Promise.all([
     getUserPostFeedPageByUserId({
       userId: user.id,
-      limit: 20
+      limit: 10
     }),
   ]);
 

@@ -7,9 +7,10 @@ import { FeedPage } from "@/features/post/types/post.types";
 type Props = {
   initialPage: FeedPage;
   fetchPage: (input: FetchPageInput) => Promise<FeedPage>; 
+  pageSize?: number;
 }
 
-export default function FeedList({ initialPage, fetchPage }: Props) {
+export default function FeedList({ initialPage, fetchPage, pageSize = 10 }: Props) {
   /**
    * カスタムフックから状態と操作を取得
    *
@@ -27,7 +28,7 @@ export default function FeedList({ initialPage, fetchPage }: Props) {
     error,
     observerRef,
     retry,
-  } = useInfiniteFeed({ initialPage, fetchPage, pageSize: 20 });
+  } = useInfiniteFeed({ initialPage, fetchPage, pageSize });
 
   /**
    * 空状態の表示条件

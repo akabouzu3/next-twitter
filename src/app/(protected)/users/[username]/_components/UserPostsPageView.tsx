@@ -34,7 +34,7 @@ export default function UserPostsPageView({
 
   return (
     <>
-      <FeedList initialPage={feedPage} fetchPage={fetchPage}></FeedList>
+      <FeedList initialPage={feedPage} fetchPage={fetchPage} pageSize={10} />
       {/* 他のユーザー詳細ページにいった際、スクロール位置がリセットされるようにする */}
       <ScrollToTopOnUserChange user={user} />
     </>
