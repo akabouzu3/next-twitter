@@ -1,6 +1,5 @@
 import "server-only";
 
-import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma/prisma";
 import { Cursor, FeedItem, FeedPage } from "@/features/post/types/post.types";
 import { postFeedItemSelect } from "@/features/post/server/selects/selects";
@@ -12,8 +11,8 @@ const PAGE_SIZE = 10;
 /**
  * 入力パラメータ
  */
-type GetUserLikedPostsPageInput = {
-  where: Prisma.PostLikeWhereInput;
+type Input = {
+  userId: string;
   limit?: number;
   // 前回の最後の投稿（cursor pagination）
   cursor?: Cursor | null;
@@ -26,17 +25,19 @@ type GetUserLikedPostsPageInput = {
  * - PostLike.createdAt の新しい順で並べる
  * - cursor がある場合は次ページを返す
  */
-export async function getUserLikedPostsPage({
-  where,
+export async function getUserLikedPostFeedPageByUserId({
+  userId,
   limit = PAGE_SIZE,
   cursor,
-}: GetUserLikedPostsPageInput): Promise<FeedPage> {
+}: Input): Promise<FeedPage> {
 
   /**
    * 2. いいねログを取得（カーソルページング）
    */
   const likes = await prisma.postLike.findMany({
-    where,
+    where: {
+      userId,
+    },
 
     /**
      * 並び順（重要）

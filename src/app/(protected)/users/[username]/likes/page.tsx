@@ -1,6 +1,7 @@
 import UserLikesPageView from "@/app/(protected)/users/[username]/likes/_components/UserLikesPageView";
-import { getUserLikedPostsPage } from "@/features/post/server/get-user-liked-posts-page";
+import { getUserLikedPostFeedPageByUserId } from "@/features/post/server/get-user-liked-post-feed-page";
 import { getUserByUsername } from "@/features/user/server/get-user";
+import { notFound } from "next/navigation";
 
 type Props = {
   params: {
@@ -13,18 +14,28 @@ export default async function UserLikesPage({
 }: Props) {
   const { username } = params;
 
-  const user = await getUserByUsername(username);
+  const [
+    // currentUser,
+    user,
+  ] = await Promise.all([
+    // requireCurrentUser(),
+    getUserByUsername(username),
+  ]);
+
+  if(!user){
+    notFound();
+  }
 
   const [feedPage] = await Promise.all([
-    getUserLikedPostsPage({
-      where: { userId: user?.id },
-      limit: 20
+    getUserLikedPostFeedPageByUserId({
+      userId: user.id,
+      limit: 10,
     }),
   ]);
 
   return (
     <UserLikesPageView
-      username={username}
+      user={user}
       feedPage={feedPage}
     />
   );
