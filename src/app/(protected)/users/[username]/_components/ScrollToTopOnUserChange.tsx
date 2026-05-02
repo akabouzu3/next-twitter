@@ -10,7 +10,7 @@ type Props = {
 export default function ScrollToTopOnUserChange({ user }: Props) {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
-  }, [user]);
+  }, [user.username]);
 
   return null;
 }

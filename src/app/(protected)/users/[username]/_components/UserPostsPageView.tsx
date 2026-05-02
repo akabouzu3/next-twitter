@@ -29,7 +29,7 @@ export default function UserPostsPageView({
         ...input,
       });
     },
-    [user]
+    [user.username]
   );
 
   return (

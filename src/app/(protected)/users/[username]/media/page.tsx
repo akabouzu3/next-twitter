@@ -1,6 +1,7 @@
 import UserMediaPageView from "@/app/(protected)/users/[username]/media/_components/UserMediaPageView";
-import { getUserPostsPage } from "@/features/post/server/get-user-posts-page";
+import { getUserMediaPostFeedPageByUserId } from "@/features/post/server/get-user-media-post-feed-page";
 import { getUserByUsername } from "@/features/user/server/get-user";
+import { notFound } from "next/navigation";
 
 type Props = {
   params: {
@@ -13,21 +14,28 @@ export default async function UserMediaPage({
 }: Props) {
   const { username } = params;
 
-  const user = await getUserByUsername(username);
+  const [
+    // currentUser,
+    user,
+  ] = await Promise.all([
+    // requireCurrentUser(),
+    getUserByUsername(username),
+  ]);
 
-  const [ feedPage ] = await Promise.all([
-    getUserPostsPage({
-      where: { 
-        userId: user?.id,
-        images: { some: {}}
-       },
-      limit: 20
+  if(!user){
+    notFound();
+  }
+
+  const [feedPage] = await Promise.all([
+    getUserMediaPostFeedPageByUserId({
+      userId: user.id,
+      limit: 20,
     }),
   ]);
 
   return (
     <UserMediaPageView
-      username={username}
+      user={user}
       feedPage={feedPage}
     />
   );

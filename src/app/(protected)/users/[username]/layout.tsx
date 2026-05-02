@@ -21,7 +21,10 @@ export default async function UserProfileLayout({
 
   const { username } = params;
 
-  const [currentUser, user] = await Promise.all([
+  const [
+    currentUser, 
+    user,
+  ] = await Promise.all([
     requireCurrentUser(),
     getUserByUsername(username),
   ]);

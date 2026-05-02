@@ -2,19 +2,20 @@
 import { useCallback } from "react";
 import FeedList from "@/features/post/components/FeedList";
 import { FeedPage } from "@/features/post/types/post.types";
-import { fetchUserPostsPageByUsername } from "@/features/post/client/fetch-user-posts-page";
+import { fetchUserMediaPostFeedPageByUsername } from "@/features/post/client/fetch-user-media-post-feed-page";
 import { FetchPageInput } from "@/features/post/hooks/useInfinityFeed";
 import ScrollToTopOnUserChange from "@/app/(protected)/users/[username]/_components/ScrollToTopOnUserChange";
+import { UserProfileItem } from "@/features/user/types/user.types";
 
 
 type Props = {
-  username: string;
+  user: UserProfileItem;
   feedPage: FeedPage;
 };
 
 
 export default function UserMediaPageView({
-  username,
+  user,
   feedPage,
 }: Props) {
 
@@ -23,19 +24,19 @@ export default function UserMediaPageView({
    */
   const fetchPage = useCallback(
     (input: FetchPageInput) => {
-      return fetchUserPostsPageByUsername({
-        username,
+      return fetchUserMediaPostFeedPageByUsername({
+        username: user.username,
         ...input,
       });
     },
-    [username]
+    [user.username]
   );
 
   return (
     <>
       <FeedList initialPage={feedPage} fetchPage={fetchPage}></FeedList>
       {/* 他のユーザー詳細ページにいった際、スクロール位置がリセットされるようにする */}
-      <ScrollToTopOnUserChange username={username} />
+      <ScrollToTopOnUserChange user={user} />
     </>
   )
 }
