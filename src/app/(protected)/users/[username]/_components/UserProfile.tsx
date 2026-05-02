@@ -4,6 +4,7 @@ import { CurrentUser } from "@/lib/auth/current-user";
 import type { UserProfile } from "@/features/user/server/get-user";
 import FollowButton from "@/features/follow/components/FollowButton";
 import { UserProfileItem } from "@/features/user/types/user.types";
+import UserEditDialogTrigger from "@/features/user/components/UserEditDialogTriger";
 
 type Props = {
   currentUser: CurrentUser | null;
@@ -66,12 +67,7 @@ export default function UserProfile({ currentUser, user }: Props) {
           <div className="pt-3">
             {isMe ? (
               // 自分 → 編集ボタン
-              <button
-                type="button"
-                className="h-10 rounded-full border border-neutral-600 px-4 text-sm font-bold transition hover:bg-white/10 sm:text-base"
-              >
-                プロフィールを編集
-              </button>
+              <UserEditDialogTrigger currentUser={currentUser} user={user}/>
             ) : (
               // 他人 → フォローボタン
               <FollowButton userId={user.id} isFollowing={user.isFollowing}/>

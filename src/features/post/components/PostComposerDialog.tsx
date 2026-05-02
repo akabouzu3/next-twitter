@@ -41,7 +41,7 @@ export default function PostComposerDialog({
                   type="button"
                   aria-label="閉じる"
                   onClick={()=> onOpenChange(false)}
-                  className="w-8 h-8 rounded-full cursor-pointer hover:bg-white/20"
+                  className="grid place-items-center size-8 rounded-full cursor-pointer hover:bg-white/20"
                 >
                   <ArrowLeft className="size-5" />
                 </button>
@@ -76,7 +76,7 @@ export default function PostComposerDialog({
                   type="button"
                   aria-label="閉じる"
                   onClick={() => onOpenChange(false)}
-                  className="absolute top-4 left-4 w-8 h-8 rounded-full cursor-pointer hover:bg-white/20"
+                  className="absolute top-4 left-4 grid place-items-center size-8 rounded-full cursor-pointer transition hover:bg-white/20"
                 >
                   <X className="size-5" />
                 </button>
