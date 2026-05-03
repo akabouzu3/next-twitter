@@ -1,5 +1,5 @@
-import UserMediaPageView from "@/app/(protected)/users/[username]/media/_components/UserMediaPageView";
-import { getUserMediaPostFeedPageByUserId } from "@/features/post/server/get-user-media-post-feed-page";
+import UserLikesPageView from "@/app/(protected)/users/[username]/(profile)/likes/_components/UserLikesPageView";
+import { getUserLikedPostFeedPageByUserId } from "@/features/post/server/get-user-liked-post-feed-page";
 import { getUserByUsername } from "@/features/user/server/get-user";
 import { notFound } from "next/navigation";
 
@@ -9,7 +9,7 @@ type Props = {
   };
 };
 
-export default async function UserMediaPage({
+export default async function UserLikesPage({
   params
 }: Props) {
   const { username } = params;
@@ -27,14 +27,14 @@ export default async function UserMediaPage({
   }
 
   const [feedPage] = await Promise.all([
-    getUserMediaPostFeedPageByUserId({
+    getUserLikedPostFeedPageByUserId({
       userId: user.id,
       limit: 10,
     }),
   ]);
 
   return (
-    <UserMediaPageView
+    <UserLikesPageView
       user={user}
       feedPage={feedPage}
     />

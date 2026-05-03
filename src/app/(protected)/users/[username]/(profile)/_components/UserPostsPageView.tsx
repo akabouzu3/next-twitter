@@ -2,9 +2,9 @@
 import { useCallback } from "react";
 import FeedList from "@/features/post/components/FeedList";
 import { FeedPage } from "@/features/post/types/post.types";
-import { fetchUserMediaPostFeedPageByUsername } from "@/features/post/client/fetch-user-media-post-feed-page";
+import { fetchUserPostFeedPageByUsername } from "@/features/post/client/fetch-user-post-feed-page";
 import { FetchPageInput } from "@/features/post/hooks/useInfinityFeed";
-import ScrollToTopOnUserChange from "@/app/(protected)/users/[username]/_components/ScrollToTopOnUserChange";
+import ScrollToTopOnUserChange from "@/app/(protected)/users/[username]/(profile)/_components/ScrollToTopOnUserChange";
 import { UserProfileItem } from "@/features/user/types/user.types";
 
 
@@ -14,7 +14,7 @@ type Props = {
 };
 
 
-export default function UserMediaPageView({
+export default function UserPostsPageView({
   user,
   feedPage,
 }: Props) {
@@ -24,7 +24,7 @@ export default function UserMediaPageView({
    */
   const fetchPage = useCallback(
     (input: FetchPageInput) => {
-      return fetchUserMediaPostFeedPageByUsername({
+      return fetchUserPostFeedPageByUsername({
         username: user.username,
         ...input,
       });

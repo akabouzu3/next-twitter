@@ -1,8 +1,8 @@
 
 
-import UserPageHeader from "@/app/(protected)/users/[username]/_components/UserPageHeader";
-import UserProfileComponent from "@/app/(protected)/users/[username]/_components/UserProfile";
-import UserProfileTabs from "@/app/(protected)/users/[username]/_components/UserProfileTabs";
+import UserPageHeader from "@/app/(protected)/users/[username]/(profile)/_components/UserPageHeader";
+import UserProfileComponent from "@/app/(protected)/users/[username]/(profile)/_components/UserProfile";
+import UserProfileTabs from "@/app/(protected)/users/[username]/(profile)/_components/UserProfileTabs";
 import { getUserByUsername } from "@/features/user/server/get-user";
 import { notFound } from "next/navigation";
 import { requireCurrentUser } from "@/lib/auth/guards";

@@ -4,7 +4,7 @@ import FeedList from "@/features/post/components/FeedList";
 import { FeedPage } from "@/features/post/types/post.types";
 import { fetchUserLikedPostFeedPageByUsername } from "@/features/post/client/fetch-user-liked-post-feed-page";
 import { FetchPageInput } from "@/features/post/hooks/useInfinityFeed";
-import ScrollToTopOnUserChange from "@/app/(protected)/users/[username]/_components/ScrollToTopOnUserChange";
+import ScrollToTopOnUserChange from "@/app/(protected)/users/[username]/(profile)/_components/ScrollToTopOnUserChange";
 import { UserProfileItem } from "@/features/user/types/user.types";
 
 

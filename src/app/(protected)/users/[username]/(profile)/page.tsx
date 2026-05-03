@@ -1,4 +1,4 @@
-import UserPostsPageView from "@/app/(protected)/users/[username]/_components/UserPostsPageView";
+import UserPostsPageView from "@/app/(protected)/users/[username]/(profile)/_components/UserPostsPageView";
 import { getUserPostFeedPageByUserId } from "@/features/post/server/get-user-post-feed-page";
 import { getUserByUsername } from "@/features/user/server/get-user";
 import { notFound } from "next/navigation";
