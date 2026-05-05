@@ -22,6 +22,7 @@ import { UserProfileItem } from "@/features/user/types/user.types";
  */
 export const userProfileSelect = Prisma.validator<Prisma.UserSelect>()({
   id: true,
+  role: true,
   name: true,
   username: true,
   bio: true,

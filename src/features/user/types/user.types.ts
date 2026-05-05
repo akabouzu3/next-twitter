@@ -1,3 +1,4 @@
+import { UserRole } from "@prisma/client";
 
 export type RecommendedUser = {
   id: string;
@@ -11,6 +12,7 @@ export type RecommendedUser = {
 
 export type UserProfileItem = {
   id: string;
+  role: UserRole;
   name: string;
   username: string;
   bio: string | null;

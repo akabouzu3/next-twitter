@@ -1,14 +1,5 @@
+import { UserRole } from "@prisma/client";
 import "server-only";
-
-/**
- * =========================================
- * Role定義（ユーザー権限）
- * =========================================
- *
- * USER  : 一般ユーザー
- * ADMIN : 管理者（全操作可能）
- */
-type Role = "USER" | "ADMIN";
 
 /**
  * =========================================
@@ -17,7 +8,7 @@ type Role = "USER" | "ADMIN";
  */
 type UserLike = {
   id: string;
-  role: Role;
+  role: UserRole;
 };
 
 /**

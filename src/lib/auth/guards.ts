@@ -10,6 +10,7 @@ import {
   canEditUser,
   isAdmin,
 } from "@/lib/auth/permissions";
+import { UserRole } from "@prisma/client";
 
 /**
  * =========================================
@@ -24,7 +25,7 @@ import {
  */
 type AuthUserLike = {
   id: string;
-  role: "USER" | "ADMIN";
+  role: UserRole;
 };
 
 /**

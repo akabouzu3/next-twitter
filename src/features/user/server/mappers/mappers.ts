@@ -6,6 +6,7 @@ export function toUserProfileItem(
 ): UserProfileItem {
   return {
     id: user.id,
+    role: user.role,
     name: user.name ?? user.username,
     username: user.username,
     bio: user.bio,
