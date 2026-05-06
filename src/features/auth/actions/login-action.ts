@@ -8,8 +8,14 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 export type LoginActionState = {
   success: boolean;
   message: string;
-  values?: { email?: string };
-  fieldErrors?: { email?: string[]; password?: string[] };
+  submittedAt?: number;
+  values?: { 
+    email?: string;
+   };
+  fieldErrors?: { 
+    email?: string[]; 
+    password?: string[];
+   };
 };
 
 function safeRedirectTo(raw: unknown): string {
@@ -46,7 +52,11 @@ export async function loginAction(
     });
 
     // signIn が redirect を投げる構成ならここには来ない場合もある
-    return { success: true, message: "ログインしました。" };
+    return { 
+      success: true, 
+      message: "ログインしました。",
+      submittedAt: Date.now(),
+     };
   } catch (err) {
     // ✅ これが超重要：redirectは正常系なので握らない
     if (isRedirectError(err)) throw err;

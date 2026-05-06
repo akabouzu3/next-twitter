@@ -11,8 +11,16 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 export type SignupActionState = {
   success: boolean;
   message: string;
-  values?: { name?: string; email?: string };
-  fieldErrors?: { name?: string[]; email?: string[]; password?: string[] };
+  submittedAt?: number;
+  values?: { 
+    name?: string; 
+    email?: string;
+  };
+  fieldErrors?: { 
+    name?: string[]; 
+    email?: string[]; 
+    password?: string[] 
+  };
 };
 
 function safeRedirectTo(raw: unknown): string {
@@ -74,7 +82,12 @@ export async function signupAction(
       password,
       redirectTo: safeRedirectTo(formData.get("redirectTo")),
     });
-    return { success: true, message: "登録が完了しました。" };
+
+    return { 
+      success: true, 
+      message: "登録が完了しました。",
+      submittedAt: Date.now(),
+     };
   } catch (e) {
     if (isRedirectError(e)) throw e; // ✅ 成功リダイレクトは正常系
     if (e instanceof AuthError) {

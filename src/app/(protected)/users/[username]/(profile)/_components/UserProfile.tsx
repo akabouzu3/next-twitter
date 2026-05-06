@@ -5,6 +5,7 @@ import type { UserProfile } from "@/features/user/server/get-user";
 import FollowButton from "@/features/follow/components/FollowButton";
 import { UserProfileItem } from "@/features/user/types/user.types";
 import UserEditDialogTrigger from "@/features/user/components/UserEditDialogTriger";
+import Link from "next/link";
 
 type Props = {
   currentUser: CurrentUser | null;
@@ -124,20 +125,20 @@ export default function UserProfile({ currentUser, user }: Props) {
           <div className="mt-4 flex gap-5 text-[15px]">
             
             {/* フォロー中 */}
-            <div>
+            <Link href={`/users/${user.username}/following`}>
               <span className="font-bold text-white">
                 {user.followingCount}
               </span>{" "}
               <span className="text-neutral-500">フォロー中</span>
-            </div>
+            </Link>
 
             {/* フォロワー */}
-            <div>
+            <Link href={`/users/${user.username}/follower`}>
               <span className="font-bold text-white">
                 {user.followerCount}
               </span>{" "}
               <span className="text-neutral-500">フォロワー</span>
-            </div>
+            </Link>
           </div>
         </div>
       </div>

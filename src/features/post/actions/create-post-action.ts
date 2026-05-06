@@ -5,11 +5,12 @@ import { revalidatePath } from "next/cache";
 import { getCurrentSessionUserId } from "@/lib/auth/session";
 import { createPost } from "@/features/post/server/create-post";
 import { createPostSchema } from "@/features/post/schemas/create-post.schema";
-import { validatePostImages } from "@/features/post/server/validate-post-images";
+import { validateImageFiles } from "@/lib/upload/validate-image-files";
 
 export type CreatePostActionState = {
   success: boolean;
   message: string;
+  submittedAt?: number;
   values?: {
     content?: string;
   };
@@ -67,15 +68,19 @@ export async function createPostAction(
   }
 
   // 画像バリデーションを行う
-  const validationResult = validatePostImages(imageFiles);
+  const validationResult = validateImageFiles(imageFiles, {
+    maxCount: 4,
+    maxSize: 5 * 1024 * 1024,
+  });
+  
   // 画像バリデーションエラーがあればエラーを返す
   if (!validationResult.success) {
     return {
       success: false,
-      message: validationResult.message,
+      message: validationResult?.message || "不正な画像です。",
       values: { content },
       fieldErrors: { 
-        images: validationResult.errors 
+        images: validationResult?.errors 
       },
     };
   }
@@ -94,5 +99,6 @@ export async function createPostAction(
   return {
     success: true,
     message: "投稿しました。",
+    submittedAt: Date.now(),
   };
 }

@@ -59,20 +59,19 @@ export default function PostComposer({ currentUser, onSuccess }: Props) {
    * 投稿成功時の処理
    */
   useEffect(() => {
-    if (state.success) {
-      // 選択している画像をリセット
-      setSelectedImages([]);
-
-      // テキストエリアをリセット
-      if (textareaRef.current) {
-        textareaRef.current.value = "";
-        resizeTextarea(textareaRef.current);
-      }
-      
-      // 成功時の処理（ダイアログを閉じるなど）
-      onSuccess?.();
+    if (!state.success || !state.submittedAt) return;
+    
+    setContent("");
+    setSelectedImages([]);
+    
+    if (textareaRef.current) {
+      textareaRef.current.value = "";
+      resizeTextarea(textareaRef.current);
     }
-  }, [state.success, onSuccess]);
+    
+    // 成功時の処理（ダイアログを閉じるなど）
+    onSuccess?.();
+  }, [state.submittedAt, state.success, onSuccess]);
 
   /**
    * 画像プレビュー用URL生成
