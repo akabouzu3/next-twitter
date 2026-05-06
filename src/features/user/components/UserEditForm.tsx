@@ -10,7 +10,7 @@ type Props = {
 
 export function UserEditForm({ user }: Props) {
   return (
-    <form className="flex flex-col">
+    <form id="edit-form" className="flex flex-col">
       <div className="relative h-[120px] bg-neutral-900 sm:h-[200px]">
         {user.backgroundImage ? (
           <Image
@@ -72,13 +72,6 @@ export function UserEditForm({ user }: Props) {
               className="mt-1 w-full resize-none bg-transparent text-[17px] outline-none"
             />
           </label>
-
-          <div className="rounded border border-white/20 px-3 py-3">
-            <p className="text-xs text-neutral-500">ユーザー名</p>
-            <p className="mt-1 text-[17px] text-neutral-400">
-              @{user.username}
-            </p>
-          </div>
         </div>
       </div>
     </form>

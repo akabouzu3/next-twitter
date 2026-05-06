@@ -45,7 +45,10 @@ export function UserEditDialog({
                 <h2 className="text-xl font-bold tracking-wider">プロフィールを編集</h2>
               </div>
               <div className="flex items-center">
-                <button className="rounded-full bg-white px-4 py-1.5 text-sm font-bold text-black hover:bg-neutral-200">
+                <button
+                  type="submit"
+                  form="edit-form" 
+                  className="rounded-full bg-white px-4 py-1.5 text-sm font-bold text-black hover:bg-neutral-200">
                   保存
                 </button>
               </div>
@@ -86,7 +89,10 @@ export function UserEditDialog({
                 <h2 className="text-xl font-bold tracking-wider">プロフィールを編集</h2>
               </div>
               <div className="flex items-center">
-                <button className="rounded-full bg-white px-4 py-1.5 text-sm font-bold text-black hover:bg-neutral-200">
+                <button
+                  type="submit"
+                  form="edit-form"
+                  className="rounded-full bg-white px-4 py-1.5 text-sm font-bold text-black hover:bg-neutral-200">
                   保存
                 </button>
               </div>
