@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "PostImage" ADD COLUMN     "url" TEXT NOT NULL DEFAULT '',
+ALTER COLUMN "imageUrl" SET DEFAULT '';

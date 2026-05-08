@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import Home from "@/components/layout/Home";
-import { SignupModal } from "@/components/modals/SignupModal";
+import SignupDialog from "@/features/auth/components/SignupDialog";
 
 export const metadata: Metadata = {
   title: "アカウント登録"
@@ -12,7 +12,7 @@ export default function SignupPage() {
     <>
     <Home />
     
-    <SignupModal open={true} />
+    <SignupDialog open={true} />
     </>
   );
 }

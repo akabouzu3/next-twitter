@@ -2,13 +2,21 @@ import "server-only";
 import { cache } from "react";
 import { prisma } from "@/lib/prisma/prisma";
 import { getCurrentSessionUser } from "@/lib/auth/session";
+import { Prisma } from "@prisma/client";
 
-import { User } from "@prisma/client";
+export const currentUserSelect = Prisma.validator<Prisma.UserSelect>()({
+  id: true,
+  username: true,
+  name: true,
+  email: true,
+  role: true,
+  image: true,
+  backgroundImage: true,
+});
 
-export type CurrentUser = Pick<
-  User,
-  "id" | "username" | "name" | "email" | "role" | "image" | "backgroundImage"
->;
+export type CurrentUser = Prisma.UserGetPayload<{
+  select: typeof currentUserSelect;
+}>;
 /**
  * DBから現在ユーザーの詳細を取得する
  * - session.user.id を使う
