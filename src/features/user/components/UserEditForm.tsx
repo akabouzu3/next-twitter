@@ -40,13 +40,16 @@ export function UserEditForm({ user, formId, onSuccess }: Props) {
   const [backgroundImagePreview, setBackgroundImagePreview] = useState<
     string | null
   >(user.backgroundImage ?? null);
+  const lastHandledSubmittedAtRef = useRef<number | undefined>(undefined);
 
-  // 更新成功時の後処理は親コンポーネントに任せる。現在は編集ダイアログを閉じる用途。
+  // 成功した送信結果ごとに一度だけ親へ通知する。現在は編集ダイアログを閉じる用途。
   useEffect(() => {
-    if (state.success) {
-      onSuccess?.();
-    }
-  }, [onSuccess, state.success]);
+    if (!state.success || !state.submittedAt) return;
+    if (lastHandledSubmittedAtRef.current === state.submittedAt) return;
+
+    lastHandledSubmittedAtRef.current = state.submittedAt;
+    onSuccess?.();
+  }, [onSuccess, state.submittedAt, state.success]);
 
   return (
     // id はダイアログヘッダーの保存ボタンの form 属性と揃える。
