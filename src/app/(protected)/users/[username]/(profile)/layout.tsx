@@ -9,9 +9,9 @@ import { requireCurrentUser } from "@/lib/auth/guards";
 
 type Props = {
   children: React.ReactNode;
-  params: {
+  params: Promise<{
     username: string;
-  };
+  }>;
 };
 
 export default async function UserProfileLayout({
@@ -19,7 +19,7 @@ export default async function UserProfileLayout({
   params,
 }: Props) {
 
-  const { username } = params;
+  const { username } = await params;
 
   const [
     currentUser, 

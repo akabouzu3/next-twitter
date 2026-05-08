@@ -4,15 +4,15 @@ import { getUserByUsername } from "@/features/user/server/get-user";
 import { notFound } from "next/navigation";
 
 type Props = {
-  params: {
+  params: Promise<{
     username: string;
-  };
+  }>;
 };
 
 export default async function UserLikesPage({
   params
 }: Props) {
-  const { username } = params;
+  const { username } = await params;
 
   const [
     // currentUser,
