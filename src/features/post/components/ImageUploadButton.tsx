@@ -32,6 +32,11 @@ export function ImageUploadButton({
    *
    * input.files は直接自由に配列のように編集できないため、
    * DataTransfer を使って FileList を再構築する
+   * 
+   * input.files = ??? // 普通は書き換え不可
+   * const dt = new DataTransfer();
+   * dt.items.add(file);
+   * input.files = dt.files;
    */
   const dataTransferRef = useRef<DataTransfer | null>(null);
 

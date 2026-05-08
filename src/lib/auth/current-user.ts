@@ -2,14 +2,6 @@ import "server-only";
 import { cache } from "react";
 import { prisma } from "@/lib/prisma/prisma";
 import { getCurrentSessionUser } from "@/lib/auth/session";
-
-import { User } from "@prisma/client";
-
-// export type CurrentUser = Pick<
-//   User,
-//   "id" | "username" | "name" | "email" | "role" | "image" | "backgroundImage"
-// >;
-
 import { Prisma } from "@prisma/client";
 
 export const currentUserSelect = Prisma.validator<Prisma.UserSelect>()({

@@ -16,7 +16,7 @@ type Props = {
 export function UserEditDialog({ 
   open,
   onOpenChange,
-  currentUser,
+  // currentUser,
   user,
  }: Props) {
 
