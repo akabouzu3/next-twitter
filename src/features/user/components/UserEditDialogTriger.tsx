@@ -40,7 +40,6 @@ export default function UserEditDialogTrigger({
       <UserEditDialog
         open={open}
         onOpenChange={setOpen}
-        currentUser={currentUser}
         user={user}
       />
     </>

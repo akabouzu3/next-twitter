@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Camera } from "lucide-react";
-import { useActionState, useRef, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 
 import { UserProfileItem } from "@/features/user/types/user.types";
 import {
@@ -12,6 +12,8 @@ import {
 
 type Props = {
   user: UserProfileItem;
+  formId: string;
+  onSuccess?: () => void;
 };
 
 const initialState: UpdateUserActionState = {
@@ -19,15 +21,18 @@ const initialState: UpdateUserActionState = {
   message: "",
 };
 
-export function UserEditForm({ user }: Props) {
+export function UserEditForm({ user, formId, onSuccess }: Props) {
+  // Server Action の戻り値を state に保持し、送信中・エラー表示・成功判定に使う。
   const [state, formAction, isPending] = useActionState(
     updateUserAction,
     initialState
   );
 
+  // 実際の file input は隠して、カメラボタンからクリックさせる。
   const imageInputRef = useRef<HTMLInputElement>(null);
   const backgroundImageInputRef = useRef<HTMLInputElement>(null);
 
+  // 画像を選択した直後に、保存前でも画面上で確認できるようにする。
   const [imagePreview, setImagePreview] = useState<string | null>(
     user.image ?? null
   );
@@ -36,10 +41,20 @@ export function UserEditForm({ user }: Props) {
     string | null
   >(user.backgroundImage ?? null);
 
+  // 更新成功時の後処理は親コンポーネントに任せる。現在は編集ダイアログを閉じる用途。
+  useEffect(() => {
+    if (state.success) {
+      onSuccess?.();
+    }
+  }, [onSuccess, state.success]);
+
   return (
-    <form id="edit-form" action={formAction} className="flex flex-col">
+    // id はダイアログヘッダーの保存ボタンの form 属性と揃える。
+    <form id={formId} action={formAction} className="flex flex-col">
+      {/* Server Action 側で編集対象ユーザーと権限を確認するために送る。 */}
       <input type="hidden" name="userId" value={user.id} />
 
+      {/* ヘッダー画像のプレビューとアップロード操作。 */}
       <div className="relative h-[120px] bg-neutral-900 sm:h-[200px]">
         {backgroundImagePreview ? (
           <Image
@@ -79,6 +94,7 @@ export function UserEditForm({ user }: Props) {
       </div>
 
       <div className="px-4">
+        {/* プロフィール画像のプレビューとアップロード操作。ヘッダー画像に少し重ねて表示する。 */}
         <div className="relative h-16">
           <div className="absolute -top-10 left-0 rounded-full bg-black p-1">
             <div className="relative size-[88px] overflow-hidden rounded-full bg-neutral-800">
@@ -120,6 +136,7 @@ export function UserEditForm({ user }: Props) {
         </div>
 
         <div className="space-y-4 pb-6">
+          {/* Server Action から返された成功・失敗メッセージ。 */}
           {state.message ? (
             <p
               className={
@@ -132,6 +149,7 @@ export function UserEditForm({ user }: Props) {
             </p>
           ) : null}
 
+          {/* テキスト入力欄。バリデーションエラー時は入力値を state.values から復元する。 */}
           <label className="block rounded border border-white/20 px-3 py-2 focus-within:border-sky-500">
             <span className="block text-xs text-neutral-500">名前</span>
             <input
