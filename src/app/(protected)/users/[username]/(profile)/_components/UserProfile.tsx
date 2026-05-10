@@ -133,7 +133,7 @@ export default function UserProfile({ currentUser, user }: Props) {
             </Link>
 
             {/* フォロワー */}
-            <Link href={`/users/${user.username}/follower`}>
+            <Link href={`/users/${user.username}/followers`}>
               <span className="font-bold text-white">
                 {user.followerCount}
               </span>{" "}

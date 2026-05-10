@@ -24,3 +24,25 @@ export type UserProfileItem = {
   postCount: number;
   isFollowing: boolean;
 };
+
+export type UserConnectionCursor = {
+  createdAt: string;
+  id: string;
+};
+
+export type UserConnectionItem = {
+  id: string;
+  name: string;
+  username: string;
+  bio: string | null;
+  image: string | null;
+  followerCount: number;
+  isFollowing: boolean;
+  isMe: boolean;
+};
+
+export type UserConnectionPage = {
+  items: UserConnectionItem[];
+  nextCursor: UserConnectionCursor | null;
+  hasMore: boolean;
+};

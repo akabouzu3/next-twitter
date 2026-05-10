@@ -11,7 +11,7 @@ export async function unfollowUserAction(targetUserId: string) {
     throw new Error("ログインが必要です。");
   }
 
-  unfollowUser({
+  await unfollowUser({
     currentUserId, 
     targetUserId
   });

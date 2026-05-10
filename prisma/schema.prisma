@@ -180,8 +180,15 @@ model Follow {
   createdAt   DateTime @default(now())
 
   @@unique([followerId, followingId])
-  @@index([followerId])
-  @@index([followingId])
+  /**
+   * フォロー / フォロワー一覧の cursor pagination 用。
+   * - followerId / followingId で絞り込む
+   * - createdAt DESC, id DESC で安定ソートする
+   * - createdAt + id を一意にして Prisma の複合 cursor に使う
+   */
+  @@unique([createdAt, id])
+  @@index([followerId, createdAt(sort: Desc), id(sort: Desc)])
+  @@index([followingId, createdAt(sort: Desc), id(sort: Desc)])
 }
 
 model PostLike {
