@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import KLogo from "@/components/icons/KLogo";
-import { CurrentUser } from "@/lib/auth/current-user";
-import Image from "next/image";
+import { MobileAccountSidebarTrigger } from "@/components/layout/MobileAccountSidebar";
+import type { CurrentUser } from "@/lib/auth/current-user";
 
 const tabs = [
   {
@@ -31,22 +31,7 @@ export default function AppPageHeader({
        * モバイル限定：header
        */}
       <div className="md:hidden flex h-14 items-center justify-between px-4">
-        <button
-          type="button"
-          className="p-2"
-        >
-          <div className="relative size-8 shrink-0 overflow-hidden rounded-full bg-zinc-700">
-              {currentUser?.image ? (
-                <Image
-                  src={currentUser.image}
-                  alt={currentUser.name ?? ""}
-                  fill
-                  className="object-cover"
-                  sizes="32px"
-                />
-              ) : null}
-          </div>
-        </button>
+        <MobileAccountSidebarTrigger currentUser={currentUser} />
         <div className="w-8 h-8">
           <KLogo/>
         </div>
