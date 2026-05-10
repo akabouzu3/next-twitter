@@ -12,6 +12,12 @@ export const currentUserSelect = Prisma.validator<Prisma.UserSelect>()({
   role: true,
   image: true,
   backgroundImage: true,
+  _count: {
+    select: {
+      following: true,
+      followers: true,
+    },
+  },
 });
 
 export type CurrentUser = Prisma.UserGetPayload<{
@@ -41,6 +47,12 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
       role: true,
       image: true,
       backgroundImage: true,
+      _count: {
+        select: {
+          following: true,
+          followers: true,
+        },
+      },
     },
   });
 
