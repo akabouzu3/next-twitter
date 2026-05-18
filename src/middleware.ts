@@ -11,15 +11,7 @@ export default async function middleware(req: NextRequest) {
   });
   const isLoggedIn = !!token;
 
-  const isOnApp = pathname.startsWith("/app");
   const isOnAdmin = pathname.startsWith("/admin");
-
-  // /app はログイン必須
-  if (isOnApp && !isLoggedIn) {
-    const url = new URL("/login", req.url);
-    url.searchParams.set("callbackUrl", pathname);
-    return NextResponse.redirect(url);
-  }
 
   // /admin はログイン必須 + admin
   if (isOnAdmin) {
@@ -38,5 +30,5 @@ export default async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/app/:path*", "/admin/:path*"],
+  matcher: ["/admin/:path*"],
 };
