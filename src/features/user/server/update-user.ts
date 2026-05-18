@@ -4,7 +4,7 @@
 import "server-only";
 
 import { prisma } from "@/lib/prisma/prisma";
-import { saveLocalImage } from "@/lib/upload/save-local-image";
+import { saveSupabaseImage } from "@/lib/upload/save-supabase-image";
 
 /**
  * ユーザー更新の入力型
@@ -23,7 +23,7 @@ type Input = {
  * ユーザー更新処理
  *
  * 流れ：
- * 1. 画像がある場合のみローカルに保存
+ * 1. 画像がある場合のみSupabase Storageに保存
  * 2. 保存した画像のURLを生成
  * 3. Prismaでユーザー情報を更新
  *
@@ -39,9 +39,8 @@ export async function updateUser(userId: string, data: Input) {
    */
   const imageUrl =
     data.image && data.image.size > 0
-      ? await saveLocalImage(data.image, {
-          directory: "uploads/users/avatar",     // 保存ディレクトリ
-          publicPath: "/uploads/users/avatar",   // 公開URLのベース
+      ? await saveSupabaseImage(data.image, {
+          directory: "users/avatar",
         })
       : undefined;
 
@@ -52,9 +51,8 @@ export async function updateUser(userId: string, data: Input) {
    */
   const backgroundImageUrl =
     data.backgroundImage && data.backgroundImage.size > 0
-      ? await saveLocalImage(data.backgroundImage, {
-          directory: "uploads/users/background",
-          publicPath: "/uploads/users/background",
+      ? await saveSupabaseImage(data.backgroundImage, {
+          directory: "users/background",
         })
       : undefined;
 
