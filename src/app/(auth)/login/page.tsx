@@ -1,7 +1,7 @@
-// app/(auth)/login/page.tsx
+
 import { Metadata } from "next";
 import Home from "@/components/layout/Home";
-import { LoginModal } from "@/components/modals/LoginModal";
+import LoginDialog from "@/features/auth/components/LoginDialog";
 
 export const metadata: Metadata = {
   title: "Kにログイン"
@@ -13,7 +13,7 @@ export default function LoginPage() {
     <>
     <Home/>
 
-    <LoginModal open={true} />
+    <LoginDialog open={true} />
     </>
   );
 }

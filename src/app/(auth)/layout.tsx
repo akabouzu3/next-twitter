@@ -1,4 +1,4 @@
-import { requireGuest } from "@/lib/auth/guards";
+import { requireGuest } from "@/lib/auth/page-guards";
 
 export default async function AuthLayout({
   children,

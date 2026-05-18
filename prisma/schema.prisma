@@ -16,6 +16,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 enum UserRole {
@@ -27,10 +28,11 @@ model User {
   id        String  @id @default(cuid())
 
   // login / identification
-  name      String?
-  username  String?  @unique @default(cuid())
+  name      String
+  username  String  @unique @default(cuid())
   email     String  @unique
-  emailVerified DateTime? 　　// ✅ Google認証に必要
+  bio       String?
+  emailVerified DateTime?    // ✅ Google認証に必要
   image         String?       // ✅ Google認証に必要
   backgroundImage String?    // ✅ 追加
   
@@ -104,7 +106,68 @@ model Post {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([userId, createdAt])
+  /**
+   * ▼ ユーザー別タイムライン最適化用 index
+   *
+   * 対象クエリ：
+   *   WHERE userId IN (...)
+   *   ORDER BY createdAt DESC, id DESC
+   *
+   * 効果：
+   * - userId で絞り込み
+   * - createdAt DESC で並び替え
+   * - id DESC で同時刻の順序を安定化
+   *
+   * → indexの順序とクエリの順序が一致しているため
+   *   DB側でソートが不要（高速化）
+   *
+   * 主な用途：
+   * - フォロー中ユーザーのタイムライン取得
+   */
+  @@index([userId, createdAt(sort: Desc), id(sort: Desc)])
+
+
+  /**
+   * ▼ 全体タイムライン & cursor pagination用 index
+   *
+   * 対象クエリ：
+   *   ORDER BY createdAt DESC, id DESC
+   *   cursor: (createdAt, id)
+   *
+   * 効果：
+   * - createdAt + id の並び順をそのまま利用できる
+   * - cursor paginationで高速に「次ページ」を取得可能
+   *
+   * 内部的には：
+   *   WHERE (createdAt, id) < (?, ?)
+   *
+   * → OFFSETを使わないため大規模データでも高速
+   *
+   * 主な用途：
+   * - 無限スクロール
+   * - 全体の新着投稿一覧
+   */
+  @@index([createdAt(sort: Desc), id(sort: Desc)])
+
+
+  /**
+   * ▼ cursor pagination用の一意制約（必須）
+   *
+   * 理由：
+   * - Prismaのcursorは「ユニークキー」である必要がある
+   * - createdAtだけでは同時刻の投稿があり一意にならない
+   *
+   * 解決：
+   * - createdAt + id の組み合わせで完全一意にする
+   *
+   * 効果：
+   * - cursor paginationが正しく動作する
+   * - 同時刻投稿でも順序が崩れない
+   *
+   * 注意：
+   * - sortは指定できない（unique制約の仕様）
+   */
+  @@unique([createdAt, id])
 }
 
 model Follow {
@@ -118,8 +181,15 @@ model Follow {
   createdAt   DateTime @default(now())
 
   @@unique([followerId, followingId])
-  @@index([followerId])
-  @@index([followingId])
+  /**
+   * フォロー / フォロワー一覧の cursor pagination 用。
+   * - followerId / followingId で絞り込む
+   * - createdAt DESC, id DESC で安定ソートする
+   * - createdAt + id を一意にして Prisma の複合 cursor に使う
+   */
+  @@unique([createdAt, id])
+  @@index([followerId, createdAt(sort: Desc), id(sort: Desc)])
+  @@index([followingId, createdAt(sort: Desc), id(sort: Desc)])
 }
 
 model PostLike {
@@ -132,19 +202,27 @@ model PostLike {
 
   createdAt DateTime @default(now())
 
+
+  // 同じユーザーが同じ投稿に複数回いいねできないようにする
   @@unique([userId, postId])
+  // いいね一覧を cursor pagination で取得するため
+  @@unique([createdAt, id])
+
+  // ユーザーのいいね一覧用
+  @@index([userId, createdAt(sort: Desc), id(sort: Desc)])
+  // 投稿ごとのいいね数・いいね済み判定用
   @@index([postId])
-  @@index([userId])
 }
 
 model PostImage {
   id        String   @id @default(cuid())
   postId    String
   url       String
+  sortOrder Int      @default(0)
 
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
-  @@index([postId])
+  @@index([postId, sortOrder])
 }
