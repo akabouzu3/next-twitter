@@ -1,10 +1,15 @@
 // middleware.ts
+import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth/auth";
+import type { NextRequest } from "next/server";
 
-export default auth((req) => {
+export default async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  const isLoggedIn = !!req.auth?.user;
+  const token = await getToken({
+    req,
+    secret: process.env.AUTH_SECRET,
+  });
+  const isLoggedIn = !!token;
 
   const isOnApp = pathname.startsWith("/app");
   const isOnAdmin = pathname.startsWith("/admin");
@@ -23,14 +28,14 @@ export default auth((req) => {
       url.searchParams.set("callbackUrl", pathname);
       return NextResponse.redirect(url);
     }
-    const role = req.auth?.user?.role;
+    const role = token.role;
     if (role !== "ADMIN") {
       return NextResponse.redirect(new URL("/403", req.url));
     }
   }
 
   return NextResponse.next();
-});
+}
 
 export const config = {
   matcher: ["/app/:path*", "/admin/:path*"],
