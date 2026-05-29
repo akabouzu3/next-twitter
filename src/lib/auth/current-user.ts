@@ -39,21 +39,7 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
     where: {
       id: sessionUser.id,
     },
-    select: {
-      id: true,
-      username: true,
-      name: true,
-      email: true,
-      role: true,
-      image: true,
-      backgroundImage: true,
-      _count: {
-        select: {
-          following: true,
-          followers: true,
-        },
-      },
-    },
+    select: currentUserSelect,
   });
 
   if (!user) {

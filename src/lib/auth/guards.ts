@@ -1,6 +1,5 @@
 import "server-only";
 
-import { getCurrentSessionUser } from "@/lib/auth/session";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { AuthError, PermissionError } from "@/lib/auth/errors";
 import {
@@ -38,30 +37,6 @@ type AuthUserLike = {
 type PostLike = {
   userId: string;
 };
-
-/**
- * =========================================
- * セッションユーザー必須ガード
- * =========================================
- *
- * Auth.js の session から取得できるユーザーを確認する。
- *
- * 用途:
- * - 「ログインしているか」だけ確認したい場合
- * - DBから完全なUser情報を取得しなくてもよい処理
- *
- * 未ログインの場合:
- * - AuthError を投げる
- */
-export async function requireSessionUser() {
-  const sessionUser = await getCurrentSessionUser();
-
-  if (!sessionUser) {
-    throw new AuthError("ログインが必要です。");
-  }
-
-  return sessionUser;
-}
 
 /**
  * =========================================
