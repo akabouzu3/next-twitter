@@ -1,6 +1,7 @@
 import "server-only";
 
 import { redirect } from "next/navigation";
+import { getCurrentUser } from "@/lib/auth/current-user";
 import { getCurrentSessionUser } from "@/lib/auth/session";
 import { AuthError, PermissionError } from "@/lib/auth/errors";
 import { requireAdminUser, requireSessionUser } from "@/lib/auth/guards";
@@ -8,9 +9,23 @@ import { requireAdminUser, requireSessionUser } from "@/lib/auth/guards";
 export async function requireAuth() {
   try {
     return await requireSessionUser();
-  } catch {
+  } catch (error) {
+    if (error instanceof AuthError) {
+      redirect("/login");
+    }
+
+    throw error;
+  }
+}
+
+export async function requirePageCurrentUser() {
+  const currentUser = await getCurrentUser();
+
+  if (!currentUser) {
     redirect("/login");
   }
+
+  return currentUser;
 }
 
 export async function requireGuest() {
@@ -33,6 +48,6 @@ export async function requireAdmin() {
       redirect("/403");
     }
 
-    redirect("/login");
+    throw error;
   }
 }
