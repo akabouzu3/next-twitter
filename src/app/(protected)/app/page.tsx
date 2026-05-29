@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import AppPageView from "@/app/(protected)/app/_components/AppPageView";
-import { getCurrentUser } from "@/lib/auth/current-user";
+import { requireAuth } from "@/lib/auth/page-guards";
 import { getTimelinePage } from "@/features/post/server/get-timeline-page";
 
 
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default async function AppPage() {
 
-  const currentUser = await getCurrentUser();
+  const currentUser = await requireAuth();
   const timelinePage = await getTimelinePage({
     limit: 20,
   });
