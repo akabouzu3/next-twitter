@@ -5,7 +5,7 @@ import UserProfileComponent from "@/app/(protected)/users/[username]/(profile)/_
 import UserProfileTabs from "@/app/(protected)/users/[username]/(profile)/_components/UserProfileTabs";
 import { getUserByUsername } from "@/features/user/server/get-user";
 import { notFound } from "next/navigation";
-import { requirePageCurrentUser } from "@/lib/auth/page-guards";
+import { requireAuth } from "@/lib/auth/page-guards";
 
 type Props = {
   children: React.ReactNode;
@@ -25,7 +25,7 @@ export default async function UserProfileLayout({
     currentUser,
     user,
   ] = await Promise.all([
-    requirePageCurrentUser(),
+    requireAuth(),
     getUserByUsername(username),
   ]);
 

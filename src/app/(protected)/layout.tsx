@@ -1,4 +1,4 @@
-import { requirePageCurrentUser } from "@/lib/auth/page-guards";
+import { requireAuth } from "@/lib/auth/page-guards";
 import { getRecommendedUsers } from "@/features/user/server/get-recommended-users";
 import ThreeColumnFrame from "@/components/frame/ThreeColumnFrame";
 import MobileBottomNav from "@/components/layout/MobileBottomNav";
@@ -10,7 +10,7 @@ export default async function AppLayout({
   children: React.ReactNode;
 }>) {
 
-  const currentUser = await requirePageCurrentUser();
+  const currentUser = await requireAuth();
   const recommendUsers = await getRecommendedUsers(10);
 
   return (
