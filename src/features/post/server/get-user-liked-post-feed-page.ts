@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma/prisma";
 import { Cursor, FeedItem, FeedPage } from "@/features/post/types/post.types";
 import { postFeedItemSelect } from "@/features/post/server/selects/selects";
 import { toFeedItem } from "@/features/post/server/mappers/mappers";
+import { getCurrentSessionUserId } from "@/lib/auth/session";
+import { getLikedPostIdSet } from "@/features/post/server/get-liked-post-id-set";
 
 // 1ページあたりの取得件数（無限スクロールの単位）
 const PAGE_SIZE = 10;
@@ -106,7 +108,16 @@ export async function getUserLikedPostFeedPageByUserId({
   /**
    * 6. 表示用形式に整える
    */
-  const items: FeedItem[] = sliced.map((like) => toFeedItem(like.post));
+  const currentUserId = await getCurrentSessionUserId();
+  const likedPostIds = await getLikedPostIdSet({
+    userId: currentUserId,
+    postIds: sliced.map((like) => like.post.id),
+  });
+  const items: FeedItem[] = sliced.map((like) =>
+    toFeedItem(like.post, {
+      likedByMe: likedPostIds.has(like.post.id),
+    }),
+  );
 
   return {
     items,

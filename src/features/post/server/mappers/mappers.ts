@@ -2,7 +2,18 @@
 import type { FeedItem } from "@/features/post/types/post.types";
 import type { PostFeedItemPayload } from "@/features/post/server/selects/selects";
 
-export function toFeedItem(post: PostFeedItemPayload): FeedItem {
+type ToFeedItemOptions = {
+  // 現在ログイン中のユーザーがこの投稿をいいね済みかどうか。
+  likedByMe?: boolean;
+};
+
+/**
+ * DB取得用の投稿shapeを、フィードUIで使う形へ変換する。
+ */
+export function toFeedItem(
+  post: PostFeedItemPayload,
+  options: ToFeedItemOptions = {},
+): FeedItem {
   return {
     id: post.id,
     content: post.content,
@@ -18,5 +29,6 @@ export function toFeedItem(post: PostFeedItemPayload): FeedItem {
       url: image.url,
     })),
     likeCount: post._count.likes,
+    likedByMe: options.likedByMe ?? false,
   };
 }

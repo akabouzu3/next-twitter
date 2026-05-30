@@ -5,6 +5,7 @@ import { getCurrentSessionUserId } from "@/lib/auth/session";
 import { Cursor, FeedItem, FeedPage } from "@/features/post/types/post.types";
 import { PostFeedItemPayload, postFeedItemSelect } from "@/features/post/server/selects/selects";
 import { toFeedItem } from "@/features/post/server/mappers/mappers";
+import { getLikedPostIdSet } from "@/features/post/server/get-liked-post-id-set";
 
 // 1ページあたりの取得件数（無限スクロールの単位）
 const PAGE_SIZE = 10;
@@ -129,7 +130,15 @@ export async function getTimelinePage({
   /**
    * 7. 表示用形式に整える
    */
-  const items: FeedItem[] = sliced.map<FeedItem>((post) => toFeedItem(post));
+  const likedPostIds = await getLikedPostIdSet({
+    userId,
+    postIds: sliced.map((post) => post.id),
+  });
+  const items: FeedItem[] = sliced.map<FeedItem>((post) =>
+    toFeedItem(post, {
+      likedByMe: likedPostIds.has(post.id),
+    }),
+  );
 
   return {
     items,
