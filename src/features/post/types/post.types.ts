@@ -18,6 +18,11 @@ export type CursorPage<T> = {
 // =====================
 // Feed
 // =====================
+/**
+ * フィード表示用に整形した投稿データ。
+ *
+ * DBのPostそのものではなく、UIが必要とする投稿者情報・画像・集計値だけに絞る。
+ */
 export type FeedItem = {
   id: string;
   content: string;
@@ -32,7 +37,12 @@ export type FeedItem = {
     id: string;
     url: string;
   }[];
+
+  // 投稿についたいいね総数。
   likeCount: number;
+
+  // 現在ログイン中のユーザーがこの投稿をいいね済みかどうか。
+  likedByMe: boolean;
 };
 
 // =====================

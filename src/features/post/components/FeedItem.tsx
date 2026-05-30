@@ -1,6 +1,6 @@
 import { FeedItem as FeedItemType } from "@/features/post/types/post.types";
 import { 
-  MessageCircle, Repeat2, Heart, BarChart2, 
+  MessageCircle, Repeat2, BarChart2, 
   // Bookmark, 
   // Share2,
   Ellipsis, 
@@ -10,6 +10,7 @@ import Image from "next/image";
 import PostImages from "@/features/post/components/PostImages";
 import { formatRelativeTime } from "@/lib/utils/date";
 import Link from "next/link";
+import LikeButton from "@/features/post/components/LikeButton";
 
 type Props = {
   post: FeedItemType;
@@ -66,7 +67,11 @@ export default function FeedItem({ post }: Props) {
           <div className="mt-3 grid grid-cols-6 text-white/50">
             <button className="flex items-center gap-2"><MessageCircle className="size-4" />{10}</button>
             <button className="flex items-center gap-2"><Repeat2 className="size-4" />{10}</button>
-            <button className="flex items-center gap-2"><Heart className="size-4" />{post.likeCount}</button>
+            <LikeButton
+              postId={post.id}
+              initialLiked={post.likedByMe}
+              initialLikeCount={post.likeCount}
+            />
             <button className="flex items-center gap-2"><BarChart2 className="size-4" />{10}</button>
             {/* <button className="flex items-center gap-2"><Bookmark className="size-4" /></button> */}
             {/* <button className="flex items-center gap-2"><Share2 className="size-4" /></button> */}
