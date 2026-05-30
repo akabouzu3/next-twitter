@@ -1,7 +1,7 @@
 import "server-only";
 
 import { prisma } from "@/lib/prisma/prisma";
-import { saveSupabaseImage } from "@/lib/upload/save-supabase-image";
+import { saveImage } from "@/lib/upload/save-image";
 
 /**
  * 投稿作成に必要な入力型
@@ -16,7 +16,7 @@ type CreatePostInput = {
  * 投稿作成処理
  *
  * 流れ：
- * 1. 画像をSupabase Storageに保存
+ * 1. 環境に応じたStorageに画像を保存
  * 2. 画像URLを作成
  * 3. 投稿 + 画像をDBに保存
  */
@@ -26,12 +26,11 @@ export async function createPost({
   images,
 }: CreatePostInput) {
   /**
-   * Supabase Storageに画像を保存 + 保存した画像の公開URL一覧を取得する。
-   * Vercelのファイルシステムは永続化されないため、本番では外部Storageに置く。
+   * 開発環境では public/uploads/posts、本番環境では Supabase Storage に保存する。
    */
   const imageUrls = await Promise.all(
     images.map((image) =>
-      saveSupabaseImage(image, {
+      saveImage(image, {
         directory: "posts",
       }),
     )
