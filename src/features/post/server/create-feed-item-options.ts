@@ -1,7 +1,7 @@
 import "server-only";
 
 import type { CurrentUser } from "@/lib/auth/current-user";
-import { canDeletePost } from "@/lib/auth/permissions";
+import { canDeletePost, isPostOwner } from "@/lib/auth/permissions";
 import { prisma } from "@/lib/prisma/prisma";
 import type { ToFeedItemOptions } from "@/features/post/server/mappers/mappers";
 import type { PostFeedItemPayload } from "@/features/post/server/selects/selects";
@@ -19,7 +19,6 @@ type Input = {
 
 export type FeedItemOptionsContext = {
   currentUser: CurrentUser | null;
-  currentUserId: string | null;
   likedPostIdSet: ReadonlySet<string>;
   followedAuthorIdSet: ReadonlySet<string>;
 };
@@ -142,7 +141,6 @@ export async function createFeedItemOptionsContext({
 
   return {
     currentUser,
-    currentUserId,
     likedPostIdSet,
     followedAuthorIdSet: resolvedFollowedAuthorIdSet,
   };
@@ -157,14 +155,19 @@ export function createFeedItemOptions(
   post: PostFeedItemPayload,
   context: FeedItemOptionsContext,
 ): ToFeedItemOptions {
+  const postOwnerLike = { userId: post.user.id };
+
   return {
     likedByMe: context.likedPostIdSet.has(post.id),
     canDelete: context.currentUser
-      ? canDeletePost(context.currentUser, { userId: post.user.id })
+      ? canDeletePost(context.currentUser, postOwnerLike)
       : false,
-    isOwnPost: context.currentUserId === post.user.id,
+    isOwnPost: context.currentUser
+      ? isPostOwner(context.currentUser, postOwnerLike)
+      : false,
     isFollowingAuthor:
-      context.currentUserId !== post.user.id &&
+      context.currentUser !== null &&
+      !isPostOwner(context.currentUser, postOwnerLike) &&
       context.followedAuthorIdSet.has(post.user.id),
   };
 }
