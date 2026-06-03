@@ -3,7 +3,6 @@ import {
   MessageCircle, Repeat2, BarChart2, 
   // Bookmark, 
   // Share2,
-  Ellipsis, 
   // CheckCircle2
  } from "lucide-react";
 import Image from "next/image";
@@ -11,18 +10,29 @@ import PostImages from "@/features/post/components/PostImages";
 import { formatRelativeTime } from "@/lib/utils/date";
 import Link from "next/link";
 import LikeButton from "@/features/post/components/LikeButton";
+import PostMoreMenu from "@/features/post/components/PostMoreMenu";
 
 type Props = {
   post: FeedItemType;
 };
 
 export default function FeedItem({ post }: Props) {
+  const postHref = `/posts/${post.id}`;
+
   return (
-    <article className="border-b border-white/10 px-4 py-3">
-      <div className="flex gap-3">
+    <article className="relative border-b border-white/10 px-4 py-3 transition hover:bg-white/[0.03]">
+      {/* 投稿詳細リンクは背面の透明レイヤーとして敷き、記事の空き領域クリックで詳細へ遷移させる。 */}
+      <Link
+        href={postHref}
+        aria-label="投稿詳細を表示"
+        className="absolute inset-0 z-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-sky-500"
+      />
+
+      {/* 本文側は前面に置くが、親はクリックを透過して空き領域のクリックを背面リンクへ流す。 */}
+      <div className="pointer-events-none relative z-10 flex gap-3">
         <Link
           href={`/users/${post.user.username}`}
-          className="relative size-10 shrink-0 overflow-hidden rounded-full bg-zinc-700"
+          className="pointer-events-auto size-10 shrink-0 overflow-hidden rounded-full bg-zinc-700"
         >
           {post.user.image ? (
             <Image
@@ -42,19 +52,16 @@ export default function FeedItem({ post }: Props) {
               {/* {post.author.verified && <CheckCircle2 className="size-4 fill-sky-500 text-sky-500" />} */}
               <span className="truncate text-white/50">@{post.user.username}</span>
               <span className="text-white/50">·</span>
-              <span className="text-white/50">{ formatRelativeTime(post.createdAt) }</span>
+              <span className="text-white/50">{formatRelativeTime(post.createdAt)}</span>
             </div>
-            <div className="flex item-center gap-1">
-              <button
-                type="button"
-                className=" relative grid place-items-center size-6"
-              >
-                <Ellipsis className="size-4" />
-                {/* ヒットエリア拡張 */}
-                <span className="absolute -inset-1 rounded-full transition cursor-pointer
-                  hover:bg-white/10
-                  focus:outline-none focus:bg-white/10" />
-              </button>
+            <div className="pointer-events-auto flex items-center gap-1">
+              <PostMoreMenu
+                postId={post.id}
+                authorId={post.user.id}
+                canDelete={post.canDelete}
+                isOwnPost={post.isOwnPost}
+                isFollowingAuthor={post.isFollowingAuthor}
+              />
             </div>
           </div>
 
@@ -62,17 +69,28 @@ export default function FeedItem({ post }: Props) {
             {post.content}
           </p>
 
-          <PostImages post={post}/>
+          {post.images.length > 0 ? (
+            <PostImages post={post}/>
+          ) : null}
 
           <div className="mt-3 grid grid-cols-6 text-white/50">
-            <button className="flex items-center gap-2"><MessageCircle className="size-4" />{10}</button>
-            <button className="flex items-center gap-2"><Repeat2 className="size-4" />{10}</button>
-            <LikeButton
-              postId={post.id}
-              initialLiked={post.likedByMe}
-              initialLikeCount={post.likeCount}
-            />
-            <button className="flex items-center gap-2"><BarChart2 className="size-4" />{10}</button>
+            <button type="button" className="pointer-events-auto flex items-center gap-2"><MessageCircle className="size-4" />{10}</button>
+            <button type="button" className="pointer-events-auto flex items-center gap-2"><Repeat2 className="size-4" />{10}</button>
+            <span className="pointer-events-auto">
+              <LikeButton
+                postId={post.id}
+                initialLiked={post.likedByMe}
+                initialLikeCount={post.likeCount}
+              />
+            </span>
+            <button
+              type="button"
+              className="pointer-events-auto flex items-center gap-2"
+              aria-label={`${post.viewCount} 件の閲覧`}
+            >
+              <BarChart2 className="size-4" aria-hidden="true" />
+              {post.viewCount}
+            </button>
             {/* <button className="flex items-center gap-2"><Bookmark className="size-4" /></button> */}
             {/* <button className="flex items-center gap-2"><Share2 className="size-4" /></button> */}
           </div>

@@ -21,6 +21,7 @@ import { Prisma } from "@prisma/client";
 export const postFeedItemSelect = {
   id: true,
   content: true,
+  viewCount: true,
   createdAt: true,
 
   /**

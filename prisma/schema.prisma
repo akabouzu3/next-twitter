@@ -96,6 +96,7 @@ model VerificationToken {
 model Post {
   id        String   @id @default(cuid())
   content   String
+  viewCount Int      @default(0)
 
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -136,7 +137,7 @@ model Post {
    *
    * 効果：
    * - createdAt + id の並び順をそのまま利用できる
-   * - cursor paginationで高速に「次ページ」を取得可能
+   * - cursor paginationで高速に‘「次ページ」を取得可能
    *
    * 内部的には：
    *   WHERE (createdAt, id) < (?, ?)
