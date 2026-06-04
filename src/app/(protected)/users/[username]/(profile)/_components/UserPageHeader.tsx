@@ -1,44 +1,17 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import {
-  ArrowLeft, 
-  // Search,
- } from "lucide-react";
-import { UserProfileItem } from "@/features/user/types/user.types";
+import BackButton from "@/components/back-button";
+import type { UserProfileItem } from "@/features/user/types/user.types";
 
 type Props = {
   user: UserProfileItem;
 };
 
-export default function UserPageHeader({
-  user,
-}: Props) {
-
-  const router = useRouter();
-
-  const handleBack = (e: React.MouseEvent) => {
-    e.preventDefault();
-
-    // 履歴があるかチェック
-    if (window.history.length > 1) {
-      router.back();
-    } else {
-      router.push("/app"); // fallback
-    }
-  };
-
+export default function UserPageHeader({ user }: Props) {
   return (
     <header className="sticky top-0 z-20 flex h-[53px] items-center justify-between border-b border-white/10 bg-black/80 px-2 backdrop-blur-md">
       <div className="flex items-center gap-6">
-        <Link
-          href="/home" // fallback
-          onClick={handleBack}
-          className="grid size-9 place-items-center rounded-full hover:bg-white/10"
-        >
-          <ArrowLeft className="size-5" />
-        </Link>
+        <BackButton fallbackHref="/app" />
 
         <div>
           <h1 className="text-xl font-bold leading-6">
@@ -58,6 +31,5 @@ export default function UserPageHeader({
         <Search className="size-5" />
       </button> */}
     </header>
-    
-  )
+  );
 }

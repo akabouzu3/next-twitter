@@ -1,8 +1,7 @@
 "use client";
 
+import BackButton from "@/components/back-button";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
 import type { UserProfileItem } from "@/features/user/types/user.types";
 
 type Props = {
@@ -22,29 +21,13 @@ const tabs = [
 ] as const;
 
 export default function UserConnectionsHeader({ user, activeTab }: Props) {
-  const router = useRouter();
-
-  const handleBack = (e: React.MouseEvent) => {
-    e.preventDefault();
-
-    if (window.history.length > 1) {
-      router.back();
-    } else {
-      router.push(`/users/${user.username}`);
-    }
-  };
-
   return (
     <header className="sticky top-0 z-20 border-b border-white/10 bg-black/80 backdrop-blur-md">
       <div className="flex h-[53px] items-center gap-6 px-2">
-        <Link
-          href={`/users/${user.username}`}
-          onClick={handleBack}
-          aria-label="戻る"
-          className="grid size-9 shrink-0 place-items-center rounded-full transition hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-sky-500"
-        >
-          <ArrowLeft className="size-5" />
-        </Link>
+        <BackButton
+          fallbackHref={`/users/${user.username}`}
+          className="shrink-0 focus-visible:outline-2 focus-visible:outline-sky-500"
+        />
 
         <div className="min-w-0">
           <h1 className="truncate text-xl font-bold leading-6">

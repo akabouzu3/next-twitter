@@ -1,5 +1,4 @@
 import {
-  ArrowLeft,
   BarChart2,
   Bookmark,
   MessageCircle,
@@ -16,6 +15,7 @@ import PostMoreMenu from "@/features/post/components/PostMoreMenu";
 import PostImages from "@/features/post/components/PostImages";
 import PostComposer from "@/features/post/components/PostComposer";
 import PostRepliesPageView from "@/app/(protected)/posts/[postId]/_components/PostRepliesPageView";
+import BackButton from "@/components/back-button";
 import { getPostDetailAndIncrementViewCount } from "@/features/post/server/get-post-detail";
 import { getPostRepliesFeedPage } from "@/features/post/server/get-post-replies-feed-page";
 import { requireAuth } from "@/lib/auth/page-guards";
@@ -65,13 +65,7 @@ export default async function PostDetailPage({ params }: Props) {
     <>
       {/* ヘッダー: 戻る導線とページタイトル */}
       <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b border-white/10 bg-black/80 px-4 backdrop-blur">
-        <Link
-          href="/app"
-          aria-label="戻る"
-          className="grid size-9 place-items-center rounded-full text-white transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-sky-500"
-        >
-          <ArrowLeft className="size-5" aria-hidden="true" />
-        </Link>
+        <BackButton />
         <h1 className="text-xl font-bold">ポスト</h1>
       </header>
 
