@@ -1,8 +1,9 @@
 
-
+import { Suspense } from "react";
 import UserPageHeader from "@/app/(protected)/users/[username]/(profile)/_components/UserPageHeader";
 import UserProfileComponent from "@/app/(protected)/users/[username]/(profile)/_components/UserProfile";
 import UserProfileTabs from "@/app/(protected)/users/[username]/(profile)/_components/UserProfileTabs";
+import FeedListLoading from "@/features/post/components/FeedListLoading";
 import { getUserByUsername } from "@/features/user/server/get-user";
 import { notFound } from "next/navigation";
 import { requireAuth } from "@/lib/auth/page-guards";
@@ -39,7 +40,7 @@ export default async function UserProfileLayout({
       <UserPageHeader user={user}/>
       <UserProfileComponent currentUser={currentUser} user={user} />
       <UserProfileTabs user={user}/>
-      {children}
+      <Suspense fallback={<FeedListLoading />}>{children}</Suspense>
     </>
   )
 }
