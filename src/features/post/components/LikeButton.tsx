@@ -94,7 +94,7 @@ export default function LikeButton({
       aria-label={liked ? "いいねを取り消す" : "いいねする"}
       aria-pressed={liked}
       className={cn(
-        "group flex items-center gap-2 transition cursor-pointer disabled:opacity-60",
+        "group flex items-center transition cursor-pointer disabled:opacity-60",
         liked ? "text-pink-500" : "text-white/50 hover:text-pink-500",
       )}
     >

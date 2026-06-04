@@ -2,9 +2,18 @@
 import type { FeedItem } from "@/features/post/types/post.types";
 import type { PostFeedItemPayload } from "@/features/post/server/selects/selects";
 
-type ToFeedItemOptions = {
+export type ToFeedItemOptions = {
   // 現在ログイン中のユーザーがこの投稿をいいね済みかどうか。
   likedByMe?: boolean;
+
+  // 現在ログイン中のユーザーがこの投稿を削除できるかどうか。
+  canDelete?: boolean;
+
+  // 現在ログイン中のユーザー自身の投稿かどうか。
+  isOwnPost?: boolean;
+
+  // 現在ログイン中のユーザーが投稿者をフォローしているかどうか。
+  isFollowingAuthor?: boolean;
 };
 
 /**
@@ -28,7 +37,22 @@ export function toFeedItem(
       id: image.id,
       url: image.url,
     })),
+    replyTo: post.parentPost
+      ? {
+          id: post.parentPost.id,
+          user: {
+            id: post.parentPost.user.id,
+            name: post.parentPost.user.name,
+            username: post.parentPost.user.username,
+          },
+        }
+      : null,
+    viewCount: post.viewCount,
     likeCount: post._count.likes,
+    replyCount: post._count.replies,
     likedByMe: options.likedByMe ?? false,
+    canDelete: options.canDelete ?? false,
+    isOwnPost: options.isOwnPost ?? false,
+    isFollowingAuthor: options.isFollowingAuthor ?? false,
   };
 }

@@ -35,6 +35,12 @@ type Props = {
   // 投稿成功時に親コンポーネント側で実行したい処理
   // 例: ダイアログを閉じる、一覧を更新するなど
   onSuccess?: () => void;
+
+  parentPostId?: string;
+  placeholder?: string;
+  submitLabel?: string;
+  pendingLabel?: string;
+  variant?: "post" | "reply";
 };
 
 /**
@@ -56,7 +62,15 @@ const MAX_IMAGE_COUNT = 4;
 // 投稿本文の最大文字数
 const MAX_POST_LENGTH = 280;
 
-export default function PostComposer({ currentUser, onSuccess }: Props) {
+export default function PostComposer({
+  currentUser,
+  onSuccess,
+  parentPostId,
+  placeholder = "いまどうしてる？",
+  submitLabel = "ポストする",
+  pendingLabel = "投稿中...",
+  variant = "post",
+}: Props) {
   /**
    * Server Action とフォーム状態を紐づける
    *
@@ -236,6 +250,9 @@ export default function PostComposer({ currentUser, onSuccess }: Props) {
         submit 時に createPostAction が実行される
       */}
       <form action={formAction} className="flex min-h-0 flex-col">
+        {parentPostId ? (
+          <input type="hidden" name="parentPostId" value={parentPostId} />
+        ) : null}
         <div className="flex min-h-0 flex-1 gap-3 overflow-hidden">
           {/* 投稿者アイコン */}
           <Link
@@ -259,23 +276,15 @@ export default function PostComposer({ currentUser, onSuccess }: Props) {
               <textarea
                 ref={textareaRef}
                 name="content"
-                placeholder="いまどうしてる？"
+                placeholder={placeholder}
                 value={content}
                 disabled={isPending}
                 onChange={handleChange}
                 rows={1}
-                className="
-                  min-h-28
-                  w-full
-                  resize-none
-                  overflow-y-auto
-                  bg-transparent
-                  text-2xl
-                  text-white
-                  placeholder:text-white/35
-                  outline-none
-                  disabled:opacity-70
-                "
+                className={cn(
+                  "w-full resize-none overflow-y-auto bg-transparent text-white placeholder:text-white/35 outline-none disabled:opacity-70",
+                  variant === "reply" ? "min-h-16 text-xl" : "min-h-28 text-2xl",
+                )}
               />
 
               {/* 画像プレビュー */}
@@ -383,7 +392,7 @@ export default function PostComposer({ currentUser, onSuccess }: Props) {
                     disabled={isDisabled}
                     className="hidden cursor-pointer rounded-full bg-white px-6 py-2 font-bold text-black disabled:cursor-not-allowed disabled:opacity-50 md:inline-block"
                   >
-                    {isPending ? "投稿中..." : "ポストする"}
+                    {isPending ? pendingLabel : submitLabel}
                   </button>
 
                   {/* Mobile 用アイコンボタン */}

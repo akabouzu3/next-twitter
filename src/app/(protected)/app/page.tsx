@@ -1,8 +1,10 @@
 import { Metadata } from "next";
-import AppPageView from "@/app/(protected)/app/_components/AppPageView";
+import { Suspense } from "react";
+import AppFeedSection from "@/app/(protected)/app/_components/AppFeedSection";
+import AppPageHeader from "@/app/(protected)/app/_components/AppHeader";
+import PostComposer from "@/features/post/components/PostComposer";
 import { requireAuth } from "@/lib/auth/page-guards";
-import { getTimelinePage } from "@/features/post/server/get-timeline-page";
-import { getRecommendedPostFeedPage } from "@/features/post/server/get-recommended-post-feed-page";
+import FeedListLoading from "@/features/post/components/FeedListLoading";
 
 export const metadata: Metadata = {
   title: "ホーム"
@@ -25,23 +27,17 @@ export default async function AppPage({ searchParams }: Props) {
   const currentUser = await requireAuth();
   const { feed } = await searchParams;
   const activeFeed = parseAppFeed(feed);
-  const feedPage =
-    activeFeed === "following"
-      ? await getTimelinePage({
-          limit: 20,
-        })
-      : await getRecommendedPostFeedPage({
-          limit: 20,
-        });
   
 
   return (
     <>
-      <AppPageView
-        activeFeed={activeFeed}
-        currentUser={currentUser}
-        feedPage={feedPage}
-      />
+      <AppPageHeader activeFeed={activeFeed} currentUser={currentUser} />
+      <section className="hidden border-b border-white/10 px-4 py-4 md:block">
+        <PostComposer currentUser={currentUser} />
+      </section>
+      <Suspense key={activeFeed} fallback={<FeedListLoading />}>
+        <AppFeedSection activeFeed={activeFeed} />
+      </Suspense>
     </>
   )
 }

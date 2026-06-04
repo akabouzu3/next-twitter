@@ -4,8 +4,12 @@ import { prisma } from "@/lib/prisma/prisma";
 import { getCurrentSessionUserId } from "@/lib/auth/session";
 import { Cursor, FeedItem, FeedPage } from "@/features/post/types/post.types";
 import { PostFeedItemPayload, postFeedItemSelect } from "@/features/post/server/selects/selects";
+import {
+  createFeedItemOptions,
+  createFeedItemOptionsContext,
+} from "@/features/post/server/create-feed-item-options";
 import { toFeedItem } from "@/features/post/server/mappers/mappers";
-import { getLikedPostIdSet } from "@/features/post/server/get-liked-post-id-set";
+import { getCurrentUser } from "@/lib/auth/current-user";
 
 // 1ページあたりの取得件数（無限スクロールの単位）
 const PAGE_SIZE = 10;
@@ -56,6 +60,7 @@ export async function getTimelinePage({
 
   // フォロー中のID配列に変換
   const followingIds = follows.map((f) => f.followingId);
+  const followingIdSet = new Set(followingIds);
 
   // 自分の投稿も含める
   followingIds.push(userId);
@@ -65,6 +70,7 @@ export async function getTimelinePage({
    */
   const posts: PostFeedItemPayload[] = await prisma.post.findMany({
     where: {
+      parentPostId: null,
       userId: {
         in: followingIds, // フォロー中 + 自分
       },
@@ -130,14 +136,14 @@ export async function getTimelinePage({
   /**
    * 7. 表示用形式に整える
    */
-  const likedPostIds = await getLikedPostIdSet({
-    userId,
-    postIds: sliced.map((post) => post.id),
+  const currentUser = await getCurrentUser();
+  const feedItemOptionsContext = await createFeedItemOptionsContext({
+    posts: sliced,
+    currentUser,
+    followedAuthorIdSet: followingIdSet,
   });
-  const items: FeedItem[] = sliced.map<FeedItem>((post) =>
-    toFeedItem(post, {
-      likedByMe: likedPostIds.has(post.id),
-    }),
+  const items: FeedItem[] = sliced.map((post) =>
+    toFeedItem(post, createFeedItemOptions(post, feedItemOptionsContext)),
   );
 
   return {
