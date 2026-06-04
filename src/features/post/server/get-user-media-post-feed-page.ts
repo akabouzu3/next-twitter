@@ -17,7 +17,7 @@ export async function getUserMediaPostFeedPageByUserId({
     cursor,
     where: {
       userId,
-      images: { some: {}}
+      images: { some: {}},
     },
   });
 }

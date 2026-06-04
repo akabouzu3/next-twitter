@@ -65,6 +65,15 @@ export default function FeedItem({ post }: Props) {
             </div>
           </div>
 
+          {post.replyTo ? (
+            <Link
+              href={`/posts/${post.replyTo.id}`}
+              className="pointer-events-auto mt-1 block text-sm text-white/50 hover:underline"
+            >
+              返信先: @{post.replyTo.user.username}
+            </Link>
+          ) : null}
+
           <p className="mt-1 whitespace-pre-wrap text-[15px] leading-6">
             {post.content}
           </p>
@@ -74,7 +83,14 @@ export default function FeedItem({ post }: Props) {
           ) : null}
 
           <div className="mt-3 grid grid-cols-6 text-white/50">
-            <button type="button" className="pointer-events-auto flex items-center gap-2"><MessageCircle className="size-4" />{10}</button>
+            <Link
+              href={postHref}
+              aria-label={`${post.replyCount} 件の返信`}
+              className="pointer-events-auto flex items-center gap-2 hover:text-sky-400"
+            >
+              <MessageCircle className="size-4" />
+              {post.replyCount}
+            </Link>
             <button type="button" className="pointer-events-auto flex items-center gap-2"><Repeat2 className="size-4" />{10}</button>
             <span className="pointer-events-auto">
               <LikeButton

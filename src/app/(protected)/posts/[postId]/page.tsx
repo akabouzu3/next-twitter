@@ -14,7 +14,10 @@ import { notFound } from "next/navigation";
 import LikeButton from "@/features/post/components/LikeButton";
 import PostMoreMenu from "@/features/post/components/PostMoreMenu";
 import PostImages from "@/features/post/components/PostImages";
+import PostComposer from "@/features/post/components/PostComposer";
+import PostRepliesPageView from "@/app/(protected)/posts/[postId]/_components/PostRepliesPageView";
 import { getPostDetailAndIncrementViewCount } from "@/features/post/server/get-post-detail";
+import { getPostRepliesFeedPage } from "@/features/post/server/get-post-replies-feed-page";
 import { requireAuth } from "@/lib/auth/page-guards";
 
 export const metadata: Metadata = {
@@ -52,6 +55,11 @@ export default async function PostDetailPage({ params }: Props) {
   if (!post) {
     notFound();
   }
+
+  const repliesPage = await getPostRepliesFeedPage({
+    postId: post.id,
+    limit: 10,
+  });
 
   return (
     <>
@@ -106,8 +114,17 @@ export default async function PostDetailPage({ params }: Props) {
           />
         </div>
 
+        {post.replyTo ? (
+          <Link
+            href={`/posts/${post.replyTo.id}`}
+            className="mt-4 inline-block text-sm text-white/50 hover:underline"
+          >
+            返信先: @{post.replyTo.user.username}
+          </Link>
+        ) : null}
+
         {/* 投稿本文 */}
-        <p className="mt-4 whitespace-pre-wrap text-xl leading-8 text-white">
+        <p className="mt-2 whitespace-pre-wrap text-xl leading-8 text-white">
           {post.content}
         </p>
 
@@ -137,6 +154,7 @@ export default async function PostDetailPage({ params }: Props) {
             className="flex h-12 items-center justify-center gap-2 rounded-full transition hover:bg-sky-500/10 hover:text-sky-400"
           >
             <MessageCircle className="size-5" aria-hidden="true" />
+            <span className="text-sm">{post.replyCount}</span>
           </button>
           <button
             type="button"
@@ -178,38 +196,18 @@ export default async function PostDetailPage({ params }: Props) {
         </div>
       </article>
 
-      {/* 返信フォーム: UI だけを先に表示し、送信は未実装なのでボタンを無効化している。 */}
-      <section className="flex items-center gap-3 border-b border-white/10 px-4 py-4">
-        <div className="relative size-10 shrink-0 overflow-hidden rounded-full bg-zinc-700">
-          {currentUser.image ? (
-            <Image
-              src={currentUser.image}
-              alt={currentUser.name}
-              width={40}
-              height={40}
-              className="size-10 rounded-full object-cover"
-            />
-          ) : null}
-        </div>
-
-        <div className="min-w-0 flex-1 text-xl text-white/40">
-          返信をポスト
-        </div>
-
-        <button
-          type="button"
-          disabled
-          className="shrink-0 rounded-full bg-white/20 px-5 py-2 text-sm font-bold text-white/50 disabled:cursor-not-allowed"
-        >
-          返信
-        </button>
-      </section>
-
-      {/* 関連コンテンツ */}
       <section className="border-b border-white/10 px-4 py-4">
-        <h2 className="text-xl font-extrabold">もっと見つける</h2>
-        <p className="mt-1 text-sm text-white/50">Xから</p>
+        <PostComposer
+          currentUser={currentUser}
+          parentPostId={post.id}
+          placeholder="返信をポスト"
+          submitLabel="返信"
+          pendingLabel="返信中..."
+          variant="reply"
+        />
       </section>
+
+      <PostRepliesPageView postId={post.id} repliesPage={repliesPage} />
     </>
   );
 }

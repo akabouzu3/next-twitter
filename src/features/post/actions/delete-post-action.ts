@@ -14,6 +14,7 @@ export async function deletePostAction(postId: string) {
     },
     select: {
       userId: true,
+      parentPostId: true,
       user: {
         select: {
           username: true,
@@ -39,8 +40,12 @@ export async function deletePostAction(postId: string) {
 
   revalidatePath("/app");
   revalidatePath(`/users/${post.user.username}`);
+  revalidatePath(`/users/${post.user.username}/with_replies`);
   revalidatePath(`/users/${post.user.username}/media`);
   revalidatePath(`/posts/${postId}`);
+  if (post.parentPostId) {
+    revalidatePath(`/posts/${post.parentPostId}`);
+  }
 
   // /likes は「この投稿をいいねした全ユーザー」のページに影響するが、
   // 削除時に対象ユーザーを全件列挙して再検証すると重くなりやすいため、ここでは含めない。

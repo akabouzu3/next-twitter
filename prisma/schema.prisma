@@ -101,6 +101,10 @@ model Post {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  parentPostId String?
+  parentPost   Post?  @relation("PostReplies", fields: [parentPostId], references: [id], onDelete: Cascade)
+  replies      Post[] @relation("PostReplies")
+
   likes     PostLike[]
   images    PostImage[]
 
@@ -126,6 +130,7 @@ model Post {
    * - フォロー中ユーザーのタイムライン取得
    */
   @@index([userId, createdAt(sort: Desc), id(sort: Desc)])
+  @@index([parentPostId, createdAt(sort: Desc), id(sort: Desc)])
 
 
   /**

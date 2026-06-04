@@ -37,8 +37,19 @@ export function toFeedItem(
       id: image.id,
       url: image.url,
     })),
+    replyTo: post.parentPost
+      ? {
+          id: post.parentPost.id,
+          user: {
+            id: post.parentPost.user.id,
+            name: post.parentPost.user.name,
+            username: post.parentPost.user.username,
+          },
+        }
+      : null,
     viewCount: post.viewCount,
     likeCount: post._count.likes,
+    replyCount: post._count.replies,
     likedByMe: options.likedByMe ?? false,
     canDelete: options.canDelete ?? false,
     isOwnPost: options.isOwnPost ?? false,

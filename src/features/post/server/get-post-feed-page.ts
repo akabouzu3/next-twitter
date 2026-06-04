@@ -25,6 +25,7 @@ type Input = {
   where: Prisma.PostWhereInput;
   limit?: number;
   cursor?: Cursor | null;
+  includeReplies?: boolean;
 };
 
 /**
@@ -51,13 +52,23 @@ export async function getPostFeedPage({
   where,
   limit = PAGE_SIZE,
   cursor,
+  includeReplies = false,
 }: Input): Promise<FeedPage> {
 
   /**
    * 1. 投稿取得（cursor pagination）
    */
   const posts: PostFeedItemPayload[] = await prisma.post.findMany({
-    where,
+    where: includeReplies
+      ? where
+      : {
+          AND: [
+            where,
+            {
+              parentPostId: null,
+            },
+          ],
+        },
 
     /**
      * 並び順（重要）

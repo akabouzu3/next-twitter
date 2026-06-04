@@ -70,6 +70,7 @@ export async function getTimelinePage({
    */
   const posts: PostFeedItemPayload[] = await prisma.post.findMany({
     where: {
+      parentPostId: null,
       userId: {
         in: followingIds, // フォロー中 + 自分
       },

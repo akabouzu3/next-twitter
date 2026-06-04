@@ -13,7 +13,7 @@ const tabs = [
   {
     title: "返信",
     segment: "with_replies",
-    isDisabled: true,
+    isDisabled: false,
   },
   {
     title: "ハイライト",
