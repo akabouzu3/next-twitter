@@ -1,0 +1,62 @@
+name: Prisma Migrate Deploy
+
+on:
+  # 本番DB migration は自動実行せず、Actions画面の Run workflow から手動で実行する
+  workflow_dispatch:
+
+concurrency:
+  # DB migration は並列実行すると危険なので、同じブランチでは同時に走らせない
+  group: prisma-migrate-deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      # 本番DB向けの migration は main からだけ実行する
+      - name: Guard main branch
+        run: |
+          if [ "${{ github.ref }}" != "refs/heads/main" ]; then
+            echo "Prisma migrate deploy can only be run from main."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+
+      # Node: .nvmrc から読み取り
+      - name: Read Node version from .nvmrc
+        id: node
+        run: echo "version=$(cat .nvmrc)" >> $GITHUB_OUTPUT
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ steps.node.outputs.version }}
+
+      # pnpm: packageManager から読み取り
+      - name: Read pnpm version from packageManager
+        id: pnpm
+        run: |
+          node -e "const pm=require('./package.json').packageManager||''; const m=pm.match(/^pnpm@(.+)$/); if(!m){process.exit(1)} console.log('version='+m[1]);" >> $GITHUB_OUTPUT
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ steps.pnpm.outputs.version }}
+
+      # lockfile混入チェック（pnpm以外で依存関係を更新しない）
+      - name: Disallow npm/yarn lockfiles
+        run: |
+          test ! -f package-lock.json || (echo "Do not use package-lock.json" && exit 1)
+          test ! -f yarn.lock || (echo "Do not use yarn.lock" && exit 1)
+
+      # lock固定でCI上の依存解決を再現可能にする
+      - run: pnpm install --frozen-lockfile
+
+      # 本番DBには migrate dev ではなく migrate deploy を使う
+      # DATABASE_URL / DIRECT_URL は production Environment Secrets に登録しておく
+      - name: Prisma migrate deploy
+        run: pnpm exec prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
