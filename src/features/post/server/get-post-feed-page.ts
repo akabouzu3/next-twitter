@@ -4,9 +4,12 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma/prisma";
 import { Cursor, FeedItem, FeedPage } from "@/features/post/types/post.types";
 import { postFeedItemSelect, PostFeedItemPayload } from "@/features/post/server/selects/selects";
+import {
+  createFeedItemOptions,
+  createFeedItemOptionsContext,
+} from "@/features/post/server/create-feed-item-options";
 import { toFeedItem } from "@/features/post/server/mappers/mappers";
-import { getCurrentSessionUserId } from "@/lib/auth/session";
-import { getLikedPostIdSet } from "@/features/post/server/get-liked-post-id-set";
+import { getCurrentUser } from "@/lib/auth/current-user";
 
 // 1ページあたりの取得件数（無限スクロール単位）
 const PAGE_SIZE = 10;
@@ -22,6 +25,7 @@ type Input = {
   where: Prisma.PostWhereInput;
   limit?: number;
   cursor?: Cursor | null;
+  includeReplies?: boolean;
 };
 
 /**
@@ -48,13 +52,23 @@ export async function getPostFeedPage({
   where,
   limit = PAGE_SIZE,
   cursor,
+  includeReplies = false,
 }: Input): Promise<FeedPage> {
 
   /**
    * 1. 投稿取得（cursor pagination）
    */
   const posts: PostFeedItemPayload[] = await prisma.post.findMany({
-    where,
+    where: includeReplies
+      ? where
+      : {
+          AND: [
+            where,
+            {
+              parentPostId: null,
+            },
+          ],
+        },
 
     /**
      * 並び順（重要）
@@ -143,16 +157,15 @@ export async function getPostFeedPage({
    * 5. UI用データに変換（mapper）
    *
    * - DBのshape → UI用FeedItemへ変換
+   * - いいね済み・削除可否・フォロー状態など、現在ユーザー基準の状態を補完
    */
-  const currentUserId = await getCurrentSessionUserId();
-  const likedPostIds = await getLikedPostIdSet({
-    userId: currentUserId,
-    postIds: sliced.map((post) => post.id),
+  const currentUser = await getCurrentUser();
+  const feedItemOptionsContext = await createFeedItemOptionsContext({
+    posts: sliced,
+    currentUser,
   });
   const items: FeedItem[] = sliced.map((post) =>
-    toFeedItem(post, {
-      likedByMe: likedPostIds.has(post.id),
-    }),
+    toFeedItem(post, createFeedItemOptions(post, feedItemOptionsContext)),
   );
 
   /**

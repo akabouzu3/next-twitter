@@ -10,6 +10,7 @@ type CreatePostInput = {
   userId: string;   // 投稿者ID
   content: string;  // 投稿本文
   images: File[];   // アップロードされた画像（Server Action経由）
+  parentPostId?: string | null;
 };
 
 /**
@@ -24,6 +25,7 @@ export async function createPost({
   userId,
   content,
   images,
+  parentPostId,
 }: CreatePostInput) {
   /**
    * 開発環境では public/uploads/posts、本番環境では Supabase Storage に保存する。
@@ -46,6 +48,7 @@ export async function createPost({
     data: {
       userId,
       content,
+      parentPostId: parentPostId ?? null,
       images: {
         /**
          * imageUrlsを元に画像レコードを作成
