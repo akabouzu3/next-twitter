@@ -84,6 +84,7 @@ export async function getRecommendedUsers(
       bio: user.bio,
       followerCount: user._count.followers,
       isFollowing: user.followers.length > 0,
+      isMe: false,
     };
   });
 

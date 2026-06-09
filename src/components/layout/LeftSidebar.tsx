@@ -17,7 +17,7 @@ type Props = {
 export default function LeftSidebar({currentUser}: Props) {
   const navItems = [
     { label: "ホーム", icon: Home, url: "/app", isDisabled: false, },
-    { label: "話題を検索", icon: Search, url: "/search", isDisabled: true,  },
+    { label: "話題を検索", icon: Search, url: "/search", isDisabled: false,  },
     { label: "通知", icon: Bell, url: "/notification", isDisabled: true,  },
     { label: "メッセージ", icon: Mail, url: "/messages", isDisabled: true,  },
     { label: "ブックマーク", icon: Bookmark, url: "/bookmark", isDisabled: true,  },
@@ -43,6 +43,11 @@ export default function LeftSidebar({currentUser}: Props) {
           {navItems.map((item) => {
             const Icon = item.icon;
             const isDisabled = item.isDisabled;
+            const isActive =
+              item.url === "/app"
+                ? pathname === item.url
+                : pathname.startsWith(item.url);
+
             return (
               <Link key={item.label} href={item.url} className={cn(
                 "group",
@@ -61,7 +66,7 @@ export default function LeftSidebar({currentUser}: Props) {
                   <span
                     className={cn(
                       "hidden xl:inline text-2xl text-white/80 ",
-                      pathname === item.url ? "font-black text-white" : ""
+                      isActive ? "font-black text-white" : ""
                     )}
                   >
                     {item.label}

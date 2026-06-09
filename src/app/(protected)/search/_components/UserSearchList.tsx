@@ -2,42 +2,37 @@
 
 import { useCallback } from "react";
 import UserListRow from "@/features/user/components/UserListRow";
-import { fetchUserConnectionsPage } from "@/features/user/client/fetch-user-connections-page";
+import { fetchUserSearchPage } from "@/features/user/client/fetch-user-search-page";
 import {
-  FetchUserConnectionsPageInput,
-  useInfiniteUserConnections,
-} from "@/features/user/hooks/use-infinite-user-connections";
-import type { UserConnectionPage } from "@/features/user/types/user.types";
+  FetchUserSearchPageInput,
+  useInfiniteUserSearch,
+} from "@/features/user/hooks/use-infinite-user-search";
+import type { UserSearchPage } from "@/features/user/types/user.types";
 
 type Props = {
-  username: string;
-  kind: "followers" | "following";
-  initialPage: UserConnectionPage;
+  initialPage: UserSearchPage;
+  query: string;
   emptyMessage: string;
-  endMessage: string;
+  endMessage?: string;
   pageSize?: number;
 };
 
-export default function UserConnectionsList({
-  username,
-  kind,
+export default function UserSearchList({
   initialPage,
+  query,
   emptyMessage,
-  endMessage,
+  endMessage = "検索結果は以上です",
   pageSize = 20,
 }: Props) {
-  // タブの種類とユーザー名を固定して、無限スクロール用のページ取得関数に整える。
   const fetchPage = useCallback(
-    (input: FetchUserConnectionsPageInput) =>
-      fetchUserConnectionsPage({
-        username,
-        kind,
+    (input: FetchUserSearchPageInput) =>
+      fetchUserSearchPage({
+        query,
         ...input,
       }),
-    [kind, username],
+    [query],
   );
 
-  // 初期ページを起点に、追加読み込み・リトライ・Intersection Observer の監視をまとめて扱う。
   const {
     items,
     hasMore,
@@ -45,15 +40,22 @@ export default function UserConnectionsList({
     error,
     observerRef,
     retry,
-  } = useInfiniteUserConnections({
+  } = useInfiniteUserSearch({
     initialPage,
     fetchPage,
     pageSize,
   });
 
-  // 表示状態を先に名前付けして、JSX 側では「何を出すか」だけを読めるようにする。
   const showEmpty = !isLoading && !error && items.length === 0;
   const showEnd = !hasMore && items.length > 0;
+
+  if (showEmpty) {
+    return (
+      <div className="px-8 py-14 text-center">
+        <p className="text-[15px] leading-6 text-neutral-500">{emptyMessage}</p>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -76,12 +78,6 @@ export default function UserConnectionsList({
         </div>
       )}
 
-      {showEmpty && (
-        <div className="px-4 py-10 text-center text-sm text-white/40">
-          {emptyMessage}
-        </div>
-      )}
-
       {isLoading && (
         <div className="px-4 py-6 text-center text-sm text-white/60">
           読み込み中...
@@ -94,7 +90,6 @@ export default function UserConnectionsList({
         </div>
       )}
 
-      {/* 画面下に入ると observerRef が反応し、次ページの読み込みが始まる。 */}
       {hasMore && <div ref={observerRef} className="h-10" aria-hidden="true" />}
     </div>
   );

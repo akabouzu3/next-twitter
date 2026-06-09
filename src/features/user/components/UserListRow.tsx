@@ -1,21 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
 import FollowButton from "@/features/follow/components/FollowButton";
-import type { UserConnectionItem } from "@/features/user/types/user.types";
+import type { UserListItem } from "@/features/user/types/user.types";
 
 type Props = {
-  user: UserConnectionItem;
+  user: UserListItem;
 };
 
-export default function UserConnectionRow({ user }: Props) {
+export default function UserListRow({ user }: Props) {
   return (
-    // 行全体をプロフィールへのリンクにして、X/Twitter らしい広いクリック範囲にする。
     <Link
       href={`/users/${user.username}`}
-      className="flex gap-3 border-b border-white/10 px-4 py-3 transition hover:bg-white/[0.03]"
+      className="flex gap-3 px-4 py-3 transition hover:bg-white/[0.03]"
     >
       <div className="relative size-10 shrink-0 overflow-hidden rounded-full bg-neutral-800">
-        {/* 画像がないユーザーは名前の先頭文字をアバター代わりに表示する。 */}
         {user.image ? (
           <Image
             src={user.image}
@@ -25,7 +23,7 @@ export default function UserConnectionRow({ user }: Props) {
             sizes="40px"
           />
         ) : (
-          <div className="grid size-full place-items-center text-base font-bold">
+          <div className="grid size-full place-items-center text-base font-bold text-white">
             {user.name.slice(0, 1)}
           </div>
         )}
@@ -42,16 +40,8 @@ export default function UserConnectionRow({ user }: Props) {
             </p>
           </div>
 
-          {/* 自分自身にはフォロー操作を出さない。 */}
           {!user.isMe && (
-            <div
-              className="shrink-0"
-              onClick={(e) => {
-                // 親の Link にクリックが伝わると、ボタン操作ではなくプロフィール遷移になってしまう。
-                e.preventDefault();
-                e.stopPropagation();
-              }}
-            >
+            <div className="shrink-0">
               <FollowButton
                 userId={user.id}
                 isFollowing={user.isFollowing}

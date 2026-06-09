@@ -5,9 +5,13 @@ import { getCurrentSessionUserId } from "@/lib/auth/session";
 import {
   userConnectionFollowSelect,
   type UserConnectionFollowPayload,
-  type UserConnectionUserPayload,
+  type UserListUserPayload,
 } from "@/features/user/server/selects/selects";
-import { toUserConnectionItem } from "@/features/user/server/mappers/mappers";
+import { toUserListItem } from "@/features/user/server/mappers/mappers";
+import {
+  createUserListItemOptions,
+  createUserListItemOptionsContext,
+} from "@/features/user/server/create-user-list-item-options";
 import type {
   UserConnectionCursor,
   UserConnectionPage,
@@ -101,45 +105,26 @@ export async function getUserConnectionsPage({
    * - followers 一覧: follow.follower が表示対象
    * - following 一覧: follow.following が表示対象
    */
-  const users: UserConnectionUserPayload[] = sliced.map((follow) =>
+  const users: UserListUserPayload[] = sliced.map((follow) =>
     kind === "followers" ? follow.follower : follow.following,
   );
 
   /**
-   * 一覧内ユーザーに対して、ログイン中ユーザーがフォロー済みかをまとめて取得する。
-   *
-   * ユーザーごとに findUnique すると N+1 になるため、
-   * followingId in (...) で一括取得して Set 化する。
+   * mapper に渡す現在ユーザー基準の状態を、一覧全体でまとめて解決する。
    */
-  const userIds = users.map((user) => user.id);
-  const followedByCurrentUser =
-    currentUserId && userIds.length > 0
-      ? await prisma.follow.findMany({
-          where: {
-            followerId: currentUserId,
-            followingId: {
-              in: userIds,
-            },
-          },
-          select: {
-            followingId: true,
-          },
-        })
-      : [];
-
-  const followingIdSet = new Set(
-    followedByCurrentUser.map((follow) => follow.followingId),
-  );
+  const userListItemOptionsContext = await createUserListItemOptionsContext({
+    users,
+    currentUserId,
+  });
 
   /**
-   * DB 取得用の shape を UI 用の UserConnectionItem に変換する。
+   * DB 取得用の shape を UI 用の UserListItem に変換する。
    * isFollowing / isMe は現在ログイン中のユーザー視点で決まる表示状態。
    */
   const items = users.map((user) =>
-    toUserConnectionItem({
+    toUserListItem({
       user,
-      currentUserId,
-      followingIdSet,
+      options: createUserListItemOptions(user, userListItemOptionsContext),
     }),
   );
 
