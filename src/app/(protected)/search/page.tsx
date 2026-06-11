@@ -1,7 +1,15 @@
 import type { Metadata } from "next";
 import { z } from "zod";
+import MediaPostSearchList from "@/app/(protected)/search/_components/MediaPostSearchList";
+import SearchEmptyState from "@/app/(protected)/search/_components/SearchEmptyState";
 import SearchHeader from "@/app/(protected)/search/_components/SearchHeader";
 import UserSearchList from "@/app/(protected)/search/_components/UserSearchList";
+import {
+  DEFAULT_SEARCH_TAB,
+  isSearchTab,
+  type SearchTab,
+} from "@/app/(protected)/search/_lib/search-tabs";
+import { getMediaPostSearchPage } from "@/features/post/server/get-media-post-search-page";
 import { getRecommendedUsers } from "@/features/user/server/get-recommended-users";
 import { getUserSearchPage } from "@/features/user/server/get-user-search-page";
 import type {
@@ -20,6 +28,7 @@ type Props = {
    */
   searchParams: Promise<{
     q?: string | string[];
+    tab?: string | string[];
   }>;
 };
 
@@ -41,6 +50,17 @@ const searchQuerySchema = z.preprocess(
   z.string().trim().max(100).optional(),
 );
 
+const searchTabSchema = z.preprocess(
+  (value) => {
+    if (Array.isArray(value)) {
+      return value[0];
+    }
+
+    return value;
+  },
+  z.string().optional(),
+);
+
 /**
  * 不正な検索語は空文字にフォールバックし、おすすめアカウント表示へ戻す。
  */
@@ -52,6 +72,25 @@ function parseSearchQuery(query: string | string[] | undefined) {
   }
 
   return result.data ?? "";
+}
+
+/**
+ * URL query の tab を検索タブへ正規化する。
+ *
+ * 不明な値は default tab に戻し、既知のタブは空ページも含めてそのまま表示する。
+ */
+function parseSearchTab(tab: string | string[] | undefined): SearchTab {
+  const result = searchTabSchema.safeParse(tab);
+
+  if (!result.success || !result.data) {
+    return DEFAULT_SEARCH_TAB;
+  }
+
+  if (!isSearchTab(result.data)) {
+    return DEFAULT_SEARCH_TAB;
+  }
+
+  return result.data;
 }
 
 /**
@@ -74,9 +113,67 @@ function toSearchPage(items: UserSearchItem[]): UserSearchPage {
  * 空のときは同じ一覧 UI を使っておすすめアカウントを表示する。
  */
 export default async function SearchPage({ searchParams }: Props) {
-  const { q } = await searchParams;
+  const { q, tab } = await searchParams;
   const query = parseSearchQuery(q);
+  const activeTab = parseSearchTab(tab);
   const isSearching = query.length > 0;
+
+  if (activeTab === "top") {
+    return (
+      <>
+        <SearchHeader query={query} activeTab={activeTab} />
+        <SearchEmptyState
+          title="話題のポスト"
+          description="話題のポスト検索は準備中です。"
+        />
+      </>
+    );
+  }
+
+  if (activeTab === "latest") {
+    return (
+      <>
+        <SearchHeader query={query} activeTab={activeTab} />
+        <SearchEmptyState
+          title="最新"
+          description="最新ポスト検索は準備中です。"
+        />
+      </>
+    );
+  }
+
+  /**
+   * メディアタブ。
+   *
+   * query が空の場合も DB 取得し、最新のメディア付き投稿一覧として表示する。
+   * 2ページ目以降は `MediaPostSearchList` から API route 経由で取得する。
+   */
+  if (activeTab === "media") {
+    const initialPage = await getMediaPostSearchPage({
+      query,
+    });
+
+    return (
+      <>
+        <SearchHeader query={query} activeTab={activeTab} />
+
+        <MediaPostSearchList
+          initialPage={initialPage}
+          query={query}
+          emptyMessage={
+            isSearching
+              ? "一致するメディア付き投稿は見つかりませんでした。"
+              : "メディア付き投稿はまだありません。"
+          }
+          endMessage={
+            isSearching
+              ? "検索結果は以上です"
+              : "これ以上メディア付き投稿はありません"
+          }
+        />
+      </>
+    );
+  }
 
   // 初期表示は Server Component で取得し、2ページ目以降だけ client fetch に任せる。
   const initialPage = isSearching
@@ -87,7 +184,7 @@ export default async function SearchPage({ searchParams }: Props) {
 
   return (
     <>
-      <SearchHeader query={query} />
+      <SearchHeader query={query} activeTab={activeTab} />
 
       {!isSearching && (
         <div className="px-4 py-3">

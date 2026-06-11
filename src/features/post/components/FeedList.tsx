@@ -8,9 +8,17 @@ type Props = {
   initialPage: FeedPage;
   fetchPage: (input: FetchPageInput) => Promise<FeedPage>; 
   pageSize?: number;
+  emptyMessage?: string;
+  endMessage?: string;
 }
 
-export default function FeedList({ initialPage, fetchPage, pageSize = 10 }: Props) {
+export default function FeedList({
+  initialPage,
+  fetchPage,
+  pageSize = 10,
+  emptyMessage = "投稿はまだありません",
+  endMessage = "これ以上投稿はありません",
+}: Props) {
   /**
    * カスタムフックから状態と操作を取得
    *
@@ -81,7 +89,7 @@ export default function FeedList({ initialPage, fetchPage, pageSize = 10 }: Prop
          ======================== */}
       {showEmpty && (
         <div className="px-4 py-10 text-center text-sm text-white/40">
-          投稿はまだありません
+          {emptyMessage}
         </div>
       )}
 
@@ -99,7 +107,7 @@ export default function FeedList({ initialPage, fetchPage, pageSize = 10 }: Prop
          ======================== */}
       {showEnd && (
         <div className="px-4 py-6 text-center text-sm text-white/40">
-          これ以上投稿はありません
+          {endMessage}
         </div>
       )}
 
