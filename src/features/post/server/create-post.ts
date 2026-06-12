@@ -38,48 +38,68 @@ export async function createPost({
     )
   );
 
-  /**
-   * Prismaで投稿を作成
-   *
-   * - 投稿本体
-   * - 画像（リレーション）も同時に作成
-   */
-  const post = await prisma.post.create({
-    data: {
-      userId,
-      content,
-      parentPostId: parentPostId ?? null,
-      images: {
-        /**
-         * imageUrlsを元に画像レコードを作成
-         *
-         * sortOrder:
-         * → 表示順を保持するためのインデックス
-         */
-        create: imageUrls.map((imageUrl, index) => ({
-          url: imageUrl,
-          sortOrder: index,
-        })),
-      },
-    },
-
+  const post = await prisma.$transaction(async (tx) => {
     /**
-     * 返却するデータを限定（パフォーマンス & セキュリティ）
+     * Prismaで投稿を作成
+     *
+     * - 投稿本体
+     * - 画像（リレーション）も同時に作成
      */
-    select: {
-      id: true,
-      userId: true,
-      content: true,
-      createdAt: true,
-      images: {
-        /**
-         * 画像は表示順で並び替え
-         */
-        orderBy: {
-          sortOrder: "asc",
+    const createdPost = await tx.post.create({
+      data: {
+        userId,
+        content,
+        parentPostId: parentPostId ?? null,
+        images: {
+          /**
+           * imageUrlsを元に画像レコードを作成
+           *
+           * sortOrder:
+           * → 表示順を保持するためのインデックス
+           */
+          create: imageUrls.map((imageUrl, index) => ({
+            url: imageUrl,
+            sortOrder: index,
+          })),
         },
       },
-    },
+
+      /**
+       * 返却するデータを限定（パフォーマンス & セキュリティ）
+       */
+      select: {
+        id: true,
+        userId: true,
+        content: true,
+        createdAt: true,
+        images: {
+          /**
+           * 画像は表示順で並び替え
+           */
+          orderBy: {
+            sortOrder: "asc",
+          },
+        },
+      },
+    });
+
+    if (parentPostId) {
+      await tx.post.update({
+        where: {
+          id: parentPostId,
+        },
+        data: {
+          replyCount: {
+            increment: 1,
+          },
+          engagementScore: {
+            increment: 2,
+          },
+        },
+      });
+    }
+
+    return createdPost;
   });
 
   return post;

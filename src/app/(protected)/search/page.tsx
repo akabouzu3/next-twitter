@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { z } from "zod";
 import LatestPostSearchList from "@/app/(protected)/search/_components/LatestPostSearchList";
 import MediaPostSearchList from "@/app/(protected)/search/_components/MediaPostSearchList";
-import SearchEmptyState from "@/app/(protected)/search/_components/SearchEmptyState";
 import SearchHeader from "@/app/(protected)/search/_components/SearchHeader";
+import TopPostSearchList from "@/app/(protected)/search/_components/TopPostSearchList";
 import UserSearchList from "@/app/(protected)/search/_components/UserSearchList";
 import {
   DEFAULT_SEARCH_TAB,
@@ -12,6 +12,7 @@ import {
 } from "@/app/(protected)/search/_lib/search-tabs";
 import { getLatestPostSearchPage } from "@/features/post/server/get-latest-post-search-page";
 import { getMediaPostSearchPage } from "@/features/post/server/get-media-post-search-page";
+import { getTopPostSearchPage } from "@/features/post/server/get-top-post-search-page";
 import { getRecommendedUsers } from "@/features/user/server/get-recommended-users";
 import { getUserSearchPage } from "@/features/user/server/get-user-search-page";
 import type {
@@ -121,12 +122,27 @@ export default async function SearchPage({ searchParams }: Props) {
   const isSearching = query.length > 0;
 
   if (activeTab === "top") {
+    const initialPage = await getTopPostSearchPage({
+      query,
+    });
+
     return (
       <>
         <SearchHeader query={query} activeTab={activeTab} />
-        <SearchEmptyState
-          title="話題のポスト"
-          description="話題のポスト検索は準備中です。"
+
+        <TopPostSearchList
+          initialPage={initialPage}
+          query={query}
+          emptyMessage={
+            isSearching
+              ? "一致する話題のポストは見つかりませんでした。"
+              : "話題のポストはまだありません。"
+          }
+          endMessage={
+            isSearching
+              ? "検索結果は以上です"
+              : "これ以上話題のポストはありません"
+          }
         />
       </>
     );

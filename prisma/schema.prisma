@@ -97,6 +97,9 @@ model Post {
   id        String   @id @default(cuid())
   content   String
   viewCount Int      @default(0)
+  likeCount Int      @default(0)
+  replyCount Int     @default(0)
+  engagementScore Int @default(0)
 
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -131,6 +134,7 @@ model Post {
    */
   @@index([userId, createdAt(sort: Desc), id(sort: Desc)])
   @@index([parentPostId, createdAt(sort: Desc), id(sort: Desc)])
+  @@index([engagementScore(sort: Desc), createdAt(sort: Desc), id(sort: Desc)])
 
 
   /**

@@ -2,23 +2,23 @@
 
 import Feed from "@/features/post/components/FeedItem";
 import { useInfiniteFeed, FetchPageInput } from "@/features/post/hooks/useInfinityFeed";
-import { FeedPage } from "@/features/post/types/post.types";
+import type { Cursor, FeedPage } from "@/features/post/types/post.types";
 
-type Props = {
-  initialPage: FeedPage;
-  fetchPage: (input: FetchPageInput) => Promise<FeedPage>; 
+type Props<TCursor extends Cursor = Cursor> = {
+  initialPage: FeedPage<TCursor>;
+  fetchPage: (input: FetchPageInput<TCursor>) => Promise<FeedPage<TCursor>>;
   pageSize?: number;
   emptyMessage?: string;
   endMessage?: string;
 }
 
-export default function FeedList({
+export default function FeedList<TCursor extends Cursor = Cursor>({
   initialPage,
   fetchPage,
   pageSize = 10,
   emptyMessage = "投稿はまだありません",
   endMessage = "これ以上投稿はありません",
-}: Props) {
+}: Props<TCursor>) {
   /**
    * カスタムフックから状態と操作を取得
    *

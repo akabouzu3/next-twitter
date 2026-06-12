@@ -16,11 +16,34 @@ export async function unlikePost({
   userId,
   postId,
 }: UnlikePostInput): Promise<void> {
-  // deleteMany は対象が0件でも失敗しないため、解除操作を冪等にできる。
-  await prisma.postLike.deleteMany({
-    where: {
-      userId,
-      postId,
-    },
+  await prisma.$transaction(async (tx) => {
+    // deleteMany は対象が0件でも失敗しないため、解除操作を冪等にできる。
+    const result = await tx.postLike.deleteMany({
+      where: {
+        userId,
+        postId,
+      },
+    });
+
+    if (result.count === 0) {
+      return;
+    }
+
+    await tx.post.updateMany({
+      where: {
+        id: postId,
+        likeCount: {
+          gt: 0,
+        },
+      },
+      data: {
+        likeCount: {
+          decrement: 1,
+        },
+        engagementScore: {
+          decrement: 3,
+        },
+      },
+    });
   });
 }

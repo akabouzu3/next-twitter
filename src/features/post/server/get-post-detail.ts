@@ -30,6 +30,9 @@ export async function getPostDetailAndIncrementViewCount(
         viewCount: {
           increment: 1,
         },
+        engagementScore: {
+          increment: 1,
+        },
       },
       select: postFeedItemSelect,
     });
