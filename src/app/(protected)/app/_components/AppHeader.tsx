@@ -40,12 +40,7 @@ export default function AppPageHeader({
         <div className="w-8 h-8">
           <KLogo/>
         </div>
-        <button 
-          className="rounded-full border border-white/30 px-4 py-2 font-bold cursor-pointer
-            disabled:pointer-events-none disabled:cursor-default disabled:opacity-50"
-          disabled={true}>
-          購入する
-        </button>
+        <div className="w-8" aria-hidden="true" />
       </div>
 
       {/**
