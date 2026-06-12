@@ -1,8 +1,6 @@
 import { FeedItem as FeedItemType } from "@/features/post/types/post.types";
-import { 
-  MessageCircle, Repeat2, BarChart2, 
-  // Bookmark, 
-  // Share2,
+import {
+  MessageCircle, BarChart2,
   // CheckCircle2
  } from "lucide-react";
 import Image from "next/image";
@@ -82,7 +80,7 @@ export default function FeedItem({ post }: Props) {
             <PostImages post={post}/>
           ) : null}
 
-          <div className="mt-3 grid grid-cols-6 text-white/50">
+          <div className="mt-3 flex items-center gap-16 text-white/50">
             <Link
               href={postHref}
               aria-label={`${post.replyCount} 件の返信`}
@@ -91,7 +89,6 @@ export default function FeedItem({ post }: Props) {
               <MessageCircle className="size-4" />
               {post.replyCount}
             </Link>
-            <button type="button" className="pointer-events-auto flex items-center gap-2"><Repeat2 className="size-4" />{10}</button>
             <span className="pointer-events-auto">
               <LikeButton
                 postId={post.id}
@@ -107,8 +104,6 @@ export default function FeedItem({ post }: Props) {
               <BarChart2 className="size-4" aria-hidden="true" />
               {post.viewCount}
             </button>
-            {/* <button className="flex items-center gap-2"><Bookmark className="size-4" /></button> */}
-            {/* <button className="flex items-center gap-2"><Share2 className="size-4" /></button> */}
           </div>
         </div>
       </div>

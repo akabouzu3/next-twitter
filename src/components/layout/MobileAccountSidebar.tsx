@@ -5,7 +5,6 @@ import Link from "next/link";
 import { signOut } from "next-auth/react";
 import {
   BadgeCheck,
-  Bookmark,
   ExternalLink,
   List,
   LogOut,
@@ -47,7 +46,6 @@ const menuItems: MenuItem[] = [
   { label: "プレミアム", icon: BadgeCheck, disabled: true, badge: "1" },
   { label: "リスト", icon: List, disabled: true },
   { label: "コミュニティ", icon: Users, disabled: true },
-  { label: "ブックマーク", icon: Bookmark, disabled: true, href: "/bookmark" },
   { label: "クリエイタースタジオ", icon: Paintbrush, disabled: true },
   { label: "ビジネス", icon: Zap, disabled: true },
   { label: "広告", icon: ExternalLink, disabled: true },

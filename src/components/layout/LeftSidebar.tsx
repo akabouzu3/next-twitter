@@ -1,5 +1,5 @@
 'use client'
-import { Home, Search, Bell, Mail, Bookmark, User, Ellipsis } from "lucide-react";
+import { Home, Search, Bell, Mail, User, Ellipsis } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -20,7 +20,6 @@ export default function LeftSidebar({currentUser}: Props) {
     { label: "話題を検索", icon: Search, url: "/search", isDisabled: false,  },
     { label: "通知", icon: Bell, url: "/notification", isDisabled: true,  },
     { label: "メッセージ", icon: Mail, url: "/messages", isDisabled: true,  },
-    { label: "ブックマーク", icon: Bookmark, url: "/bookmark", isDisabled: true,  },
     { label: "プロフィール", icon: User, url: "/users/" + currentUser?.username, isDisabled: false,  },
     { label: "もっと見る", icon: Ellipsis, url: "/more", isDisabled: true,  },
   ];
