@@ -4,16 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import {
-  BadgeCheck,
-  ExternalLink,
-  List,
   LogOut,
-  Paintbrush,
   Plus,
   Settings,
   User,
-  Users,
-  Zap,
 } from "lucide-react";
 import { Dialog as DialogPrimitive } from "radix-ui";
 import { useState } from "react";
@@ -40,15 +34,7 @@ type MenuItem = {
   badge?: string;
 };
 
-// 画像の X mobile sidebar に寄せて、未実装機能も disabled の項目として並べる。
-// href がある項目だけ遷移可能にし、他は見た目だけ先に揃えておく。
 const menuItems: MenuItem[] = [
-  // { label: "プレミアム", icon: BadgeCheck, disabled: true, badge: "1" },
-  // { label: "リスト", icon: List, disabled: true },
-  // { label: "コミュニティ", icon: Users, disabled: true },
-  // { label: "クリエイタースタジオ", icon: Paintbrush, disabled: true },
-  // { label: "ビジネス", icon: Zap, disabled: true },
-  // { label: "広告", icon: ExternalLink, disabled: true },
   { label: "設定とプライバシー", icon: Settings, disabled: true },
 ];
 

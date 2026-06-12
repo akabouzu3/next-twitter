@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Search } from "lucide-react";
 import { RecommendedUserItem } from "@/features/user/components/RecommendedUserItem";
 import type { RecommendedUser } from "@/features/user/types/user.types";
 // import type { CurrentUser } from "@/lib/auth/current-user";
@@ -181,9 +182,22 @@ export default function RightSidebar({
             検索バー（固定）
         ========================= */}
         <div className="sticky top-0 z-20 w-full bg-black py-2">
-          <div className="rounded-full border border-white/10 px-4 py-3 text-gray-400">
-            検索
-          </div>
+          <form action="/search">
+            <label className="relative block">
+              <span className="sr-only">検索</span>
+              <Search
+                className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-neutral-500"
+                aria-hidden="true"
+              />
+              <input
+                type="search"
+                name="q"
+                placeholder="検索"
+                autoComplete="off"
+                className="h-11 w-full rounded-full border border-white/10 bg-black py-2 pl-12 pr-4 text-[15px] font-medium text-white outline-none placeholder:text-neutral-500 transition focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+              />
+            </label>
+          </form>
         </div>
         {/* =========================
             実際に動くコンテンツ
