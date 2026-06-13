@@ -171,6 +171,24 @@ export function UserEditForm({ user, formId, onSuccess }: Props) {
           ) : null}
 
           <label className="block rounded border border-white/20 px-3 py-2 focus-within:border-sky-500">
+            <span className="block text-xs text-neutral-500">ユーザー名</span>
+            <input
+              name="username"
+              defaultValue={state.values?.username ?? user.username ?? ""}
+              maxLength={30}
+              autoComplete="username"
+              disabled={isPending}
+              className="mt-1 w-full bg-transparent text-[17px] outline-none disabled:opacity-60"
+            />
+          </label>
+
+          {state.fieldErrors?.username ? (
+            <p className="text-sm text-red-500">
+              {state.fieldErrors.username[0]}
+            </p>
+          ) : null}
+
+          <label className="block rounded border border-white/20 px-3 py-2 focus-within:border-sky-500">
             <span className="block text-xs text-neutral-500">自己紹介</span>
             <textarea
               name="bio"
@@ -195,6 +213,49 @@ export function UserEditForm({ user, formId, onSuccess }: Props) {
           {state.fieldErrors?.backgroundImage ? (
             <p className="text-sm text-red-500">
               {state.fieldErrors.backgroundImage[0]}
+            </p>
+          ) : null}
+
+          <label className="block rounded border border-white/20 px-3 py-2 focus-within:border-sky-500">
+            <span className="block text-xs text-neutral-500">
+              現在のパスワード
+            </span>
+            <input
+              type="password"
+              name="currentPassword"
+              maxLength={100}
+              autoComplete="current-password"
+              placeholder="パスワード変更時のみ入力"
+              disabled={isPending}
+              className="mt-1 w-full bg-transparent text-[17px] outline-none placeholder:text-white/30 disabled:opacity-60"
+            />
+          </label>
+
+          {state.fieldErrors?.currentPassword ? (
+            <p className="text-sm text-red-500">
+              {state.fieldErrors.currentPassword[0]}
+            </p>
+          ) : null}
+
+          <label className="block rounded border border-white/20 px-3 py-2 focus-within:border-sky-500">
+            <span className="block text-xs text-neutral-500">
+              新しいパスワード
+            </span>
+            <input
+              type="password"
+              name="newPassword"
+              minLength={8}
+              maxLength={100}
+              autoComplete="new-password"
+              placeholder="変更する場合のみ入力"
+              disabled={isPending}
+              className="mt-1 w-full bg-transparent text-[17px] outline-none placeholder:text-white/30 disabled:opacity-60"
+            />
+          </label>
+
+          {state.fieldErrors?.newPassword ? (
+            <p className="text-sm text-red-500">
+              {state.fieldErrors.newPassword[0]}
             </p>
           ) : null}
         </div>
