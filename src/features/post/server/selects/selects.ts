@@ -22,6 +22,8 @@ export const postFeedItemSelect = {
   id: true,
   content: true,
   viewCount: true,
+  likeCount: true,
+  replyCount: true,
   createdAt: true,
 
   /**
@@ -63,15 +65,6 @@ export const postFeedItemSelect = {
     },
   },
 
-  /**
-   * 集計情報
-   */
-  _count: {
-    select: {
-      likes: true, // いいね数
-      replies: true, // 返信数
-    },
-  },
 } satisfies Prisma.PostSelect;
 
 

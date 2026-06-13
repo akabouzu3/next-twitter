@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { FeedItem, FeedPage, Cursor } from "@/features/post/types/post.types";
+import type { Cursor, FeedItem, FeedPage } from "@/features/post/types/post.types";
 
 /**
  * 投稿配列を id ベースでマージしつつ重複を除去する
@@ -30,15 +30,15 @@ function mergeUniqueItems(prev: FeedItem[], next: FeedItem[]) {
   return Array.from(map.values());
 }
 
-export type FetchPageInput = {
-  cursor: Cursor; // 次ページ取得用カーソル
+export type FetchPageInput<TCursor extends Cursor = Cursor> = {
+  cursor: TCursor; // 次ページ取得用カーソル
   limit?: number;                 // 取得件数（任意）
   signal?: AbortSignal;           // fetchキャンセル用（React Query等で重要）
 };
 
-type Props = {
-  initialPage: FeedPage;
-  fetchPage: (input: FetchPageInput) => Promise<FeedPage>; 
+type Props<TCursor extends Cursor = Cursor> = {
+  initialPage: FeedPage<TCursor>;
+  fetchPage: (input: FetchPageInput<TCursor>) => Promise<FeedPage<TCursor>>;
   pageSize?: number;
 }
 
@@ -52,14 +52,14 @@ type Props = {
  * - 通信キャンセル
  * - エラーハンドリング
  */
-export function useInfiniteFeed({
+export function useInfiniteFeed<TCursor extends Cursor = Cursor>({
   initialPage,
   fetchPage,
   pageSize = 10,
-}: Props) {
+}: Props<TCursor>) {
 
   const [items, setItems] = useState<FeedItem[]>(initialPage.items);
-  const [nextCursor, setNextCursor] = useState<FeedPage["nextCursor"]>(
+  const [nextCursor, setNextCursor] = useState<FeedPage<TCursor>["nextCursor"]>(
     initialPage.nextCursor
   );
   const [hasMore, setHasMore] = useState(initialPage.hasMore);

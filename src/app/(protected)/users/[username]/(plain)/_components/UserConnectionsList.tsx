@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
-import UserConnectionRow from "@/app/(protected)/users/[username]/(plain)/_components/UserConnectionRow";
+import UserListRow from "@/features/user/components/UserListRow";
 import { fetchUserConnectionsPage } from "@/features/user/client/fetch-user-connections-page";
 import {
   FetchUserConnectionsPageInput,
@@ -59,7 +59,7 @@ export default function UserConnectionsList({
     <div>
       <section className="flex flex-col">
         {items.map((user) => (
-          <UserConnectionRow key={user.id} user={user} />
+          <UserListRow key={user.id} user={user} />
         ))}
       </section>
 

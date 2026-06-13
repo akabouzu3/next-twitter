@@ -14,7 +14,9 @@ import { saveImage } from "@/lib/upload/save-image";
  */
 type Input = {
   name?: string;
+  username?: string;
   bio?: string;
+  passwordHash?: string;
   image?: File | null;
   backgroundImage?: File | null;
 };
@@ -69,7 +71,12 @@ export async function updateUser(userId: string, data: Input) {
     where: { id: userId },
     data: {
       name: data.name,
+      username: data.username,
       bio: data.bio,
+
+      ...(data.passwordHash !== undefined && {
+        passwordHash: data.passwordHash,
+      }),
 
       /**
        * プロフィール画像の条件付き更新
