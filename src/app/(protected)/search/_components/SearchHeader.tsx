@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Search } from "lucide-react";
 import BackButton from "@/components/back-button";
+import NavigationPendingIndicator from "@/components/navigation-pending-indicator";
 import {
   DEFAULT_SEARCH_TAB,
   searchTabs,
@@ -75,6 +76,7 @@ function SearchTabs({
               aria-current={isActive ? "page" : undefined}
             >
               {content}
+              <NavigationPendingIndicator className="absolute right-2 top-1/2 -translate-y-1/2" />
             </Link>
           );
         })}

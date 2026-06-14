@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import NavigationPendingIndicator from "@/components/navigation-pending-indicator";
 import DirectUserAvatar from "@/features/messages/components/DirectUserAvatar";
 import type { DirectConversationListItem } from "@/features/messages/types/message.types";
 import { formatRelativeTime } from "@/lib/utils/date";
@@ -37,7 +38,7 @@ export default function DirectConversationList({
           <Link
             key={conversation.id}
             href={`/messages/${conversation.id}`}
-            className="flex gap-3 border-b border-white/10 px-4 py-3 transition hover:bg-white/[0.03]"
+            className="relative flex gap-3 border-b border-white/10 px-4 py-3 pr-12 transition hover:bg-white/[0.03]"
           >
             <DirectUserAvatar user={conversation.otherUser} />
 
@@ -58,6 +59,7 @@ export default function DirectConversationList({
                 {lastMessage ? `${prefix}${lastMessage.content}` : "会話を開始しました"}
               </p>
             </div>
+            <NavigationPendingIndicator className="absolute right-4 top-1/2 -translate-y-1/2" />
           </Link>
         );
       })}

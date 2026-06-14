@@ -1,6 +1,7 @@
 "use client";
 
 import BackButton from "@/components/back-button";
+import NavigationPendingIndicator from "@/components/navigation-pending-indicator";
 import Link from "next/link";
 import type { UserProfileItem } from "@/features/user/types/user.types";
 
@@ -54,6 +55,7 @@ export default function UserConnectionsHeader({ user, activeTab }: Props) {
               <span className={isActive ? "text-white" : undefined}>
                 {tab.label}
               </span>
+              <NavigationPendingIndicator className="absolute right-4 top-1/2 -translate-y-1/2" />
               {isActive && (
                 <span className="absolute bottom-0 h-1 w-16 rounded-full bg-sky-500" />
               )}

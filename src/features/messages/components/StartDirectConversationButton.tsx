@@ -1,6 +1,6 @@
 "use client";
 
-import { Mail } from "lucide-react";
+import { LoaderCircle, Mail } from "lucide-react";
 import { useActionState } from "react";
 
 import {
@@ -33,7 +33,11 @@ export default function StartDirectConversationButton({ username }: Props) {
         aria-label="メッセージを送る"
         title={state.message || "メッセージを送る"}
       >
-        <Mail className="size-5" />
+        {isPending ? (
+          <LoaderCircle className="size-5 animate-spin" aria-hidden="true" />
+        ) : (
+          <Mail className="size-5" aria-hidden="true" />
+        )}
       </button>
     </form>
   );

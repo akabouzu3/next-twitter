@@ -1,5 +1,6 @@
 "use client";
 
+import NavigationPendingIndicator from "@/components/navigation-pending-indicator";
 import { UserProfileItem } from "@/features/user/types/user.types";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -69,6 +70,7 @@ export default function UserProfileTabs({
               <span className={isActive ? "text-white" : "text-neutral-500"}>
                 {tab.title}
               </span>
+              <NavigationPendingIndicator className="absolute right-2 top-1/2 -translate-y-1/2" />
 
               {isActive && (
                 <span className="absolute bottom-0 left-1/2 h-1 w-14 -translate-x-1/2 rounded-full bg-sky-500" />
