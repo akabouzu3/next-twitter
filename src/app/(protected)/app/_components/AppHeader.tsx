@@ -4,6 +4,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import KLogo from "@/components/icons/KLogo";
 import { MobileAccountSidebarTrigger } from "@/components/layout/MobileAccountSidebar";
+import NavigationPendingIndicator from "@/components/navigation-pending-indicator";
 import type { CurrentUser } from "@/lib/auth/current-user";
 
 const tabs = [
@@ -54,11 +55,12 @@ export default function AppPageHeader({
             <Link
               key={tab.key}
               href={tab.href}
-              className="relative flex h-12 items-center justify-center text-md font-bold cursor-pointer hover:bg-white/10"
+              className="relative flex h-12 cursor-pointer items-center justify-center text-md font-bold transition hover:bg-white/10"
             >
               <span className={cn(active ? "text-white" : "text-white/45")}>
                 {tab.title}
               </span>
+              <NavigationPendingIndicator className="absolute right-4 top-1/2 -translate-y-1/2" />
 
               {active && (
                 <span className="absolute bottom-0 h-1 w-14 rounded-full bg-sky-500" />

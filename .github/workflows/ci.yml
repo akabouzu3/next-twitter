@@ -3,6 +3,10 @@ on:
   pull_request:
     branches: [develop, main]  # PRの向き先が develop/main の時だけ
 
+env:
+  # GitHub-hosted JS actions の Node.js 20 deprecation warning を避けるため、Node.js 24 実行へ先行移行する。
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true

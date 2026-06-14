@@ -1,6 +1,6 @@
 "use client";
 
-import { Send } from "lucide-react";
+import { LoaderCircle, Send } from "lucide-react";
 import { useActionState } from "react";
 
 import {
@@ -40,7 +40,11 @@ export default function StartDirectConversationForm() {
           className="grid size-11 shrink-0 place-items-center rounded-full bg-sky-500 text-white transition hover:bg-sky-400 disabled:cursor-not-allowed disabled:opacity-60"
           aria-label="メッセージを開始"
         >
-          <Send className="size-5" />
+          {isPending ? (
+            <LoaderCircle className="size-5 animate-spin" aria-hidden="true" />
+          ) : (
+            <Send className="size-5" aria-hidden="true" />
+          )}
         </button>
       </div>
 
