@@ -1,6 +1,11 @@
 import type { UserProfileWithFollowStatus } from "@/features/user/server/get-user";
-import type { UserConnectionItem, UserProfileItem } from "@/features/user/types/user.types";
-import type { UserConnectionUserPayload } from "@/features/user/server/selects/selects";
+import type { UserListItem, UserProfileItem } from "@/features/user/types/user.types";
+import type { UserListUserPayload } from "@/features/user/server/selects/selects";
+
+export type ToUserListItemOptions = {
+  isFollowing?: boolean;
+  isMe?: boolean;
+};
 
 export function toUserProfileItem(
   user: UserProfileWithFollowStatus
@@ -21,17 +26,13 @@ export function toUserProfileItem(
   };
 }
 
-export function toUserConnectionItem({
+export function toUserListItem({
   user,
-  currentUserId,
-  followingIdSet,
+  options = {},
 }: {
-  user: UserConnectionUserPayload;
-  currentUserId: string | null;
-  followingIdSet: Set<string>;
-}): UserConnectionItem {
-  const isMe = currentUserId === user.id;
-
+  user: UserListUserPayload;
+  options?: ToUserListItemOptions;
+}): UserListItem {
   return {
     id: user.id,
     name: user.name,
@@ -39,7 +40,7 @@ export function toUserConnectionItem({
     bio: user.bio,
     image: user.image,
     followerCount: user._count.followers,
-    isFollowing: isMe ? false : followingIdSet.has(user.id),
-    isMe,
+    isFollowing: options.isFollowing ?? false,
+    isMe: options.isMe ?? false,
   };
 }

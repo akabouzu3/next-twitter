@@ -32,10 +32,31 @@ export async function deletePostAction(postId: string) {
 
   assertCanDeletePost(currentUser, post);
 
-  await prisma.post.delete({
-    where: {
-      id: postId,
-    },
+  await prisma.$transaction(async (tx) => {
+    await tx.post.delete({
+      where: {
+        id: postId,
+      },
+    });
+
+    if (post.parentPostId) {
+      await tx.post.updateMany({
+        where: {
+          id: post.parentPostId,
+          replyCount: {
+            gt: 0,
+          },
+        },
+        data: {
+          replyCount: {
+            decrement: 1,
+          },
+          engagementScore: {
+            decrement: 2,
+          },
+        },
+      });
+    }
   });
 
   revalidatePath("/app");

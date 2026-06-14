@@ -1,9 +1,6 @@
 import {
   BarChart2,
-  Bookmark,
   MessageCircle,
-  Repeat2,
-  Share2,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -100,8 +97,7 @@ export default function PostDetailArticle({ post }: Props) {
       </div>
 
       {/* 投稿アクション */}
-      <div className="grid grid-cols-5 border-b border-white/10 py-1 text-white/50">
-        {/* 返信・リポスト・閲覧・保存系は見た目だけ先に置き、実操作は専用実装で追加する。 */}
+      <div className="grid grid-cols-3 border-b border-white/10 py-1 text-white/50">
         <button
           type="button"
           aria-label="返信"
@@ -109,13 +105,6 @@ export default function PostDetailArticle({ post }: Props) {
         >
           <MessageCircle className="size-5" aria-hidden="true" />
           <span className="text-sm">{post.replyCount}</span>
-        </button>
-        <button
-          type="button"
-          aria-label="リポスト"
-          className="flex h-12 items-center justify-center gap-2 rounded-full transition hover:bg-emerald-500/10 hover:text-emerald-400"
-        >
-          <Repeat2 className="size-5" aria-hidden="true" />
         </button>
         <div className="flex h-12 items-center justify-center">
           <LikeButton
@@ -130,23 +119,8 @@ export default function PostDetailArticle({ post }: Props) {
           className="flex h-12 items-center justify-center gap-2 rounded-full transition hover:bg-sky-500/10 hover:text-sky-400"
         >
           <BarChart2 className="size-5" aria-hidden="true" />
+          <span className="text-sm">{post.viewCount}</span>
         </button>
-        <div className="flex h-12 items-center justify-center gap-4">
-          <button
-            type="button"
-            aria-label="ブックマーク"
-            className="grid size-9 place-items-center rounded-full transition hover:bg-sky-500/10 hover:text-sky-400"
-          >
-            <Bookmark className="size-5" aria-hidden="true" />
-          </button>
-          <button
-            type="button"
-            aria-label="共有"
-            className="grid size-9 place-items-center rounded-full transition hover:bg-sky-500/10 hover:text-sky-400"
-          >
-            <Share2 className="size-5" aria-hidden="true" />
-          </button>
-        </div>
       </div>
     </article>
   );

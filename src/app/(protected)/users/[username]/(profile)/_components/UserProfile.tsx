@@ -1,11 +1,11 @@
 import Image from "next/image";
 import { CalendarDays, BadgeCheck, ChevronRight } from "lucide-react";
 import { CurrentUser } from "@/lib/auth/current-user";
-import type { UserProfile } from "@/features/user/server/get-user";
 import FollowButton from "@/features/follow/components/FollowButton";
 import { UserProfileItem } from "@/features/user/types/user.types";
 import UserEditDialogTrigger from "@/features/user/components/UserEditDialogTriger";
 import Link from "next/link";
+import StartDirectConversationButton from "@/features/messages/components/StartDirectConversationButton";
 
 type Props = {
   currentUser: CurrentUser | null;
@@ -70,8 +70,10 @@ export default function UserProfile({ currentUser, user }: Props) {
               // 自分 → 編集ボタン
               <UserEditDialogTrigger currentUser={currentUser} user={user}/>
             ) : (
-              // 他人 → フォローボタン
-              <FollowButton userId={user.id} isFollowing={user.isFollowing}/>
+              <div className="flex items-center gap-2">
+                <StartDirectConversationButton username={user.username} />
+                <FollowButton userId={user.id} isFollowing={user.isFollowing}/>
+              </div>
             )}
           </div>
         </div>

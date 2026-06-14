@@ -48,8 +48,8 @@ export function toFeedItem(
         }
       : null,
     viewCount: post.viewCount,
-    likeCount: post._count.likes,
-    replyCount: post._count.replies,
+    likeCount: post.likeCount,
+    replyCount: post.replyCount,
     likedByMe: options.likedByMe ?? false,
     canDelete: options.canDelete ?? false,
     isOwnPost: options.isOwnPost ?? false,

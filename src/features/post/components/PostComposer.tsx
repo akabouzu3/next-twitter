@@ -62,6 +62,9 @@ const MAX_IMAGE_COUNT = 4;
 // 投稿本文の最大文字数
 const MAX_POST_LENGTH = 280;
 
+const unavailableToolButtonClass =
+  "cursor-not-allowed text-sky-500/60 disabled:opacity-80";
+
 export default function PostComposer({
   currentUser,
   onSuccess,
@@ -358,19 +361,43 @@ export default function PostComposer({
                     onSelect={handleSelectImages}
                   />
 
-                  <button type="button" className="cursor-pointer" disabled={isPending}>
+                  <button
+                    type="button"
+                    className={unavailableToolButtonClass}
+                    disabled
+                    aria-label="画像検索は未実装です"
+                    title="未実装"
+                  >
                     <ScanSearch className="size-5" />
                   </button>
 
-                  <button type="button" className="cursor-pointer" disabled={isPending}>
+                  <button
+                    type="button"
+                    className={unavailableToolButtonClass}
+                    disabled
+                    aria-label="絵文字は未実装です"
+                    title="未実装"
+                  >
                     <Smile className="size-5" />
                   </button>
 
-                  <button type="button" className="cursor-pointer" disabled={isPending}>
+                  <button
+                    type="button"
+                    className={unavailableToolButtonClass}
+                    disabled
+                    aria-label="予約投稿は未実装です"
+                    title="未実装"
+                  >
                     <CalendarDays className="size-5" />
                   </button>
 
-                  <button type="button" className="cursor-pointer" disabled={isPending}>
+                  <button
+                    type="button"
+                    className={unavailableToolButtonClass}
+                    disabled
+                    aria-label="位置情報は未実装です"
+                    title="未実装"
+                  >
                     <MapPin className="size-5" />
                   </button>
                 </div>

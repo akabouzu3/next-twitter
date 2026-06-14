@@ -49,6 +49,9 @@ model User {
   likes     PostLike[]
   following Follow[] @relation("UserFollowing")
   followers Follow[] @relation("UserFollowers")
+  // DM: 参加している1対1会話と、自分が送信したメッセージ。
+  directConversationParticipants DirectConversationParticipant[]
+  sentDirectMessages DirectMessage[] @relation("DirectMessageSender")
 
   accounts      Account[]
   sessions      Session[]
@@ -97,6 +100,9 @@ model Post {
   id        String   @id @default(cuid())
   content   String
   viewCount Int      @default(0)
+  likeCount Int      @default(0)
+  replyCount Int     @default(0)
+  engagementScore Int @default(0)
 
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -131,6 +137,7 @@ model Post {
    */
   @@index([userId, createdAt(sort: Desc), id(sort: Desc)])
   @@index([parentPostId, createdAt(sort: Desc), id(sort: Desc)])
+  @@index([engagementScore(sort: Desc), createdAt(sort: Desc), id(sort: Desc)])
 
 
   /**
@@ -231,4 +238,80 @@ model PostImage {
   createdAt DateTime @default(now())
 
   @@index([postId, sortOrder])
+}
+
+model DirectConversation {
+  id            String   @id @default(cuid())
+  /**
+   * 1対1DMの重複防止キー。
+   *
+   * 2人の userId をソートして連結した値を保存する。
+   * A→B と B→A のどちらからDMを開始しても同じ key になるため、
+   * unique 制約で同じ2人の会話を1つに集約できる。
+   */
+  directKey     String   @unique
+  /**
+   * 会話一覧の並び替え用。
+   *
+   * メッセージ送信時に最新メッセージの createdAt へ更新し、
+   * `/messages` ではこの値の降順で最近動いた会話から表示する。
+   */
+  lastMessageAt DateTime @default(now())
+
+  // v1 は1対1DMだが、参加者テーブルを分けて将来の拡張余地を残す。
+  participants DirectConversationParticipant[]
+  messages     DirectMessage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  /**
+   * DM一覧用 index。
+   *
+   * ORDER BY lastMessageAt DESC, id DESC の安定順で取得するため、
+   * 同時刻の会話があっても id で順序を固定できる。
+   */
+  @@index([lastMessageAt(sort: Desc), id(sort: Desc)])
+}
+
+model DirectConversationParticipant {
+  id             String @id @default(cuid())
+  conversationId String
+  userId         String
+
+  conversation DirectConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  // v1では未読表示をしないが、既読・未読バッジ拡張用に保持する。
+  lastReadAt DateTime?
+
+  // 同じ会話に同じユーザーが重複参加しないようにする。
+  @@unique([conversationId, userId])
+  // 現在ユーザーが参加している会話一覧を引くための index。
+  @@index([userId])
+}
+
+model DirectMessage {
+  id             String @id @default(cuid())
+  conversationId String
+  senderId       String
+  content        String
+
+  conversation DirectConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User               @relation("DirectMessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  /**
+   * メッセージ一覧・将来のcursor pagination用。
+   *
+   * createdAt だけでは同時刻のメッセージがあり得るため、
+   * id と組み合わせて一意な並び順を作る。
+   */
+  @@unique([createdAt, id])
+  // 会話詳細で、会話ごとのメッセージを時系列に取得するための index。
+  @@index([conversationId, createdAt(sort: Desc), id(sort: Desc)])
+  // 送信者基準の集計・管理用途に備えた index。
+  @@index([senderId])
 }

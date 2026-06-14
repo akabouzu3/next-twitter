@@ -1,13 +1,22 @@
 "use server";
 
+import { Prisma } from "@prisma/client";
+import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { updateUserSchema } from "../schemas/update-user.schema";
-import { getUserById } from "../server/get-user";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { validateImageFiles } from "@/lib/upload/validate-image-files";
 import { updateUser } from "../server/update-user";
 import { canEditUser } from "@/lib/auth/permissions";
+import { prisma } from "@/lib/prisma/prisma";
 
+/**
+ * プロフィール編集 Server Action がフォームへ返す状態。
+ *
+ * `values` はバリデーション失敗時に入力内容を復元するためのもの。
+ * パスワード系フィールドは再表示しないため、ここには含めない。
+ */
 export type UpdateUserActionState = {
   success: boolean;
   message: string;
@@ -15,18 +24,52 @@ export type UpdateUserActionState = {
   values?: {
     userId?: string;
     name?: string;
+    username?: string;
     bio?: string;
   };
   fieldErrors?: {
     userId?: string[];
     name?: string[];
+    username?: string[];
     bio?: string[];
+    currentPassword?: string[];
+    newPassword?: string[];
     image?: string[];
     backgroundImage?: string[];
   };
 };
 
+/**
+ * Prisma の一意制約違反が `User.username` 由来かどうかを判定する。
+ *
+ * username は DB の unique 制約が最終防衛線になるため、事前検索ではなく
+ * update 失敗時の P2002 を field error に変換する。
+ */
+function isUniqueUsernameError(error: unknown) {
+  if (
+    !(error instanceof Prisma.PrismaClientKnownRequestError) ||
+    error.code !== "P2002"
+  ) {
+    return false;
+  }
 
+  const target = error.meta?.target;
+
+  return Array.isArray(target)
+    ? target.includes("username")
+    : typeof target === "string" && target.includes("username");
+}
+
+/**
+ * ログインユーザーがプロフィールを更新する Server Action。
+ *
+ * 主な責務:
+ * - FormData を Zod で検証する
+ * - 編集対象と現在ユーザーの権限を確認する
+ * - パスワード変更時だけ現在パスワードを検証して hash を作る
+ * - 画像ファイルを検証して server 層の更新処理へ渡す
+ * - 更新後に関連ページを再検証する
+ */
 export async function updateUserAction(
   _prevState: UpdateUserActionState,
   formData: FormData
@@ -34,6 +77,7 @@ export async function updateUserAction(
   const submittedAt = Date.now();
   const currentUser = await getCurrentUser();
 
+  // Server Action は直接呼ばれ得るため、UI表示に頼らず必ず認証を確認する。
   if (!currentUser) {
     return {
       success: false,
@@ -42,14 +86,27 @@ export async function updateUserAction(
     };
   }
 
+  /**
+   * 入力復元用の値。
+   *
+   * currentPassword / newPassword は安全のため state に戻さない。
+   * バリデーション自体には必要なので、validationValues 側でだけ扱う。
+   */
   const values = {
     userId: String(formData.get("userId") ?? ""),
     name: String(formData.get("name") ?? ""),
+    username: String(formData.get("username") ?? ""),
     bio: String(formData.get("bio") ?? ""),
+  };
+  const validationValues = {
+    ...values,
+    currentPassword: String(formData.get("currentPassword") ?? ""),
+    newPassword: String(formData.get("newPassword") ?? ""),
   };
   const rawImageFile = formData.get("image");
   const rawBackgroundImageFile = formData.get("backgroundImage");
 
+  // file input は未選択でも File-like な値になり得るため、size で実ファイルだけに絞る。
   const imageFile = rawImageFile instanceof File && rawImageFile.size > 0
     ? rawImageFile
     : null;
@@ -58,10 +115,9 @@ export async function updateUserAction(
     ? rawBackgroundImageFile
     : null;
 
-  // ユーザ編集内容をバリデーション
-  const validatedFields = updateUserSchema.safeParse(values);
+  // ユーザー編集内容を入力境界でまとめて検証する。
+  const validatedFields = updateUserSchema.safeParse(validationValues);
 
-  // ユーザ編集内容バリデーションエラーがあればエラーを返す
   if (!validatedFields.success) {
     return {
       success: false,
@@ -72,8 +128,24 @@ export async function updateUserAction(
     };
   }
 
-  const { userId, name, bio } = validatedFields.data;
-  const user = await getUserById(userId);
+  const { userId, name, username, bio, currentPassword, newPassword } =
+    validatedFields.data;
+
+  /**
+   * passwordHash は公開プロフィール用 select には含めない値なので、
+   * パスワード変更判定を行うこの Action 内で最小限の select に絞って取得する。
+   */
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      id: true,
+      role: true,
+      username: true,
+      passwordHash: true,
+    },
+  });
 
   if (!user) {
     return {
@@ -84,7 +156,7 @@ export async function updateUserAction(
     };
   }
 
-  // 現在のユーザが対象のユーザを編集する権限を持ってるかを確認
+  // 管理者または本人以外は更新できない。
   if (!canEditUser(currentUser, user)) {
     return {
       success: false,
@@ -94,14 +166,57 @@ export async function updateUserAction(
     };
   }
 
-  // プロフィール画像バリデーションを行う
+  let nextPasswordHash: string | undefined;
+
+  /**
+   * パスワードは新しい値が入力された場合だけ変更する。
+   *
+   * - passwordHash がないアカウントは現在パスワードを照合できないため拒否する
+   * - 現在パスワードが一致した場合だけ bcrypt hash を作成して更新へ渡す
+   */
+  if (newPassword.length > 0) {
+    if (!user.passwordHash) {
+      return {
+        success: false,
+        message:
+          "このアカウントでは現在のパスワードを確認できないため、プロフィール編集からはパスワードを変更できません。",
+        submittedAt,
+        values,
+        fieldErrors: {
+          currentPassword: [
+            "このアカウントでは現在のパスワードを確認できません。",
+          ],
+        },
+      };
+    }
+
+    const isCurrentPasswordValid = await bcrypt.compare(
+      currentPassword,
+      user.passwordHash,
+    );
+
+    if (!isCurrentPasswordValid) {
+      return {
+        success: false,
+        message: "現在のパスワードを確認してください。",
+        submittedAt,
+        values,
+        fieldErrors: {
+          currentPassword: ["現在のパスワードが正しくありません。"],
+        },
+      };
+    }
+
+    nextPasswordHash = await bcrypt.hash(newPassword, 12);
+  }
+
+  // プロフィール画像は選択された場合だけ検証する。
   if (imageFile) {
     const validationImageResult = validateImageFiles([imageFile], {
       maxCount: 1,
       maxSize: 5 * 1024 * 1024,
     });
 
-    // プロフィール画像バリデーションエラーがあればエラーを返す
     if (!validationImageResult.success) {
       return {
         success: false,
@@ -115,7 +230,7 @@ export async function updateUserAction(
     }
   }
 
-  // 背景画像バリデーションを行う
+  // 背景画像もプロフィール画像と同じ制約で検証する。
   if (backgroundImageFile) {
     const validationBackgroundImageResult = validateImageFiles(
       [backgroundImageFile],
@@ -125,7 +240,6 @@ export async function updateUserAction(
       }
     );
 
-    // 背景画像バリデーションエラーがあればエラーを返す
     if (!validationBackgroundImageResult.success) {
       return {
         success: false,
@@ -139,19 +253,37 @@ export async function updateUserAction(
     }
   }
 
+  const shouldRedirectToUpdatedProfile = user.username !== username;
+
   try {
-    // ユーザを編集
+    // DB更新と画像保存の詳細は server 層に委譲し、Action は入力境界と権限を担当する。
     await updateUser(user.id, {
       name,
+      username,
       bio,
+      passwordHash: nextPasswordHash,
       image: imageFile,
       backgroundImage: backgroundImageFile,
     });
 
-    // パスを再検証
+    // username 変更に備えて、旧URLと新URLの両方を再検証する。
     revalidatePath("/app");
     revalidatePath(`/users/${user.username}`, "layout");
+    revalidatePath(`/users/${username}`, "layout");
   } catch (error) {
+    // DB の unique 制約違反を UI で扱いやすい username field error に変換する。
+    if (isUniqueUsernameError(error)) {
+      return {
+        success: false,
+        message: "このユーザー名はすでに使われています。",
+        submittedAt,
+        values,
+        fieldErrors: {
+          username: ["このユーザー名はすでに使われています。"],
+        },
+      };
+    }
+
     console.error("Failed to update user profile", error);
 
     return {
@@ -162,7 +294,10 @@ export async function updateUserAction(
     };
   }
 
-  // 成功した場合は成功メッセージを返す
+  if (shouldRedirectToUpdatedProfile) {
+    redirect(`/users/${username}`);
+  }
+
   return {
     success: true,
     message: "プロフィールを更新しました。",

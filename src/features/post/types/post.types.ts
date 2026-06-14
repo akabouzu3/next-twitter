@@ -6,12 +6,16 @@ export type Cursor = {
   id: string;
 };
 
+export type TopPostSearchCursor = Cursor & {
+  score: number;
+};
+
 // =====================
 // Pagination
 // =====================
-export type CursorPage<T> = {
+export type CursorPage<T, TCursor extends Cursor = Cursor> = {
   items: T[];
-  nextCursor: Cursor | null;
+  nextCursor: TCursor | null;
   hasMore: boolean;
 };
 
@@ -71,4 +75,7 @@ export type FeedItem = {
 // =====================
 // Usecase
 // =====================
-export type FeedPage = CursorPage<FeedItem>;
+export type FeedPage<TCursor extends Cursor = Cursor> = CursorPage<
+  FeedItem,
+  TCursor
+>;

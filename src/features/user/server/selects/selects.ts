@@ -1,12 +1,9 @@
 import { Prisma } from "@prisma/client";
 
 /**
- * フォロー / フォロワー一覧で表示するユーザー情報。
- *
- * follower / following の両方で同じ表示 shape を使うため、
- * User select として切り出して Follow select から再利用する。
+ * ユーザー一覧 UI で表示する共通のユーザー情報。
  */
-export const userConnectionUserSelect = {
+export const userListUserSelect = {
   id: true,
   name: true,
   username: true,
@@ -29,15 +26,15 @@ export const userConnectionFollowSelect = {
   id: true,
   createdAt: true,
   follower: {
-    select: userConnectionUserSelect,
+    select: userListUserSelect,
   },
   following: {
-    select: userConnectionUserSelect,
+    select: userListUserSelect,
   },
 } satisfies Prisma.FollowSelect;
 
-export type UserConnectionUserPayload = Prisma.UserGetPayload<{
-  select: typeof userConnectionUserSelect;
+export type UserListUserPayload = Prisma.UserGetPayload<{
+  select: typeof userListUserSelect;
 }>;
 
 export type UserConnectionFollowPayload = Prisma.FollowGetPayload<{
