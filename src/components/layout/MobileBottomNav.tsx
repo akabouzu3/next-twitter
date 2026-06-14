@@ -18,7 +18,7 @@ const navItems: NavItem[] = [
   { label: "ホーム", icon: Home, url: "/app", isDisabled: false, },
   { label: "話題を検索", icon: Search, url: "/search", isDisabled: false,  },
   { label: "通知", icon: Bell, url: "/notification", isDisabled: true,  },
-  { label: "メッセージ", icon: Mail, url: "/messages", isDisabled: true,  },
+  { label: "メッセージ", icon: Mail, url: "/messages", isDisabled: false,  },
 ];
 
 export default function MobileBottomNav() {
