@@ -1,168 +1,158 @@
-以下、そのまま **README.md** に貼れる「初期設定（新規参加者向け）」テンプレです。
-あなたの構成（WSL2 + nvm + `.nvmrc` / pnpm + Corepack / npm-yarn禁止 / `engine-strict` / CI）に合わせています。
+# Next Twitter
 
-````md
-# Getting Started（初期設定）
+Next.js App Router と TypeScript で作成した Twitter/X ライクなSNSアプリです。
 
-このプロジェクトは **Node / pnpm / lockfile を厳密に固定**しています。  
-セットアップは以下の手順で行ってください。
+フロントエンドからバックエンドまで TypeScript で開発することを目的に、投稿、返信、いいね、フォロー、検索、プロフィール編集、画像アップロード、DM など、SNSに必要な機能実装を学習用として作成しました。
 
----
+![home](design/k_pc_app.png)
 
-## 前提
+## URL
 
-- WSL2（Ubuntu）
-- Git
-- nvm（Node Version Manager）
+- Service: https://k.akabouzu.com
+- GitHub: https://github.com/akabouzu3/next-twitter
 
-確認：
-```bash
-git --version
-nvm --version
-````
+## 開発背景
 
----
+個人でSNSサイトを作りたいという目標があり、まずは学習用として Twitter/X に近い機能を一つずつ実装しました。
 
-## 1. リポジトリを取得
+Next.js App Router、Server Actions、Auth.js、Prisma を組み合わせ、画面実装だけでなく、認証、DB設計、サーバー処理、画像保存、無限スクロールまで一通り経験することを重視しています。
 
-```bash
-git clone <REPOSITORY_URL>
-cd <REPOSITORY_NAME>
+## 主な機能
+
+- メールアドレス / パスワード認証、Googleログイン
+- 投稿、返信、編集、削除、画像添付
+- おすすめフィード、フォロー中タイムライン、無限スクロール
+- いいね、フォロー / フォロー解除
+- プロフィール表示、プロフィール編集
+- ユーザー検索、投稿検索、メディア検索
+- 1対1のダイレクトメッセージ
+- PC / モバイル対応
+
+## 工夫した点
+
+### Node / pnpm のバージョン固定
+
+チーム開発で環境差分が起きないように、`.nvmrc`、`packageManager`、`engines`、`.npmrc` を設定しました。
+
+また、`preinstall` で独自スクリプトを実行し、Node.js のバージョン違いや pnpm 以外での install を検知して止めるようにしています。
+
+### 無限スクロール
+
+`IntersectionObserver` を使った無限スクロール用 hook を作成し、フィード、検索結果、プロフィール投稿一覧で再利用できるようにしました。
+
+DB取得では `createdAt DESC, id DESC` の安定した並び順と cursor pagination を使い、OFFSET に頼らないページングを意識しています。
+
+### createPortal を使ったモーダル
+
+投稿、ログイン、サインアップなどのモーダルは `createPortal` で実装しました。
+
+親要素の `overflow` や stacking context の影響を受けにくくし、モーダル表示のレイヤー管理を共通化しています。
+
+### 開発しやすいディレクトリ構成
+
+`src/features/post`、`src/features/user`、`src/features/messages` のように、機能単位で Server Actions、server logic、components、schemas、types を分けています。
+
+関連するコードを同じ feature 配下にまとめることで、機能追加や修正をしやすくしました。
+
+## 使用技術
+
+| 分類 | 技術 |
+| --- | --- |
+| フロントエンド | TypeScript, React 19, Next.js 15 App Router |
+| バックエンド | Server Actions, Route Handlers |
+| 認証 | Auth.js v5, Google OAuth, bcryptjs |
+| DB | PostgreSQL, Prisma |
+| UI | Tailwind CSS v4, shadcn/ui, Radix UI |
+| バリデーション | Zod |
+| 画像保存 | Local upload, Supabase Storage |
+| インフラ | Docker, Vercel, Supabase |
+| CI | GitHub Actions |
+
+## ディレクトリ構成
+
+```txt
+src/
+  app/                 # App Router pages, layouts, route handlers
+  components/          # 共通 UI / layout components
+  features/
+    auth/              # 認証
+    follow/            # フォロー
+    messages/          # DM
+    post/              # 投稿、フィード、検索
+    user/              # プロフィール、ユーザー検索
+  lib/
+    auth/              # 認証ヘルパー
+    prisma/            # Prisma client
+    upload/            # 画像アップロード
+prisma/
+  schema.prisma        # DB schema
 ```
 
----
+## セットアップ
 
-## 2. Node をプロジェクト指定に合わせる（必須）
+### 前提
 
-このプロジェクトは `.nvmrc` で Node バージョンを固定しています。
+- Node.js 24
+- pnpm 9.15.0
+- PostgreSQL
 
-```bash
-nvm install
-nvm use
-node -v
-```
-
-> Node のバージョンが合っていない場合、`pnpm install` がエラーで止まります。
-
----
-
-## 3. Corepack を有効化（初回のみ）
-
-pnpm は **Corepack 経由**で使います。
-※ `corepack enable` は「毎回」ではなく、**Node バージョンごとに1回**でOKです。
+### 1. 依存関係をインストール
 
 ```bash
 corepack enable
-```
-
-pnpm が使えるか確認：
-
-```bash
-pnpm -v
-```
-
----
-
-## 4. 依存関係をインストール
-
-⚠️ **npm / yarn は使用禁止**です（CIでも落ちます）
-
-```bash
 pnpm install
 ```
 
----
-
-## 5. 開発サーバ起動
+### 2. 環境変数を用意
 
 ```bash
-pnpm run dev
+cp .env.example .env
 ```
 
-ブラウザ：
-
-* [http://localhost:3000](http://localhost:3000)
-
----
-
-## 6. 作業前チェック（推奨）
+ローカルDBを Docker Compose で起動する場合:
 
 ```bash
-pnpm run lint
-pnpm run typecheck
-pnpm run build
+docker compose up -d
 ```
 
----
+`.env` の例:
 
-# 重要：禁止事項
+```env
+APP_ENV=local
+DATABASE_URL="postgresql://devuser:devpass@localhost:5432/devdb?schema=public"
+DIRECT_URL="postgresql://devuser:devpass@localhost:5432/devdb?schema=public"
+AUTH_SECRET="your-secret"
+AUTH_TRUST_HOST=true
+NEXT_PUBLIC_APP_ORIGIN="http://localhost:3000"
+APP_ORIGIN="http://localhost:3000"
+IMAGE_STORAGE_DRIVER=local
+```
 
-* ❌ `npm install`
-* ❌ `yarn install`
-* ❌ `npm install -g pnpm`（グローバルインストールしない）
-* ❌ `package-lock.json` / `yarn.lock` をコミット
-
----
-
-# よくあるトラブル
-
-## Node バージョンが違うと言われる
+### 3. Prisma Client を生成
 
 ```bash
-nvm use
-node -v
+pnpm exec prisma generate
 ```
 
-## pnpm が見つからない / 古い
+DB schema をローカルDBへ反映する場合:
 
 ```bash
-corepack enable
-pnpm -v
+pnpm exec prisma migrate dev
 ```
 
----
-
-# 依存パッケージ追加
-
-* 通常依存：
+### 4. 開発サーバーを起動
 
 ```bash
-pnpm add <package>
+pnpm dev
 ```
 
-* 開発依存：
+http://localhost:3000 で確認できます。
+
+## 開発コマンド
 
 ```bash
-pnpm add -D <package>
-```
-
-追加後は必ず：
-
-```bash
-pnpm run lint
-pnpm run typecheck
-pnpm run build
-```
-
----
-
-# CI について
-
-push / PR 作成時に GitHub Actions が以下を自動実行します：
-
-* Node：`.nvmrc` のバージョンを使用
-* pnpm：`package.json` の `packageManager` のバージョンを使用
-* `pnpm install --frozen-lockfile`（lockfileがズレていたら失敗）
-* lint / typecheck / build
-
-```
-
----
-
-必要なら、READMEに追加すると便利な章も作れます：
-
-- **「Node/pnpm のバージョンを上げる手順」**
-- **「Prisma（migrate/seed）初期セットアップ」**（Supabase/ローカルDocker切替含む）
-- **「環境変数 `.env` の用意」**（例テンプレ）
-::contentReference[oaicite:0]{index=0}
+pnpm dev
+pnpm lint
+pnpm typecheck
+pnpm build
 ```

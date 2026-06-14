@@ -2,31 +2,28 @@ import Image from "next/image";
 import Link from "next/link";
 import FollowButton from "@/features/follow/components/FollowButton";
 import type { UserListItem } from "@/features/user/types/user.types";
+import { getUserImageUrl } from "@/lib/utils/default-user-images";
 
 type Props = {
   user: UserListItem;
 };
 
 export default function UserListRow({ user }: Props) {
+  const userImageUrl = getUserImageUrl(user.image);
+
   return (
     <Link
       href={`/users/${user.username}`}
       className="flex gap-3 px-4 py-3 transition hover:bg-white/[0.03]"
     >
       <div className="relative size-10 shrink-0 overflow-hidden rounded-full bg-neutral-800">
-        {user.image ? (
-          <Image
-            src={user.image}
-            alt={`${user.name}のプロフィール画像`}
-            fill
-            className="object-cover"
-            sizes="40px"
-          />
-        ) : (
-          <div className="grid size-full place-items-center text-base font-bold text-white">
-            {user.name.slice(0, 1)}
-          </div>
-        )}
+        <Image
+          src={userImageUrl}
+          alt={`${user.name}のプロフィール画像`}
+          fill
+          className="object-cover"
+          sizes="40px"
+        />
       </div>
 
       <div className="min-w-0 flex-1">

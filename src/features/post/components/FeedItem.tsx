@@ -9,6 +9,7 @@ import { formatRelativeTime } from "@/lib/utils/date";
 import Link from "next/link";
 import LikeButton from "@/features/post/components/LikeButton";
 import PostMoreMenu from "@/features/post/components/PostMoreMenu";
+import { getUserImageUrl } from "@/lib/utils/default-user-images";
 
 type Props = {
   post: FeedItemType;
@@ -16,6 +17,7 @@ type Props = {
 
 export default function FeedItem({ post }: Props) {
   const postHref = `/posts/${post.id}`;
+  const userImageUrl = getUserImageUrl(post.user.image);
 
   return (
     <article className="relative border-b border-white/10 px-4 py-3 transition hover:bg-white/[0.03]">
@@ -32,15 +34,13 @@ export default function FeedItem({ post }: Props) {
           href={`/users/${post.user.username}`}
           className="pointer-events-auto size-10 shrink-0 overflow-hidden rounded-full bg-zinc-700"
         >
-          {post.user.image ? (
-            <Image
-              src={post.user.image ?? ""}
-              alt={post.user.name}
-              width={40}
-              height={40}
-              className="size-10 rounded-full object-cover"
-            />
-          ) : null}
+          <Image
+            src={userImageUrl}
+            alt={post.user.name}
+            width={40}
+            height={40}
+            className="size-10 rounded-full object-cover"
+          />
         </Link>
 
         <div className="min-w-0 flex-1">

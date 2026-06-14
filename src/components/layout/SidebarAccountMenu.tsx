@@ -15,13 +15,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { CurrentUser } from "@/lib/auth/current-user";
+import { getUserImageUrl } from "@/lib/utils/default-user-images";
 
 type Props = {
   currentUser: CurrentUser | null;
 };
 
 export function SidebarAccountMenu({ currentUser }: Props) {
-  console.log(currentUser);
+  const userImageUrl = getUserImageUrl(currentUser?.image);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -35,15 +37,13 @@ export function SidebarAccountMenu({ currentUser }: Props) {
           aria-label="アカウントメニューを開く"
         >
           <div className="relative size-10 shrink-0 overflow-hidden rounded-full bg-zinc-700">
-            {currentUser?.image ? (
-              <Image
-                src={currentUser.image}
-                alt={currentUser.name ?? ""}
-                fill
-                className="object-cover"
-                sizes="40px"
-              />
-            ) : null}
+            <Image
+              src={userImageUrl}
+              alt={currentUser?.name ?? ""}
+              fill
+              className="object-cover"
+              sizes="40px"
+            />
           </div>
 
           <div className="min-w-0 flex-1 xl:block hidden">
