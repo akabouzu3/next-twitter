@@ -4,6 +4,10 @@ on:
   # 本番DB migration は自動実行せず、Actions画面の Run workflow から手動で実行する
   workflow_dispatch:
 
+env:
+  # GitHub-hosted JS actions の Node.js 20 deprecation warning を避けるため、Node.js 24 実行へ先行移行する。
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 concurrency:
   # DB migration は並列実行すると危険なので、同じブランチでは同時に走らせない
   group: prisma-migrate-deploy-${{ github.ref }}
