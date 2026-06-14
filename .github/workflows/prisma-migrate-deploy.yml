@@ -4,10 +4,6 @@ on:
   # 本番DB migration は自動実行せず、Actions画面の Run workflow から手動で実行する
   workflow_dispatch:
 
-env:
-  # GitHub-hosted JS actions の Node.js 20 deprecation warning を避けるため、Node.js 24 実行へ先行移行する。
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 concurrency:
   # DB migration は並列実行すると危険なので、同じブランチでは同時に走らせない
   group: prisma-migrate-deploy-${{ github.ref }}
@@ -27,14 +23,14 @@ jobs:
             exit 1
           fi
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # Node: .nvmrc から読み取り
       - name: Read Node version from .nvmrc
         id: node
         run: echo "version=$(cat .nvmrc)" >> $GITHUB_OUTPUT
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: ${{ steps.node.outputs.version }}
 
@@ -44,9 +40,10 @@ jobs:
         run: |
           node -e "const pm=require('./package.json').packageManager||''; const m=pm.match(/^pnpm@(.+)$/); if(!m){process.exit(1)} console.log('version='+m[1]);" >> $GITHUB_OUTPUT
 
-      - uses: pnpm/action-setup@v4
-        with:
-          version: ${{ steps.pnpm.outputs.version }}
+      - name: Enable pnpm with Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@${{ steps.pnpm.outputs.version }} --activate
 
       # lockfile混入チェック（pnpm以外で依存関係を更新しない）
       - name: Disallow npm/yarn lockfiles
