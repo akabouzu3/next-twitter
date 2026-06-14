@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { SidebarAccountMenu } from "./SidebarAccountMenu";
 import { CurrentUser } from "@/lib/auth/current-user";
 import KLogo from "@/components/icons/KLogo";
+import NavigationPendingIndicator from "@/components/navigation-pending-indicator";
 import PostDialogTrigger from "@/features/post/components/PostComposerTrigger";
 
 
@@ -33,9 +34,10 @@ export default function LeftSidebar({currentUser}: Props) {
       <div className="flex flex-col">
         <Link
           href="/app"
-          className="mb-2 flex h-14 w-14 items-center justify-center p-2 rounded-full hover:bg-white/10 duration-200" 
+          className="relative mb-2 flex h-14 w-14 items-center justify-center rounded-full p-2 duration-200 hover:bg-white/10"
         >
           <KLogo/>
+          <NavigationPendingIndicator className="absolute right-1 top-1" />
         </Link>
 
         <nav className="flex flex-col gap-1">
@@ -49,7 +51,7 @@ export default function LeftSidebar({currentUser}: Props) {
 
             return (
               <Link key={item.label} href={item.url} className={cn(
-                "group",
+                "group relative",
                 isDisabled && "pointer-events-none cursor-default opacity-50"
               )}
                 onClick={(e) => {
@@ -70,6 +72,9 @@ export default function LeftSidebar({currentUser}: Props) {
                   >
                     {item.label}
                   </span>
+                  {!isDisabled && (
+                    <NavigationPendingIndicator className="absolute right-2 top-2 xl:static xl:ml-auto" />
+                  )}
                 </span>
               </Link>
             );

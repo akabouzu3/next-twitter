@@ -1,8 +1,9 @@
 "use client";
 
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import type { MouseEvent } from "react";
 
 import { cn } from "@/lib/utils";
@@ -19,9 +20,11 @@ export default function BackButton({
   className,
 }: Props) {
   const router = useRouter();
+  const [isPending, setIsPending] = useState(false);
 
   const handleBack = (event: MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
+    setIsPending(true);
 
     if (window.history.length > 1) {
       router.back();
@@ -41,7 +44,11 @@ export default function BackButton({
         className,
       )}
     >
-      <ArrowLeft className="size-5" aria-hidden="true" />
+      {isPending ? (
+        <LoaderCircle className="size-5 animate-spin" aria-hidden="true" />
+      ) : (
+        <ArrowLeft className="size-5" aria-hidden="true" />
+      )}
     </Link>
   );
 }
