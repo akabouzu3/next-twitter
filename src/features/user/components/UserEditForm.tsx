@@ -9,6 +9,10 @@ import {
   updateUserAction,
   type UpdateUserActionState,
 } from "@/features/user/actions/update-user-action";
+import {
+  getUserBackgroundImageUrl,
+  getUserImageUrl,
+} from "@/lib/utils/default-user-images";
 
 type Props = {
   user: UserProfileItem;
@@ -33,13 +37,13 @@ export function UserEditForm({ user, formId, onSuccess }: Props) {
   const backgroundImageInputRef = useRef<HTMLInputElement>(null);
 
   // 画像を選択した直後に、保存前でも画面上で確認できるようにする。
-  const [imagePreview, setImagePreview] = useState<string | null>(
-    user.image ?? null
+  const [imagePreview, setImagePreview] = useState(
+    getUserImageUrl(user.image)
   );
 
-  const [backgroundImagePreview, setBackgroundImagePreview] = useState<
-    string | null
-  >(user.backgroundImage ?? null);
+  const [backgroundImagePreview, setBackgroundImagePreview] = useState(
+    getUserBackgroundImageUrl(user.backgroundImage)
+  );
   const lastHandledSubmittedAtRef = useRef<number | undefined>(undefined);
 
   // 成功した送信結果ごとに一度だけ親へ通知する。現在は編集ダイアログを閉じる用途。
@@ -59,16 +63,12 @@ export function UserEditForm({ user, formId, onSuccess }: Props) {
 
       {/* ヘッダー画像のプレビューとアップロード操作。 */}
       <div className="relative h-[120px] bg-neutral-900 sm:h-[200px]">
-        {backgroundImagePreview ? (
-          <Image
-            src={backgroundImagePreview}
-            alt=""
-            fill
-            className="object-cover"
-          />
-        ) : (
-          <div className="size-full bg-neutral-800" />
-        )}
+        <Image
+          src={backgroundImagePreview}
+          alt=""
+          fill
+          className="object-cover"
+        />
 
         <input
           ref={backgroundImageInputRef}
@@ -101,14 +101,12 @@ export function UserEditForm({ user, formId, onSuccess }: Props) {
         <div className="relative h-16">
           <div className="absolute -top-10 left-0 rounded-full bg-black p-1">
             <div className="relative size-[88px] overflow-hidden rounded-full bg-neutral-800">
-              {imagePreview ? (
-                <Image
-                  src={imagePreview}
-                  alt=""
-                  fill
-                  className="object-cover"
-                />
-              ) : null}
+              <Image
+                src={imagePreview}
+                alt=""
+                fill
+                className="object-cover"
+              />
 
               <input
                 ref={imageInputRef}

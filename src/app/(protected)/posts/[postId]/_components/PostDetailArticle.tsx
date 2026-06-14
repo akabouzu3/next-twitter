@@ -9,6 +9,7 @@ import LikeButton from "@/features/post/components/LikeButton";
 import PostImages from "@/features/post/components/PostImages";
 import PostMoreMenu from "@/features/post/components/PostMoreMenu";
 import type { FeedItem } from "@/features/post/types/post.types";
+import { getUserImageUrl } from "@/lib/utils/default-user-images";
 
 type Props = {
   post: FeedItem;
@@ -26,6 +27,8 @@ function formatPostDetailDate(date: Date) {
 }
 
 export default function PostDetailArticle({ post }: Props) {
+  const userImageUrl = getUserImageUrl(post.user.image);
+
   return (
     <article className="border-b border-white/10 px-4 py-3">
       {/* 投稿者ヘッダー */}
@@ -35,15 +38,13 @@ export default function PostDetailArticle({ post }: Props) {
           className="flex min-w-0 items-center gap-3"
         >
           <span className="relative size-10 shrink-0 overflow-hidden rounded-full bg-zinc-700">
-            {post.user.image ? (
-              <Image
-                src={post.user.image}
-                alt={post.user.name}
-                width={40}
-                height={40}
-                className="size-10 rounded-full object-cover"
-              />
-            ) : null}
+            <Image
+              src={userImageUrl}
+              alt={post.user.name}
+              width={40}
+              height={40}
+              className="size-10 rounded-full object-cover"
+            />
           </span>
 
           <span className="min-w-0">

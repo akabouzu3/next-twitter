@@ -26,6 +26,7 @@ import {
 } from "@/features/post/actions/create-post-action";
 
 import { cn } from "@/lib/utils";
+import { getUserImageUrl } from "@/lib/utils/default-user-images";
 
 type Props = {
   // 現在ログイン中のユーザー
@@ -246,6 +247,8 @@ export default function PostComposer({
     return null;
   }
 
+  const userImageUrl = getUserImageUrl(currentUser.image);
+
   return (
     <div className="h-full">
       {/* 
@@ -262,15 +265,13 @@ export default function PostComposer({
             href={`/users/${currentUser.username}`}
             className="relative size-10 shrink-0 overflow-hidden rounded-full bg-zinc-700"
           >
-            {currentUser.image ? (
-              <Image
-                src={currentUser.image}
-                alt={currentUser.name ?? currentUser.username ?? "user"}
-                fill
-                className="object-cover"
-                sizes="40px"
-              />
-            ) : null}
+            <Image
+              src={userImageUrl}
+              alt={currentUser.name ?? currentUser.username ?? "user"}
+              fill
+              className="object-cover"
+              sizes="40px"
+            />
           </Link>
 
           <div className="flex min-h-0 flex-1 flex-col">
