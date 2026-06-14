@@ -15,6 +15,7 @@ import type { ElementType } from "react";
 
 import { cn } from "@/lib/utils";
 import type { CurrentUser } from "@/lib/auth/current-user";
+import { getUserImageUrl } from "@/lib/utils/default-user-images";
 
 type Props = {
   currentUser: CurrentUser | null;
@@ -46,7 +47,8 @@ function UserAvatar({
   size?: string;
 }) {
   // header trigger と drawer 内の両方で同じ avatar 表示を使う。
-  // 画像未設定時は空の丸ではなく、User icon を fallback として表示する。
+  const userImageUrl = getUserImageUrl(currentUser.image);
+
   return (
     <div
       className={cn(
@@ -54,17 +56,13 @@ function UserAvatar({
         size,
       )}
     >
-      {currentUser.image ? (
-        <Image
-          src={currentUser.image}
-          alt={currentUser.name ?? currentUser.username}
-          fill
-          className="object-cover"
-          sizes="64px"
-        />
-      ) : (
-        <User className="absolute left-1/2 top-1/2 size-1/2 -translate-x-1/2 -translate-y-1/2 text-zinc-400" />
-      )}
+      <Image
+        src={userImageUrl}
+        alt={currentUser.name ?? currentUser.username}
+        fill
+        className="object-cover"
+        sizes="64px"
+      />
     </div>
   );
 }

@@ -6,6 +6,10 @@ import { UserProfileItem } from "@/features/user/types/user.types";
 import UserEditDialogTrigger from "@/features/user/components/UserEditDialogTriger";
 import Link from "next/link";
 import StartDirectConversationButton from "@/features/messages/components/StartDirectConversationButton";
+import {
+  getUserBackgroundImageUrl,
+  getUserImageUrl,
+} from "@/lib/utils/default-user-images";
 
 type Props = {
   currentUser: CurrentUser | null;
@@ -16,6 +20,8 @@ export default function UserProfile({ currentUser, user }: Props) {
   // 🔑 自分のプロフィールかどうか判定
   // → UI出し分け（編集ボタン or フォローボタン）
   const isMe = currentUser?.id === user.id;
+  const backgroundImageUrl = getUserBackgroundImageUrl(user.backgroundImage);
+  const userImageUrl = getUserImageUrl(user.image);
 
   return (
     <section>
@@ -23,21 +29,16 @@ export default function UserProfile({ currentUser, user }: Props) {
          ヘッダー画像（カバー画像）
       ========================= */}
       <div className="relative h-[120px] sm:h-[200px] bg-neutral-900 ">
-        {user.backgroundImage ? (
-          <Image
-            src={user.backgroundImage}
-            alt=""
-            fill
-            priority
-            className="object-cover"
-            // 📱 レスポンシブ対応
-            // モバイル: 100vw / PC: 600px
-            sizes="(max-width: 768px) 100vw, 600px"
-          />
-        ) : (
-          // 画像がない場合のフォールバック
-          <div className="size-full bg-neutral-800" />
-        )}
+        <Image
+          src={backgroundImageUrl}
+          alt=""
+          fill
+          priority
+          className="object-cover"
+          // 📱 レスポンシブ対応
+          // モバイル: 100vw / PC: 600px
+          sizes="(max-width: 768px) 100vw, 600px"
+        />
       </div>
 
       <div className="px-4 pb-4">
@@ -48,20 +49,13 @@ export default function UserProfile({ currentUser, user }: Props) {
 
           {/* 🧠 アバター（カバーに重ねる） */}
           <div className="absolute -top-10 left-0 size-[88px] overflow-hidden rounded-full border-4 border-black bg-neutral-900 sm:-top-16 sm:size-[134px]">
-            {user.image ? (
-              <Image
-                src={user.image}
-                alt={`${user.name ?? user.username}のプロフィール画像`}
-                fill
-                className="object-cover"
-                sizes="134px"
-              />
-            ) : (
-              // 👤 画像がない場合はイニシャル表示
-              <div className="grid size-full place-items-center bg-neutral-800 text-3xl font-bold">
-                {(user.name ?? user.username).slice(0, 1)}
-              </div>
-            )}
+            <Image
+              src={userImageUrl}
+              alt={`${user.name ?? user.username}のプロフィール画像`}
+              fill
+              className="object-cover"
+              sizes="134px"
+            />
           </div>
 
           {/* 🧠 ボタンエリア（右上） */}

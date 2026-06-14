@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { RecommendedUser } from "@/features/user/types/user.types";
 import FollowButton from "@/features/follow/components/FollowButton";
+import { getUserImageUrl } from "@/lib/utils/default-user-images";
 // import type { CurrentUser } from "@/lib/auth/current-user";
 
 type Props = {
@@ -10,6 +11,8 @@ type Props = {
 };
 
 export function RecommendedUserItem({ user }: Props) {
+  const userImageUrl = getUserImageUrl(user.image);
+
   return (
     <Link
       href={`/users/${user.username}`}
@@ -20,15 +23,13 @@ export function RecommendedUserItem({ user }: Props) {
     >
       {/* icon */}
       <div className="relative size-10 shrink-0 overflow-hidden rounded-full bg-zinc-700">
-        {user.image && (
-          <Image
-            src={user.image}
-            alt={user.name ?? ""}
-            fill
-            className="object-cover"
-            sizes="40px"
-          />
-        )}
+        <Image
+          src={userImageUrl}
+          alt={user.name ?? ""}
+          fill
+          className="object-cover"
+          sizes="40px"
+        />
       </div>
 
       {/* name */}
