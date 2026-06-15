@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Camera } from "lucide-react";
 import { useActionState, useEffect, useRef, useState } from "react";
+import type { ChangeEvent } from "react";
 
 import { UserProfileItem } from "@/features/user/types/user.types";
 import {
@@ -13,6 +14,8 @@ import {
   getUserBackgroundImageUrl,
   getUserImageUrl,
 } from "@/lib/utils/default-user-images";
+import { IMAGE_UPLOAD_ACCEPT } from "@/lib/upload/image-limits";
+import { validateSelectedImageFiles } from "@/lib/upload/validate-selected-image-files";
 
 type Props = {
   user: UserProfileItem;
@@ -36,7 +39,13 @@ export function UserEditForm({ user, formId, onSuccess }: Props) {
   const imageInputRef = useRef<HTMLInputElement>(null);
   const backgroundImageInputRef = useRef<HTMLInputElement>(null);
 
+  // preview state は <Image> の src として使う表示用。ref は解放対象の blob URL だけを覚える後始末用。
+  // 既存画像URLやデフォルト画像URLは revoke してはいけないため、blob URL と分けて管理する。
+  const imagePreviewObjectUrlRef = useRef<string | null>(null);
+  const backgroundImagePreviewObjectUrlRef = useRef<string | null>(null);
+
   // 画像を選択した直後に、保存前でも画面上で確認できるようにする。
+  // ここには既存画像URL・デフォルト画像URL・blob URL のいずれかが入る。
   const [imagePreview, setImagePreview] = useState(
     getUserImageUrl(user.image)
   );
@@ -44,7 +53,118 @@ export function UserEditForm({ user, formId, onSuccess }: Props) {
   const [backgroundImagePreview, setBackgroundImagePreview] = useState(
     getUserBackgroundImageUrl(user.backgroundImage)
   );
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [backgroundImageFile, setBackgroundImageFile] = useState<File | null>(
+    null
+  );
+  const [profileImageErrors, setProfileImageErrors] = useState<string[]>([]);
   const lastHandledSubmittedAtRef = useRef<number | undefined>(undefined);
+
+  // 不正な画像を選んだときは、選択前のプロフィール画像へ戻す。
+  const resetImagePreview = () => {
+    if (imagePreviewObjectUrlRef.current) {
+      URL.revokeObjectURL(imagePreviewObjectUrlRef.current);
+      imagePreviewObjectUrlRef.current = null;
+    }
+
+    setImagePreview(getUserImageUrl(user.image));
+  };
+
+  // 不正な背景画像を選んだときは、選択前の背景画像へ戻す。
+  const resetBackgroundImagePreview = () => {
+    if (backgroundImagePreviewObjectUrlRef.current) {
+      URL.revokeObjectURL(backgroundImagePreviewObjectUrlRef.current);
+      backgroundImagePreviewObjectUrlRef.current = null;
+    }
+
+    setBackgroundImagePreview(getUserBackgroundImageUrl(user.backgroundImage));
+  };
+
+  // 新しいプレビューを作る前に古い blob URL を解放し、選択を繰り返したときのメモリリークを避ける。
+  const setImagePreviewFile = (file: File) => {
+    if (imagePreviewObjectUrlRef.current) {
+      URL.revokeObjectURL(imagePreviewObjectUrlRef.current);
+    }
+
+    const previewUrl = URL.createObjectURL(file);
+    imagePreviewObjectUrlRef.current = previewUrl;
+    setImagePreview(previewUrl);
+  };
+
+  // 背景画像もプロフィール画像と同じく、現在表示中の blob URL を1つだけ保持する。
+  const setBackgroundImagePreviewFile = (file: File) => {
+    if (backgroundImagePreviewObjectUrlRef.current) {
+      URL.revokeObjectURL(backgroundImagePreviewObjectUrlRef.current);
+    }
+
+    const previewUrl = URL.createObjectURL(file);
+    backgroundImagePreviewObjectUrlRef.current = previewUrl;
+    setBackgroundImagePreview(previewUrl);
+  };
+
+  // プロフィール画像と背景画像は同じフォームで送るため、個別サイズだけでなく合計サイズもまとめて検証する。
+  const validateProfileImages = ({
+    nextImageFile = imageFile,
+    nextBackgroundImageFile = backgroundImageFile,
+  }: {
+    nextImageFile?: File | null;
+    nextBackgroundImageFile?: File | null;
+  }) => {
+    return validateSelectedImageFiles(
+      [nextImageFile, nextBackgroundImageFile].filter(
+        (file): file is File => file !== null
+      ),
+      {
+        maxCount: 2,
+      }
+    );
+  };
+
+  const handleBackgroundImageChange = (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const errors = validateProfileImages({
+      nextBackgroundImageFile: file,
+    });
+
+    setProfileImageErrors(errors);
+
+    if (errors.length > 0) {
+      setBackgroundImageFile(null);
+      resetBackgroundImagePreview();
+      // input.files に巨大ファイルを残すと submit 時に Vercel の 413 へ進むため、必ず空にする。
+      event.currentTarget.value = "";
+      return;
+    }
+
+    setBackgroundImageFile(file);
+    setBackgroundImagePreviewFile(file);
+  };
+
+  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const errors = validateProfileImages({
+      nextImageFile: file,
+    });
+
+    setProfileImageErrors(errors);
+
+    if (errors.length > 0) {
+      setImageFile(null);
+      resetImagePreview();
+      // input.files に巨大ファイルを残すと submit 時に Vercel の 413 へ進むため、必ず空にする。
+      event.currentTarget.value = "";
+      return;
+    }
+
+    setImageFile(file);
+    setImagePreviewFile(file);
+  };
 
   // 成功した送信結果ごとに一度だけ親へ通知する。現在は編集ダイアログを閉じる用途。
   useEffect(() => {
@@ -54,6 +174,19 @@ export function UserEditForm({ user, formId, onSuccess }: Props) {
     lastHandledSubmittedAtRef.current = state.submittedAt;
     onSuccess?.();
   }, [onSuccess, state.submittedAt, state.success]);
+
+  // ダイアログを閉じた場合など、フォームが破棄されるタイミングでも一時URLを解放する。
+  useEffect(() => {
+    return () => {
+      if (imagePreviewObjectUrlRef.current) {
+        URL.revokeObjectURL(imagePreviewObjectUrlRef.current);
+      }
+
+      if (backgroundImagePreviewObjectUrlRef.current) {
+        URL.revokeObjectURL(backgroundImagePreviewObjectUrlRef.current);
+      }
+    };
+  }, []);
 
   return (
     // id はダイアログヘッダーの保存ボタンの form 属性と揃える。
@@ -74,15 +207,10 @@ export function UserEditForm({ user, formId, onSuccess }: Props) {
           ref={backgroundImageInputRef}
           type="file"
           name="backgroundImage"
-          accept="image/jpeg,image/png,image/webp,image/gif"
+          accept={IMAGE_UPLOAD_ACCEPT}
           hidden
           disabled={isPending}
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (!file) return;
-
-            setBackgroundImagePreview(URL.createObjectURL(file));
-          }}
+          onChange={handleBackgroundImageChange}
         />
 
         <button
@@ -112,15 +240,10 @@ export function UserEditForm({ user, formId, onSuccess }: Props) {
                 ref={imageInputRef}
                 type="file"
                 name="image"
-                accept="image/jpeg,image/png,image/webp,image/gif"
+                accept={IMAGE_UPLOAD_ACCEPT}
                 hidden
                 disabled={isPending}
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-
-                  setImagePreview(URL.createObjectURL(file));
-                }}
+                onChange={handleImageChange}
               />
 
               <button
@@ -207,6 +330,12 @@ export function UserEditForm({ user, formId, onSuccess }: Props) {
               {state.fieldErrors.image[0]}
             </p>
           ) : null}
+
+          {profileImageErrors.map((error, index) => (
+            <p key={`${error}-${index}`} className="text-sm text-red-500">
+              {error}
+            </p>
+          ))}
 
           {state.fieldErrors?.backgroundImage ? (
             <p className="text-sm text-red-500">

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { ImageIcon } from "lucide-react";
+import { IMAGE_UPLOAD_ACCEPT } from "@/lib/upload/image-limits";
 
 /**
  * 画像アップロードボタンのProps
@@ -111,7 +112,7 @@ export function ImageUploadButton({
         ref={fileInputRef}
         type="file"
         name="images"
-        accept="image/*"
+        accept={IMAGE_UPLOAD_ACCEPT}
         multiple
         className="hidden"
         onChange={handleChange}
