@@ -7,6 +7,10 @@ import { createPost } from "@/features/post/server/create-post";
 import { createPostSchema } from "@/features/post/schemas/create-post.schema";
 import { validateImageFiles } from "@/lib/upload/validate-image-files";
 import { prisma } from "@/lib/prisma/prisma";
+import {
+  IMAGE_UPLOAD_MAX_FILE_SIZE,
+  IMAGE_UPLOAD_MAX_TOTAL_SIZE,
+} from "@/lib/upload/image-limits";
 
 export type CreatePostActionState = {
   success: boolean;
@@ -74,7 +78,8 @@ export async function createPostAction(
   // 画像バリデーションを行う
   const validationResult = validateImageFiles(imageFiles, {
     maxCount: 4,
-    maxSize: 5 * 1024 * 1024,
+    maxSize: IMAGE_UPLOAD_MAX_FILE_SIZE,
+    maxTotalSize: IMAGE_UPLOAD_MAX_TOTAL_SIZE,
   });
   
   // 画像バリデーションエラーがあればエラーを返す

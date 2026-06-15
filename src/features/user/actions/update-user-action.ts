@@ -10,6 +10,10 @@ import { validateImageFiles } from "@/lib/upload/validate-image-files";
 import { updateUser } from "../server/update-user";
 import { canEditUser } from "@/lib/auth/permissions";
 import { prisma } from "@/lib/prisma/prisma";
+import {
+  IMAGE_UPLOAD_MAX_FILE_SIZE,
+  IMAGE_UPLOAD_MAX_TOTAL_SIZE,
+} from "@/lib/upload/image-limits";
 
 /**
  * プロフィール編集 Server Action がフォームへ返す状態。
@@ -214,7 +218,8 @@ export async function updateUserAction(
   if (imageFile) {
     const validationImageResult = validateImageFiles([imageFile], {
       maxCount: 1,
-      maxSize: 5 * 1024 * 1024,
+      maxSize: IMAGE_UPLOAD_MAX_FILE_SIZE,
+      maxTotalSize: IMAGE_UPLOAD_MAX_TOTAL_SIZE,
     });
 
     if (!validationImageResult.success) {
@@ -236,7 +241,8 @@ export async function updateUserAction(
       [backgroundImageFile],
       {
         maxCount: 1,
-        maxSize: 5 * 1024 * 1024,
+        maxSize: IMAGE_UPLOAD_MAX_FILE_SIZE,
+        maxTotalSize: IMAGE_UPLOAD_MAX_TOTAL_SIZE,
       }
     );
 
@@ -251,6 +257,29 @@ export async function updateUserAction(
         },
       };
     }
+  }
+
+  const selectedImageFiles = [imageFile, backgroundImageFile].filter(
+    (file): file is File => file !== null,
+  );
+
+  const validationTotalImageResult = validateImageFiles(selectedImageFiles, {
+    maxCount: 2,
+    maxSize: IMAGE_UPLOAD_MAX_FILE_SIZE,
+    maxTotalSize: IMAGE_UPLOAD_MAX_TOTAL_SIZE,
+  });
+
+  if (!validationTotalImageResult.success) {
+    return {
+      success: false,
+      message: validationTotalImageResult.message,
+      submittedAt,
+      values,
+      fieldErrors: {
+        image: validationTotalImageResult.errors,
+        backgroundImage: validationTotalImageResult.errors,
+      },
+    };
   }
 
   const shouldRedirectToUpdatedProfile = user.username !== username;
