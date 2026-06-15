@@ -27,6 +27,7 @@ import {
 
 import { cn } from "@/lib/utils";
 import { getUserImageUrl } from "@/lib/utils/default-user-images";
+import { validateSelectedImageFiles } from "@/lib/upload/validate-selected-image-files";
 
 type Props = {
   // 現在ログイン中のユーザー
@@ -107,6 +108,7 @@ export default function PostComposer({
    * プレビュー表示・削除・送信時の制御を行う
    */
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [imageErrors, setImageErrors] = useState<string[]>([]);
 
   /**
    * textarea DOM を直接操作するための ref
@@ -150,6 +152,7 @@ export default function PostComposer({
 
     // 選択済み画像をリセット
     setSelectedImages([]);
+    setImageErrors([]);
 
     // textarea の見た目の高さも初期化
     if (textareaRef.current) {
@@ -212,7 +215,14 @@ export default function PostComposer({
   const handleSelectImages = (files: File[]) => {
     setSelectedImages((prev) => {
       const merged = [...prev, ...files];
-      return merged.slice(0, MAX_IMAGE_COUNT);
+      const nextImages = merged.slice(0, MAX_IMAGE_COUNT);
+      const errors = validateSelectedImageFiles(nextImages, {
+        maxCount: MAX_IMAGE_COUNT,
+      });
+
+      setImageErrors(errors);
+
+      return errors.length > 0 ? prev : nextImages;
     });
   };
 
@@ -222,9 +232,16 @@ export default function PostComposer({
    * targetIndex と一致しない画像だけ残す
    */
   const handleRemoveImage = (targetIndex: number) => {
-    setSelectedImages((prev) =>
-      prev.filter((_, index) => index !== targetIndex)
-    );
+    setSelectedImages((prev) => {
+      const nextImages = prev.filter((_, index) => index !== targetIndex);
+      const errors = validateSelectedImageFiles(nextImages, {
+        maxCount: MAX_IMAGE_COUNT,
+      });
+
+      setImageErrors(errors);
+
+      return nextImages;
+    });
   };
 
   /**
@@ -344,6 +361,12 @@ export default function PostComposer({
               ))}
 
               {/* 画像のバリデーションエラー */}
+              {imageErrors.map((error, index) => (
+                <p key={`${error}-${index}`} className="text-sm text-red-500">
+                  {error}
+                </p>
+              ))}
+
               {state.fieldErrors?.images?.map((error, index) => (
                 <p key={`${error}-${index}`} className="text-sm text-red-500">
                   {error}
