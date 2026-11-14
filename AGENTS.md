@@ -1,5 +1,7 @@
 # AGENTS.md
 
+各ルールの意図や背景などの詳しい解説は、[docs/agents-guide.md](docs/agents-guide.md) を参照してください。
+
 ## Stack
 
 Twitter/X-like fullstack app using Next.js 15 App Router, TypeScript, Auth.js v5, Prisma, PostgreSQL, Tailwind CSS v4, shadcn/ui, Zod, Server Actions, and Vercel.
