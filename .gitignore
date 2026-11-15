@@ -48,3 +48,8 @@ yarn.lock
 
 # uploads
 /public/uploads
+
+# SST state, generated types, and OpenNext build output
+/.sst/
+/.open-next/
+/sst-env.d.ts

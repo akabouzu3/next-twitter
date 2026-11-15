@@ -10,7 +10,9 @@
 // }
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  // ローカル環境に加え、Node.js 24 / x86_64 の Lambda 用エンジンも生成する。
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
